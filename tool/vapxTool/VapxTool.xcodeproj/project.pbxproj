@@ -1,0 +1,832 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		63550C8F2320017900D4280A /* ffmpeg in Resources */ = {isa = PBXBuildFile; fileRef = 63550C8E2320017900D4280A /* ffmpeg */; };
+		63550C922320A98A00D4280A /* VapxMP4Decoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550C912320A98A00D4280A /* VapxMP4Decoder.m */; };
+		63550C962320B70700D4280A /* QGVAPConfigModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550C952320B70600D4280A /* QGVAPConfigModel.m */; };
+		63550C9B2320B88E00D4280A /* NSArray+HWDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550C972320B88E00D4280A /* NSArray+HWDUtil.m */; };
+		63550C9C2320B88E00D4280A /* NSDictionary+HWDUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550C992320B88E00D4280A /* NSDictionary+HWDUtil.m */; };
+		63550CA12320BA6E00D4280A /* VapxAlphaExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550CA02320BA6E00D4280A /* VapxAlphaExtractor.m */; };
+		63550D5A23213AE800D4280A /* mp4extract in Resources */ = {isa = PBXBuildFile; fileRef = 63550CA423213AE800D4280A /* mp4extract */; };
+		63550D5B23213AE800D4280A /* mp4dash in Resources */ = {isa = PBXBuildFile; fileRef = 63550CA523213AE800D4280A /* mp4dash */; };
+		63550D5C23213AE800D4280A /* mp42hevc in Resources */ = {isa = PBXBuildFile; fileRef = 63550CA623213AE800D4280A /* mp42hevc */; };
+		63550D5D23213AE800D4280A /* mp4hls in Resources */ = {isa = PBXBuildFile; fileRef = 63550CA723213AE800D4280A /* mp4hls */; };
+		63550D5E23213AE800D4280A /* mp42ts in Resources */ = {isa = PBXBuildFile; fileRef = 63550CA823213AE800D4280A /* mp42ts */; };
+		63550D5F23213AE800D4280A /* mp4encrypt in Resources */ = {isa = PBXBuildFile; fileRef = 63550CA923213AE800D4280A /* mp4encrypt */; };
+		63550D6023213AE800D4280A /* mp4dashclone in Resources */ = {isa = PBXBuildFile; fileRef = 63550CAA23213AE800D4280A /* mp4dashclone */; };
+		63550D6123213AE800D4280A /* mp42hls in Resources */ = {isa = PBXBuildFile; fileRef = 63550CAB23213AE800D4280A /* mp42hls */; };
+		63550D6223213AE800D4280A /* mp42avc in Resources */ = {isa = PBXBuildFile; fileRef = 63550CAC23213AE800D4280A /* mp42avc */; };
+		63550D6323213AE800D4280A /* mp4decrypt in Resources */ = {isa = PBXBuildFile; fileRef = 63550CAD23213AE800D4280A /* mp4decrypt */; };
+		63550D6423213AE800D4280A /* mp4edit in Resources */ = {isa = PBXBuildFile; fileRef = 63550CAE23213AE800D4280A /* mp4edit */; };
+		63550D6523213AE800D4280A /* mp4info in Resources */ = {isa = PBXBuildFile; fileRef = 63550CAF23213AE800D4280A /* mp4info */; };
+		63550D6623213AE800D4280A /* aac2mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB023213AE800D4280A /* aac2mp4 */; };
+		63550D6723213AE800D4280A /* mp4dcfpackager in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB123213AE800D4280A /* mp4dcfpackager */; };
+		63550D6823213AE800D4280A /* mp4fragment in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB223213AE800D4280A /* mp4fragment */; };
+		63550D6923213AE800D4280A /* mp4tag in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB323213AE800D4280A /* mp4tag */; };
+		63550D6A23213AE800D4280A /* mp4iframeindex in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB423213AE800D4280A /* mp4iframeindex */; };
+		63550D6B23213AE800D4280A /* mp4split in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB523213AE800D4280A /* mp4split */; };
+		63550D6C23213AE800D4280A /* mp4mux in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB623213AE800D4280A /* mp4mux */; };
+		63550D6D23213AE800D4280A /* mp42aac in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB723213AE800D4280A /* mp42aac */; };
+		63550D6E23213AE800D4280A /* mp4dump in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB823213AE800D4280A /* mp4dump */; };
+		63550D6F23213AE800D4280A /* mp4rtphintinfo in Resources */ = {isa = PBXBuildFile; fileRef = 63550CB923213AE800D4280A /* mp4rtphintinfo */; };
+		63550D7123213AE800D4280A /* mp4compact in Resources */ = {isa = PBXBuildFile; fileRef = 63550CBB23213AE800D4280A /* mp4compact */; };
+		63550D8523213BE400D4280A /* VapxMp4Editor.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550D8423213BE400D4280A /* VapxMp4Editor.m */; };
+		63550D8A2322025900D4280A /* VapxMaskInfoGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 63550D892322025900D4280A /* VapxMaskInfoGenerator.m */; };
+		63AAEDE42325E971004CAC1F /* VapxLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AAEDE32325E971004CAC1F /* VapxLayoutManager.m */; };
+		63AAEDE923274F61004CAC1F /* VapxFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AAEDE823274F61004CAC1F /* VapxFileHelper.m */; };
+		63AAEDEC23277F9B004CAC1F /* VapxProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AAEDEB23277F9B004CAC1F /* VapxProcessor.m */; };
+		63AAEDF0232781C3004CAC1F /* VapMergeInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 63AAEDEF232781C3004CAC1F /* VapMergeInfoView.m */; };
+		63D337E5231F56AB0012D60C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D337E4231F56AB0012D60C /* AppDelegate.m */; };
+		63D337E8231F56AB0012D60C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D337E7231F56AB0012D60C /* ViewController.m */; };
+		63D337EA231F56AC0012D60C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D337E9231F56AC0012D60C /* Assets.xcassets */; };
+		63D337ED231F56AC0012D60C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D337EB231F56AC0012D60C /* Main.storyboard */; };
+		63D337F0231F56AC0012D60C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D337EF231F56AC0012D60C /* main.m */; };
+		63D337FB231F56AC0012D60C /* VapxToolTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D337FA231F56AC0012D60C /* VapxToolTests.m */; };
+		63D33806231F56AC0012D60C /* VapxToolUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D33805231F56AC0012D60C /* VapxToolUITests.m */; };
+		C10C67C124FF901E00E9BBD4 /* Draft_License_VAP_HK20200804.txt in Resources */ = {isa = PBXBuildFile; fileRef = C10C67C024FF901D00E9BBD4 /* Draft_License_VAP_HK20200804.txt */; };
+		C17B268D2500BF49008ED012 /* VapProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C17B268C2500BF49008ED012 /* VapProgressHUD.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		63D337F7231F56AC0012D60C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63D337D8231F56AB0012D60C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63D337DF231F56AB0012D60C;
+			remoteInfo = VapxTool;
+		};
+		63D33802231F56AC0012D60C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63D337D8231F56AB0012D60C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63D337DF231F56AB0012D60C;
+			remoteInfo = VapxTool;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		63550D8723213FCB00D4280A /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		63550C8E2320017900D4280A /* ffmpeg */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = ffmpeg; sourceTree = "<group>"; };
+		63550C902320A98A00D4280A /* VapxMP4Decoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxMP4Decoder.h; sourceTree = "<group>"; };
+		63550C912320A98A00D4280A /* VapxMP4Decoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxMP4Decoder.m; sourceTree = "<group>"; };
+		63550C942320B70600D4280A /* QGVAPConfigModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QGVAPConfigModel.h; sourceTree = "<group>"; };
+		63550C952320B70600D4280A /* QGVAPConfigModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QGVAPConfigModel.m; sourceTree = "<group>"; };
+		63550C972320B88E00D4280A /* NSArray+HWDUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+HWDUtil.m"; sourceTree = "<group>"; };
+		63550C982320B88E00D4280A /* NSArray+HWDUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+HWDUtil.h"; sourceTree = "<group>"; };
+		63550C992320B88E00D4280A /* NSDictionary+HWDUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+HWDUtil.m"; sourceTree = "<group>"; };
+		63550C9A2320B88E00D4280A /* NSDictionary+HWDUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+HWDUtil.h"; sourceTree = "<group>"; };
+		63550C9F2320BA6E00D4280A /* VapxAlphaExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxAlphaExtractor.h; sourceTree = "<group>"; };
+		63550CA02320BA6E00D4280A /* VapxAlphaExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxAlphaExtractor.m; sourceTree = "<group>"; };
+		63550CA423213AE800D4280A /* mp4extract */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4extract; sourceTree = "<group>"; };
+		63550CA523213AE800D4280A /* mp4dash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = mp4dash; sourceTree = "<group>"; };
+		63550CA623213AE800D4280A /* mp42hevc */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp42hevc; sourceTree = "<group>"; };
+		63550CA723213AE800D4280A /* mp4hls */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = mp4hls; sourceTree = "<group>"; };
+		63550CA823213AE800D4280A /* mp42ts */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp42ts; sourceTree = "<group>"; };
+		63550CA923213AE800D4280A /* mp4encrypt */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4encrypt; sourceTree = "<group>"; };
+		63550CAA23213AE800D4280A /* mp4dashclone */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = mp4dashclone; sourceTree = "<group>"; };
+		63550CAB23213AE800D4280A /* mp42hls */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp42hls; sourceTree = "<group>"; };
+		63550CAC23213AE800D4280A /* mp42avc */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp42avc; sourceTree = "<group>"; };
+		63550CAD23213AE800D4280A /* mp4decrypt */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4decrypt; sourceTree = "<group>"; };
+		63550CAE23213AE800D4280A /* mp4edit */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4edit; sourceTree = "<group>"; };
+		63550CAF23213AE800D4280A /* mp4info */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4info; sourceTree = "<group>"; };
+		63550CB023213AE800D4280A /* aac2mp4 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = aac2mp4; sourceTree = "<group>"; };
+		63550CB123213AE800D4280A /* mp4dcfpackager */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4dcfpackager; sourceTree = "<group>"; };
+		63550CB223213AE800D4280A /* mp4fragment */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4fragment; sourceTree = "<group>"; };
+		63550CB323213AE800D4280A /* mp4tag */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4tag; sourceTree = "<group>"; };
+		63550CB423213AE800D4280A /* mp4iframeindex */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4iframeindex; sourceTree = "<group>"; };
+		63550CB523213AE800D4280A /* mp4split */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4split; sourceTree = "<group>"; };
+		63550CB623213AE800D4280A /* mp4mux */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4mux; sourceTree = "<group>"; };
+		63550CB723213AE800D4280A /* mp42aac */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp42aac; sourceTree = "<group>"; };
+		63550CB823213AE800D4280A /* mp4dump */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4dump; sourceTree = "<group>"; };
+		63550CB923213AE800D4280A /* mp4rtphintinfo */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4rtphintinfo; sourceTree = "<group>"; };
+		63550CBB23213AE800D4280A /* mp4compact */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mp4compact; sourceTree = "<group>"; };
+		63550D8323213BE400D4280A /* VapxMp4Editor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxMp4Editor.h; sourceTree = "<group>"; };
+		63550D8423213BE400D4280A /* VapxMp4Editor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxMp4Editor.m; sourceTree = "<group>"; };
+		63550D882322025900D4280A /* VapxMaskInfoGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxMaskInfoGenerator.h; sourceTree = "<group>"; };
+		63550D892322025900D4280A /* VapxMaskInfoGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxMaskInfoGenerator.m; sourceTree = "<group>"; };
+		63AAEDE22325E971004CAC1F /* VapxLayoutManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxLayoutManager.h; sourceTree = "<group>"; };
+		63AAEDE32325E971004CAC1F /* VapxLayoutManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxLayoutManager.m; sourceTree = "<group>"; };
+		63AAEDE723274F61004CAC1F /* VapxFileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxFileHelper.h; sourceTree = "<group>"; };
+		63AAEDE823274F61004CAC1F /* VapxFileHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxFileHelper.m; sourceTree = "<group>"; };
+		63AAEDEA23277F9B004CAC1F /* VapxProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapxProcessor.h; sourceTree = "<group>"; };
+		63AAEDEB23277F9B004CAC1F /* VapxProcessor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxProcessor.m; sourceTree = "<group>"; };
+		63AAEDEE232781C3004CAC1F /* VapMergeInfoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapMergeInfoView.h; sourceTree = "<group>"; };
+		63AAEDEF232781C3004CAC1F /* VapMergeInfoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapMergeInfoView.m; sourceTree = "<group>"; };
+		63D337E0231F56AB0012D60C /* VapxTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VapxTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63D337E3231F56AB0012D60C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		63D337E4231F56AB0012D60C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		63D337E6231F56AB0012D60C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		63D337E7231F56AB0012D60C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		63D337E9231F56AC0012D60C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		63D337EC231F56AC0012D60C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		63D337EE231F56AC0012D60C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63D337EF231F56AC0012D60C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		63D337F1231F56AC0012D60C /* VapxTool.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VapxTool.entitlements; sourceTree = "<group>"; };
+		63D337F6231F56AC0012D60C /* VapxToolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VapxToolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63D337FA231F56AC0012D60C /* VapxToolTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxToolTests.m; sourceTree = "<group>"; };
+		63D337FC231F56AC0012D60C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63D33801231F56AC0012D60C /* VapxToolUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VapxToolUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63D33805231F56AC0012D60C /* VapxToolUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapxToolUITests.m; sourceTree = "<group>"; };
+		63D33807231F56AC0012D60C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C10C67C024FF901D00E9BBD4 /* Draft_License_VAP_HK20200804.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Draft_License_VAP_HK20200804.txt; sourceTree = "<group>"; };
+		C17B268B2500BF49008ED012 /* VapProgressHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VapProgressHUD.h; sourceTree = "<group>"; };
+		C17B268C2500BF49008ED012 /* VapProgressHUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VapProgressHUD.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		63D337DD231F56AB0012D60C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63D337F3231F56AC0012D60C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63D337FE231F56AC0012D60C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6347C975232A64F300EBBB15 /* controllers */ = {
+			isa = PBXGroup;
+			children = (
+				63550C9F2320BA6E00D4280A /* VapxAlphaExtractor.h */,
+				63550CA02320BA6E00D4280A /* VapxAlphaExtractor.m */,
+				63550C902320A98A00D4280A /* VapxMP4Decoder.h */,
+				63550C912320A98A00D4280A /* VapxMP4Decoder.m */,
+				63550D8323213BE400D4280A /* VapxMp4Editor.h */,
+				63550D8423213BE400D4280A /* VapxMp4Editor.m */,
+				63550D882322025900D4280A /* VapxMaskInfoGenerator.h */,
+				63550D892322025900D4280A /* VapxMaskInfoGenerator.m */,
+				63AAEDE22325E971004CAC1F /* VapxLayoutManager.h */,
+				63AAEDE32325E971004CAC1F /* VapxLayoutManager.m */,
+				63AAEDE723274F61004CAC1F /* VapxFileHelper.h */,
+				63AAEDE823274F61004CAC1F /* VapxFileHelper.m */,
+				63AAEDEA23277F9B004CAC1F /* VapxProcessor.h */,
+				63AAEDEB23277F9B004CAC1F /* VapxProcessor.m */,
+			);
+			path = controllers;
+			sourceTree = "<group>";
+		};
+		63550C87231FFA4400D4280A /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				63550CA223213AE800D4280A /* Bento4-SDK-1-5-1-628 */,
+				63550C8E2320017900D4280A /* ffmpeg */,
+			);
+			path = frameworks;
+			sourceTree = "<group>";
+		};
+		63550C9D2320B90C00D4280A /* models */ = {
+			isa = PBXGroup;
+			children = (
+				63550C942320B70600D4280A /* QGVAPConfigModel.h */,
+				63550C952320B70600D4280A /* QGVAPConfigModel.m */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		63550C9E2320B92300D4280A /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				63550C982320B88E00D4280A /* NSArray+HWDUtil.h */,
+				63550C972320B88E00D4280A /* NSArray+HWDUtil.m */,
+				63550C9A2320B88E00D4280A /* NSDictionary+HWDUtil.h */,
+				63550C992320B88E00D4280A /* NSDictionary+HWDUtil.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		63550CA223213AE800D4280A /* Bento4-SDK-1-5-1-628 */ = {
+			isa = PBXGroup;
+			children = (
+				63550CA323213AE800D4280A /* bin */,
+			);
+			path = "Bento4-SDK-1-5-1-628";
+			sourceTree = "<group>";
+		};
+		63550CA323213AE800D4280A /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				63550CA423213AE800D4280A /* mp4extract */,
+				63550CA523213AE800D4280A /* mp4dash */,
+				63550CA623213AE800D4280A /* mp42hevc */,
+				63550CA723213AE800D4280A /* mp4hls */,
+				63550CA823213AE800D4280A /* mp42ts */,
+				63550CA923213AE800D4280A /* mp4encrypt */,
+				63550CAA23213AE800D4280A /* mp4dashclone */,
+				63550CAB23213AE800D4280A /* mp42hls */,
+				63550CAC23213AE800D4280A /* mp42avc */,
+				63550CAD23213AE800D4280A /* mp4decrypt */,
+				63550CAE23213AE800D4280A /* mp4edit */,
+				63550CAF23213AE800D4280A /* mp4info */,
+				63550CB023213AE800D4280A /* aac2mp4 */,
+				63550CB123213AE800D4280A /* mp4dcfpackager */,
+				63550CB223213AE800D4280A /* mp4fragment */,
+				63550CB323213AE800D4280A /* mp4tag */,
+				63550CB423213AE800D4280A /* mp4iframeindex */,
+				63550CB523213AE800D4280A /* mp4split */,
+				63550CB623213AE800D4280A /* mp4mux */,
+				63550CB723213AE800D4280A /* mp42aac */,
+				63550CB823213AE800D4280A /* mp4dump */,
+				63550CB923213AE800D4280A /* mp4rtphintinfo */,
+				63550CBB23213AE800D4280A /* mp4compact */,
+			);
+			path = bin;
+			sourceTree = "<group>";
+		};
+		63AAEDED232781A3004CAC1F /* views */ = {
+			isa = PBXGroup;
+			children = (
+				63AAEDEE232781C3004CAC1F /* VapMergeInfoView.h */,
+				63AAEDEF232781C3004CAC1F /* VapMergeInfoView.m */,
+				C17B268B2500BF49008ED012 /* VapProgressHUD.h */,
+				C17B268C2500BF49008ED012 /* VapProgressHUD.m */,
+			);
+			path = views;
+			sourceTree = "<group>";
+		};
+		63D337D7231F56AB0012D60C = {
+			isa = PBXGroup;
+			children = (
+				63550C87231FFA4400D4280A /* frameworks */,
+				63D337E2231F56AB0012D60C /* VapxTool */,
+				63D337F9231F56AC0012D60C /* VapxToolTests */,
+				63D33804231F56AC0012D60C /* VapxToolUITests */,
+				63D337E1231F56AB0012D60C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		63D337E1231F56AB0012D60C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				63D337E0231F56AB0012D60C /* VapxTool.app */,
+				63D337F6231F56AC0012D60C /* VapxToolTests.xctest */,
+				63D33801231F56AC0012D60C /* VapxToolUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		63D337E2231F56AB0012D60C /* VapxTool */ = {
+			isa = PBXGroup;
+			children = (
+				6347C975232A64F300EBBB15 /* controllers */,
+				63AAEDED232781A3004CAC1F /* views */,
+				63550C9E2320B92300D4280A /* Utils */,
+				63550C9D2320B90C00D4280A /* models */,
+				63D337E3231F56AB0012D60C /* AppDelegate.h */,
+				63D337E4231F56AB0012D60C /* AppDelegate.m */,
+				63D337E6231F56AB0012D60C /* ViewController.h */,
+				63D337E7231F56AB0012D60C /* ViewController.m */,
+				63D337E9231F56AC0012D60C /* Assets.xcassets */,
+				63D337EB231F56AC0012D60C /* Main.storyboard */,
+				63D337EE231F56AC0012D60C /* Info.plist */,
+				63D337EF231F56AC0012D60C /* main.m */,
+				63D337F1231F56AC0012D60C /* VapxTool.entitlements */,
+				C10C67C024FF901D00E9BBD4 /* Draft_License_VAP_HK20200804.txt */,
+			);
+			path = VapxTool;
+			sourceTree = "<group>";
+		};
+		63D337F9231F56AC0012D60C /* VapxToolTests */ = {
+			isa = PBXGroup;
+			children = (
+				63D337FA231F56AC0012D60C /* VapxToolTests.m */,
+				63D337FC231F56AC0012D60C /* Info.plist */,
+			);
+			path = VapxToolTests;
+			sourceTree = "<group>";
+		};
+		63D33804231F56AC0012D60C /* VapxToolUITests */ = {
+			isa = PBXGroup;
+			children = (
+				63D33805231F56AC0012D60C /* VapxToolUITests.m */,
+				63D33807231F56AC0012D60C /* Info.plist */,
+			);
+			path = VapxToolUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		63D337DF231F56AB0012D60C /* VapxTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63D3380A231F56AC0012D60C /* Build configuration list for PBXNativeTarget "VapxTool" */;
+			buildPhases = (
+				63D337DC231F56AB0012D60C /* Sources */,
+				63D337DD231F56AB0012D60C /* Frameworks */,
+				63D337DE231F56AB0012D60C /* Resources */,
+				63550D8723213FCB00D4280A /* Embed Libraries */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VapxTool;
+			productName = VapxTool;
+			productReference = 63D337E0231F56AB0012D60C /* VapxTool.app */;
+			productType = "com.apple.product-type.application";
+		};
+		63D337F5231F56AC0012D60C /* VapxToolTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63D3380D231F56AC0012D60C /* Build configuration list for PBXNativeTarget "VapxToolTests" */;
+			buildPhases = (
+				63D337F2231F56AC0012D60C /* Sources */,
+				63D337F3231F56AC0012D60C /* Frameworks */,
+				63D337F4231F56AC0012D60C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				63D337F8231F56AC0012D60C /* PBXTargetDependency */,
+			);
+			name = VapxToolTests;
+			productName = VapxToolTests;
+			productReference = 63D337F6231F56AC0012D60C /* VapxToolTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		63D33800231F56AC0012D60C /* VapxToolUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63D33810231F56AC0012D60C /* Build configuration list for PBXNativeTarget "VapxToolUITests" */;
+			buildPhases = (
+				63D337FD231F56AC0012D60C /* Sources */,
+				63D337FE231F56AC0012D60C /* Frameworks */,
+				63D337FF231F56AC0012D60C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				63D33803231F56AC0012D60C /* PBXTargetDependency */,
+			);
+			name = VapxToolUITests;
+			productName = VapxToolUITests;
+			productReference = 63D33801231F56AC0012D60C /* VapxToolUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		63D337D8231F56AB0012D60C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1030;
+				ORGANIZATIONNAME = "Chance Guo";
+				TargetAttributes = {
+					63D337DF231F56AB0012D60C = {
+						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
+					};
+					63D337F5231F56AC0012D60C = {
+						CreatedOnToolsVersion = 10.3;
+						TestTargetID = 63D337DF231F56AB0012D60C;
+					};
+					63D33800231F56AC0012D60C = {
+						CreatedOnToolsVersion = 10.3;
+						TestTargetID = 63D337DF231F56AB0012D60C;
+					};
+				};
+			};
+			buildConfigurationList = 63D337DB231F56AB0012D60C /* Build configuration list for PBXProject "VapxTool" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 63D337D7231F56AB0012D60C;
+			productRefGroup = 63D337E1231F56AB0012D60C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				63D337DF231F56AB0012D60C /* VapxTool */,
+				63D337F5231F56AC0012D60C /* VapxToolTests */,
+				63D33800231F56AC0012D60C /* VapxToolUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		63D337DE231F56AB0012D60C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63550D6223213AE800D4280A /* mp42avc in Resources */,
+				63550D6F23213AE800D4280A /* mp4rtphintinfo in Resources */,
+				63550D5E23213AE800D4280A /* mp42ts in Resources */,
+				63D337EA231F56AC0012D60C /* Assets.xcassets in Resources */,
+				63550D6A23213AE800D4280A /* mp4iframeindex in Resources */,
+				63550D6523213AE800D4280A /* mp4info in Resources */,
+				63550D5B23213AE800D4280A /* mp4dash in Resources */,
+				63550D6E23213AE800D4280A /* mp4dump in Resources */,
+				C10C67C124FF901E00E9BBD4 /* Draft_License_VAP_HK20200804.txt in Resources */,
+				63550D5F23213AE800D4280A /* mp4encrypt in Resources */,
+				63550D6023213AE800D4280A /* mp4dashclone in Resources */,
+				63550D6923213AE800D4280A /* mp4tag in Resources */,
+				63550D6123213AE800D4280A /* mp42hls in Resources */,
+				63550D6D23213AE800D4280A /* mp42aac in Resources */,
+				63550C8F2320017900D4280A /* ffmpeg in Resources */,
+				63550D6423213AE800D4280A /* mp4edit in Resources */,
+				63550D6B23213AE800D4280A /* mp4split in Resources */,
+				63550D5A23213AE800D4280A /* mp4extract in Resources */,
+				63D337ED231F56AC0012D60C /* Main.storyboard in Resources */,
+				63550D6723213AE800D4280A /* mp4dcfpackager in Resources */,
+				63550D5C23213AE800D4280A /* mp42hevc in Resources */,
+				63550D6323213AE800D4280A /* mp4decrypt in Resources */,
+				63550D5D23213AE800D4280A /* mp4hls in Resources */,
+				63550D7123213AE800D4280A /* mp4compact in Resources */,
+				63550D6C23213AE800D4280A /* mp4mux in Resources */,
+				63550D6823213AE800D4280A /* mp4fragment in Resources */,
+				63550D6623213AE800D4280A /* aac2mp4 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63D337F4231F56AC0012D60C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63D337FF231F56AC0012D60C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		63D337DC231F56AB0012D60C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C17B268D2500BF49008ED012 /* VapProgressHUD.m in Sources */,
+				63550CA12320BA6E00D4280A /* VapxAlphaExtractor.m in Sources */,
+				63D337E8231F56AB0012D60C /* ViewController.m in Sources */,
+				63550C922320A98A00D4280A /* VapxMP4Decoder.m in Sources */,
+				63550C962320B70700D4280A /* QGVAPConfigModel.m in Sources */,
+				63AAEDEC23277F9B004CAC1F /* VapxProcessor.m in Sources */,
+				63D337F0231F56AC0012D60C /* main.m in Sources */,
+				63550D8A2322025900D4280A /* VapxMaskInfoGenerator.m in Sources */,
+				63AAEDE923274F61004CAC1F /* VapxFileHelper.m in Sources */,
+				63550D8523213BE400D4280A /* VapxMp4Editor.m in Sources */,
+				63AAEDF0232781C3004CAC1F /* VapMergeInfoView.m in Sources */,
+				63550C9C2320B88E00D4280A /* NSDictionary+HWDUtil.m in Sources */,
+				63550C9B2320B88E00D4280A /* NSArray+HWDUtil.m in Sources */,
+				63AAEDE42325E971004CAC1F /* VapxLayoutManager.m in Sources */,
+				63D337E5231F56AB0012D60C /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63D337F2231F56AC0012D60C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63D337FB231F56AC0012D60C /* VapxToolTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63D337FD231F56AC0012D60C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63D33806231F56AC0012D60C /* VapxToolUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		63D337F8231F56AC0012D60C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 63D337DF231F56AB0012D60C /* VapxTool */;
+			targetProxy = 63D337F7231F56AC0012D60C /* PBXContainerItemProxy */;
+		};
+		63D33803231F56AC0012D60C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 63D337DF231F56AB0012D60C /* VapxTool */;
+			targetProxy = 63D33802231F56AC0012D60C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		63D337EB231F56AC0012D60C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				63D337EC231F56AC0012D60C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		63D33808231F56AC0012D60C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		63D33809231F56AC0012D60C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		63D3380B231F56AC0012D60C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = VapxTool/VapxTool.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6W55574XBS;
+				INFOPLIST_FILE = VapxTool/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/frameworks/Bento4-SDK-1-5-1-628/bin",
+					"$(PROJECT_DIR)/frameworks/Bento4-SDK-1-5-1-628/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tencent.VapxTool;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		63D3380C231F56AC0012D60C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = VapxTool/VapxTool.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6W55574XBS;
+				INFOPLIST_FILE = VapxTool/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/frameworks/Bento4-SDK-1-5-1-628/bin",
+					"$(PROJECT_DIR)/frameworks/Bento4-SDK-1-5-1-628/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tencent.VapxTool;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		63D3380E231F56AC0012D60C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6W55574XBS;
+				INFOPLIST_FILE = VapxToolTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tencent.VapxToolTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VapxTool.app/Contents/MacOS/VapxTool";
+			};
+			name = Debug;
+		};
+		63D3380F231F56AC0012D60C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6W55574XBS;
+				INFOPLIST_FILE = VapxToolTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tencent.VapxToolTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VapxTool.app/Contents/MacOS/VapxTool";
+			};
+			name = Release;
+		};
+		63D33811231F56AC0012D60C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6W55574XBS;
+				INFOPLIST_FILE = VapxToolUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tencent.VapxToolUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = VapxTool;
+			};
+			name = Debug;
+		};
+		63D33812231F56AC0012D60C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 6W55574XBS;
+				INFOPLIST_FILE = VapxToolUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = tencent.VapxToolUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = VapxTool;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		63D337DB231F56AB0012D60C /* Build configuration list for PBXProject "VapxTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63D33808231F56AC0012D60C /* Debug */,
+				63D33809231F56AC0012D60C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63D3380A231F56AC0012D60C /* Build configuration list for PBXNativeTarget "VapxTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63D3380B231F56AC0012D60C /* Debug */,
+				63D3380C231F56AC0012D60C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63D3380D231F56AC0012D60C /* Build configuration list for PBXNativeTarget "VapxToolTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63D3380E231F56AC0012D60C /* Debug */,
+				63D3380F231F56AC0012D60C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63D33810231F56AC0012D60C /* Build configuration list for PBXNativeTarget "VapxToolUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63D33811231F56AC0012D60C /* Debug */,
+				63D33812231F56AC0012D60C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 63D337D8231F56AB0012D60C /* Project object */;
+}

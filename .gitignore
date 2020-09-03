@@ -1,0 +1,16 @@
+# dependencies
+node_modules
+# logs
+npm-debug.log
+
+# Nuxt generate
+.vscode
+
+.idea
+
+# sw.*
+
+.cache
+
+#mac cache 
+.DS_Store
