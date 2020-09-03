@@ -2,13 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-// 内部maven上传
-apply from: file("../maven.gradle")
-
 android {
     compileSdkVersion 28
-
-
 
     defaultConfig {
         minSdkVersion 16
@@ -31,6 +26,3 @@ dependencies {
         exclude module: 'annotations'
     }
 }
-
-// jcenter 上传(这个要在底部)
-// apply from: file("publish.gradle")
