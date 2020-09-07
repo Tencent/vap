@@ -1,0 +1,40 @@
+{
+  "name": "video-animation-player",
+  "version": "0.1.0",
+  "description": "webgl动画特效组件",
+  "main": "dist/vap.js",
+  "scripts": {
+    "build": "npm run dist && rollup --config rollup.config.dist.js",
+    "dist": "rollup --config rollup.config.js"
+  },
+  "keywords": [
+    "webgl"
+  ],
+  "author": "hujinliang",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-async-to-promises": "^1.0.5",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "es6-promise": "^4.2.4",
+    "postcss-url": "^7.3.2",
+    "promise-polyfill": "^8.1.0",
+    "rollup": "0.58.2",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^9.1.5",
+    "rollup-plugin-ejs": "^1.1.1",
+    "rollup-plugin-image": "^1.0.2",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-postcss": "^1.6.1",
+    "rollup-plugin-uglify": "^3.0.0",
+    "rollup-plugin-url": "^1.4.0",
+    "text-encoding": "^0.7.0",
+    "whatwg-fetch": "^3.0.0"
+  }
+}
