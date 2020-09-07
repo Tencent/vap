@@ -7,6 +7,10 @@ VAP（Video Animation Player）是企鹅电竞开发，用于播放酷炫动画�
 * 相比Webp, Apng动图方案，具有高压缩率(素材更小)、硬件解码(解码更快)的优点
 * 相比Lottie，能实现更复杂的动画效果(比如粒子特效)
 
+
+项目详细介绍请参考 [Introduction.md](./Introduction.md)
+
+
 特效展示：
 
 ![](./images/anim1.gif)
@@ -15,8 +19,6 @@ VAP（Video Animation Player）是企鹅电竞开发，用于播放酷炫动画�
 
 ![](./images/anim2.gif)
 
-
-项目详细介绍请参考 [Introduction.md](./Introduction.md)
 
 
 ## 性能简述
