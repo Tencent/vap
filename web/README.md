@@ -7,14 +7,14 @@ VAP是企鹅电竞官网实现融合礼物特效的组件，将图片/文字与�
 
 ### 一、使用 🔧
 
-1、引入
+1、安装
 ``` bash
-# 引入web/vap下的组件
-import Vap from 'vap'
+npm i video-animation-player
 ```
 
 2、创建实例
 ``` bash
+import Vap from 'video-animation-player'
 # init
 let vap = new Vap(options)
 ```
