@@ -96,7 +96,7 @@ interface OnResourceClickListener {
 
 ### 引入方式
 
-maven方式引入(jcenter目前还在上传审核中，可以先用aar方式引入)
+maven方式引入
 
 ```gradle
 repositories {
