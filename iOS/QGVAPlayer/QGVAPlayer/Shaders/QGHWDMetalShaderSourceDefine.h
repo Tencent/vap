@@ -192,7 +192,7 @@ SHADER_STRING(
                       }
                   }
                   
-                  bool needOrigin = step(alphaResult, 0.01) + step(originColor.a, 0.01);
+                  int needOrigin = step(alphaResult, 0.01) + step(originColor.a, 0.01);
                   return float4(originColor.rgb, needOrigin * originColor.a + (1 - needOrigin) * (1 - alphaResult));
               }
               
