@@ -1,9 +1,10 @@
-# Web VAP 
+# VAP 
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 
 ## 简介
-VAP是企鹅电竞官网实现融合礼物特效的组件，将图片/文字与原始mp4视频融合在一起，支持透明度
-
+VAP是企鹅电竞实现融合礼物特效的组件，将图片/文字与原始mp4视频融合在一起，支持透明度，项目详细介绍请参考 [VAP](https://github.com/Tencent/vap)
 
 ### 一、使用 🔧
 
