@@ -57,20 +57,26 @@ export default class FrameParser {
         const src = (this.srcData = {})
         return Promise.all(
             (dataJson.src || []).map(async item => {
-                if (item.srcType === 'txt') {
-                    item.textStr = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
-                        return this.headData[$1]
-                    })
-                    item.img = this.makeTextImg(item)
-                } else if (item.srcType === 'img') {
-                    item.imgUrl = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
-                        return this.headData[$1]
-                    })
-                    try {
-                        item.img = await this.loadImg(item.imgUrl + '?t=' + Date.now())
-                    } catch (e) {}
+                if (this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+                    if (item.srcType === 'txt') {
+                        item.textStr = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
+                            return this.headData[$1]
+                        })
+                        item.img = this.makeTextImg(item)
+                    } else if (item.srcType === 'img') {
+                        item.imgUrl = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
+                            return this.headData[$1]
+                        })
+                        try {
+                            item.img = await this.loadImg(item.imgUrl + '?t=' + Date.now())
+                        } catch (e) {}
+                    }
+                } else {
+                    console.warn(`vap: 融合信息没有传入：${item.srcTag}`)
                 }
-                src[item.srcId] = item
+                if (item.img) {
+                    src[item.srcId] = item
+                }
             })
         )
     }

@@ -213,6 +213,11 @@ export default class WebglRenderVap extends VapVideo {
             gl.uniform1i(sampler, i)
             this.vapFrameParser.textureMap[resource.srcId] = i++
         }
+        const dumpTexture = gl.createTexture()
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, dumpTexture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
         this.videoTexture = glUtil.createTexture(gl, i)
         const sampler = gl.getUniformLocation(this.program, `u_image_video`)
         gl.uniform1i(sampler, i)
