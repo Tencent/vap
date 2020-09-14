@@ -57,7 +57,10 @@ export default class FrameParser {
         const src = (this.srcData = {})
         return Promise.all(
             (dataJson.src || []).map(async item => {
-                if (this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+                item.img = null
+                if (!this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+                    console.warn(`vap: 融合信息没有传入：${item.srcTag}`)
+                } else {
                     if (item.srcType === 'txt') {
                         item.textStr = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
                             return this.headData[$1]
@@ -71,11 +74,9 @@ export default class FrameParser {
                             item.img = await this.loadImg(item.imgUrl + '?t=' + Date.now())
                         } catch (e) {}
                     }
-                } else {
-                    console.warn(`vap: 融合信息没有传入：${item.srcTag}`)
-                }
-                if (item.img) {
-                    src[item.srcId] = item
+                    if (item.img) {
+                        src[item.srcId] = item
+                    }
                 }
             })
         )

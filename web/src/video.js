@@ -52,6 +52,8 @@ export default class VapVideo {
         const video = (this.video = document.createElement('video'))
         video.crossOrigin = 'anonymous'
         video.autoplay = false
+        video.preload = 'auto'
+        video.autoload = true
         // video.muted = true
         // video.volume = 0
         video.style.display = 'none'

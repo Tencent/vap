@@ -295,7 +295,12 @@ export default class WebglRenderVap extends VapVideo {
     }
 
     destroy() {
-        const { canvas } = this.instance
+        const { canvas, gl } = this.instance
+        if (this.textures && this.textures.length) {
+            for (let i = 0; i < this.textures.length; i++) {
+                gl.deleteTexture(this.textures[i])
+            }
+        }
         if (canvas) {
             canvas.parentNode && canvas.parentNode.removeChild(canvas)
         }

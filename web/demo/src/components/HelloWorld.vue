@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Vap from '../../../src/index'
+import Vap from '../../../dist/vap.js'
 import config from './demo.json'
 export default {
   name: 'vap',

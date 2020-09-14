@@ -189,28 +189,37 @@
               var src = this.srcData = {};
               return Promise.all((dataJson.src || []).map(function (item) {
                   return Promise.resolve().then(function () {
-                      if (item.srcType === 'txt') {
-                          item.textStr = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
-                              return _this.headData[$1];
-                          });
-                          item.img = _this.makeTextImg(item);
+                      item.img = null;
+                      if (!_this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+                          console.warn('vap: \u878D\u5408\u4FE1\u606F\u6CA1\u6709\u4F20\u5165\uFF1A' + item.srcTag);
                       } else {
-                          if (item.srcType === 'img') {
-                              item.imgUrl = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
-                                  return _this.headData[$1];
-                              });
-                              return Promise.resolve().then(function () {
-                                  return _this.loadImg(item.imgUrl + '?t=' + Date.now());
-                              }).then(function (_resp) {
-                                  item.img = _resp;
-                              }).catch(function (e) {
-                                  return Promise.resolve();
-                              });
-                          }
+                          return Promise.resolve().then(function () {
+                              if (item.srcType === 'txt') {
+                                  item.textStr = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
+                                      return _this.headData[$1];
+                                  });
+                                  item.img = _this.makeTextImg(item);
+                              } else {
+                                  if (item.srcType === 'img') {
+                                      item.imgUrl = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
+                                          return _this.headData[$1];
+                                      });
+                                      return Promise.resolve().then(function () {
+                                          return _this.loadImg(item.imgUrl + '?t=' + Date.now());
+                                      }).then(function (_resp) {
+                                          item.img = _resp;
+                                      }).catch(function (e) {
+                                          return Promise.resolve();
+                                      });
+                                  }
+                              }
+                          }).then(function () {
+                              if (item.img) {
+                                  src[item.srcId] = item;
+                              }
+                          });
                       }
-                  }).then(function () {
-                      src[item.srcId] = item;
-                  });
+                  }).then(function () {});
               }));
           }
           /**
@@ -365,6 +374,8 @@
               var video = this.video = document.createElement('video');
               video.crossOrigin = 'anonymous';
               video.autoplay = false;
+              video.preload = 'auto';
+              video.autoload = true;
               // video.muted = true
               // video.volume = 0
               video.style.display = 'none';
@@ -660,6 +671,11 @@
                   gl.uniform1i(_sampler, i);
                   this.vapFrameParser.textureMap[resource.srcId] = i++;
               }
+              var dumpTexture = gl.createTexture();
+              gl.activeTexture(gl.TEXTURE0);
+              gl.bindTexture(gl.TEXTURE_2D, dumpTexture);
+              gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
               this.videoTexture = createTexture(gl, i);
               var sampler = gl.getUniformLocation(this.program, 'u_image_video');
               gl.uniform1i(sampler, i);
@@ -767,8 +783,15 @@
       }, {
           key: 'destroy',
           value: function destroy() {
-              var canvas = this.instance.canvas;
+              var _instance2 = this.instance,
+                  canvas = _instance2.canvas,
+                  gl = _instance2.gl;
 
+              if (this.textures && this.textures.length) {
+                  for (var i = 0; i < this.textures.length; i++) {
+                      gl.deleteTexture(this.textures[i]);
+                  }
+              }
               if (canvas) {
                   canvas.parentNode && canvas.parentNode.removeChild(canvas);
               }
