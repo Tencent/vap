@@ -31,6 +31,10 @@ export default class VapVideo {
         height: 375,
         // 容器
         container: null,
+        // 是否预加载视频资源
+        precache: false,
+        // 是否静音播放
+        mute: false,
         config: ''
       },
       options
