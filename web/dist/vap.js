@@ -333,165 +333,215 @@
    * limitations under the License.
    */
   var VapVideo = function () {
-      function VapVideo(options) {
-          classCallCheck(this, VapVideo);
+    function VapVideo(options) {
+      classCallCheck(this, VapVideo);
 
-          if (!options.container || !options.src) {
-              return console.warn('[Alpha video]: options container and src cannot be empty!');
-          }
-          this.options = Object.assign({
-              // 视频url
-              src: '',
-              // 循环播放
-              loop: false,
-              fps: 20,
-              // 视频宽度
-              width: 375,
-              // 视频高度
-              height: 375,
-              // 容器
-              container: null,
-              config: ''
-          }, options);
-          this.fps = 20;
-          this.requestAnim = this.requestAnimFunc(this.fps);
-          this.container = this.options.container;
-          if (!this.options.src || !this.options.config || !this.options.container) {
-              console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)');
-          } else {
-              // 创建video
-              this.initVideo();
-          }
+      if (!options.container || !options.src) {
+        return console.warn('[Alpha video]: options container and src cannot be empty!');
       }
+      this.options = Object.assign({
+        // 视频url
+        src: '',
+        // 循环播放
+        loop: false,
+        fps: 20,
+        // 视频宽度
+        width: 375,
+        // 视频高度
+        height: 375,
+        // 容器
+        container: null,
+        // 是否预加载视频资源
+        precache: false,
+        // 是否静音播放
+        mute: false,
+        config: ''
+      }, options);
+      this.fps = 20;
+      this.requestAnim = this.requestAnimFunc(this.fps);
+      this.container = this.options.container;
+      if (!this.options.src || !this.options.config || !this.options.container) {
+        console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)');
+      } else {
+        // 创建video
+        this.initVideo();
+      }
+    }
 
-      createClass(VapVideo, [{
-          key: 'initVideo',
-          value: function initVideo() {
-              var _this = this;
+    createClass(VapVideo, [{
+      key: 'precacheSource',
+      value: function precacheSource(source) {
+        var URL = window.webkitURL || window.URL;
+        return new Promise(function (resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", source, true);
+          xhr.responseType = "blob";
+          xhr.onload = function () {
+            if (xhr.status === 200 || xhr.status === 304) {
+              var res = xhr.response;
+              if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+                var fileReader = new FileReader();
+                fileReader.onloadend = function () {
+                  var raw = atob(fileReader.result.slice(fileReader.result.indexOf(",") + 1));
+                  var buf = Array(raw.length);
+                  for (var d = 0; d < raw.length; d++) {
+                    buf[d] = raw.charCodeAt(d);
+                  }
+                  var arr = new Uint8Array(buf);
+                  var blob = new Blob([arr], { type: "video/mp4" });
+                  resolve(URL.createObjectURL(blob));
+                };
+                fileReader.readAsDataURL(xhr.response);
+              } else {
+                resolve(URL.createObjectURL(res));
+              }
+            } else {
+              reject(new Error("http response invalid" + xhr.status));
+            }
+          };
+          xhr.send();
+        });
+      }
+    }, {
+      key: 'initVideo',
+      value: function initVideo() {
+        var _this = this;
 
-              var options = this.options;
-              // 创建video
-              var video = this.video = document.createElement('video');
-              video.crossOrigin = 'anonymous';
-              video.autoplay = false;
-              video.preload = 'auto';
-              video.autoload = true;
-              // video.muted = true
-              // video.volume = 0
-              video.style.display = 'none';
-              video.src = options.src;
-              video.loop = !!options.loop;
-              // 这里要插在body上，避免container移动带来无法播放的问题
-              document.body.appendChild(this.video);
-              // 绑定事件
-              this.events = {};['playing', 'pause', 'ended', 'error'].forEach(function (item) {
-                  _this.on(item, _this['on' + item].bind(_this));
-              });
-              video.load();
-          }
-      }, {
-          key: 'drawFrame',
-          value: function drawFrame() {
-              this._drawFrame = this._drawFrame || this.drawFrame.bind(this);
-              this.animId = this.requestAnim(this._drawFrame);
-          }
-      }, {
-          key: 'play',
-          value: function play() {
-              var _this2 = this;
+        var options = this.options;
+        // 创建video
+        var video = this.video = document.createElement('video');
+        video.crossOrigin = 'anonymous';
+        video.autoplay = false;
+        video.preload = 'auto';
+        video.autoload = true;
+        if (options.mute) {
+          video.muted = true;
+          video.volume = 0;
+        }
+        video.style.display = 'none';
+        video.loop = !!options.loop;
+        if (options.precache) {
+          this.precacheSource(options.src).then(function (blob) {
+            console.log("sample precached.");
+            video.src = blob;
+            document.body.appendChild(video);
+          }).catch(function (e) {
+            console.error(e);
+          });
+        } else {
+          video.src = options.src;
+          // 这里要插在body上，避免container移动带来无法播放的问题
+          document.body.appendChild(this.video);
+          video.load();
+        }
+        // 绑定事件
+        this.events = {};['playing', 'pause', 'ended', 'error'].forEach(function (item) {
+          _this.on(item, _this['on' + item].bind(_this));
+        });
+      }
+    }, {
+      key: 'drawFrame',
+      value: function drawFrame() {
+        this._drawFrame = this._drawFrame || this.drawFrame.bind(this);
+        this.animId = this.requestAnim(this._drawFrame);
+      }
+    }, {
+      key: 'play',
+      value: function play() {
+        var _this2 = this;
 
-              var prom = this.video && this.video.play();
+        var prom = this.video && this.video.play();
 
-              if (prom && prom.then) {
-                  prom.catch(function (e) {
-                      if (!_this2.video) {
-                          return;
-                      }
-                      _this2.video.muted = true;
-                      _this2.video.volume = 0;
-                      _this2.video.play().catch(function (e) {
+        if (prom && prom.then) {
+          prom.catch(function (e) {
+            if (!_this2.video) {
+              return;
+            }
+            _this2.video.muted = true;
+            _this2.video.volume = 0;
+            _this2.video.play().catch(function (e) {
   (_this2.events.error || []).forEach(function (item) {
-                              item(e);
-                          });
-                      });
-                  });
+                item(e);
+              });
+            });
+          });
+        }
+      }
+    }, {
+      key: 'requestAnimFunc',
+      value: function requestAnimFunc() {
+        var me = this;
+        if (window.requestAnimationFrame) {
+          var index = -1;
+          return function (cb) {
+            index++;
+            return requestAnimationFrame(function () {
+              if (!(index % (60 / me.fps))) {
+                return cb();
               }
-          }
-      }, {
-          key: 'requestAnimFunc',
-          value: function requestAnimFunc() {
-              var me = this;
-              if (window.requestAnimationFrame) {
-                  var index = -1;
-                  return function (cb) {
-                      index++;
-                      return requestAnimationFrame(function () {
-                          if (!(index % (60 / me.fps))) {
-                              return cb();
-                          }
-                          me.animId = me.requestAnim(cb);
-                      });
-                  };
-              }
-              return function (cb) {
-                  return setTimeout(cb, 1000 / me.fps);
-              };
-          }
-      }, {
-          key: 'cancelRequestAnimation',
-          value: function cancelRequestAnimation() {
-              if (window.cancelAnimationFrame) {
-                  cancelAnimationFrame(this.animId);
-              }
-              clearTimeout(this.animId);
-          }
-      }, {
-          key: 'destroy',
-          value: function destroy() {
-              if (this.video) {
-                  this.video.parentNode && this.video.parentNode.removeChild(this.video);
-                  this.video = null;
-              }
-              this.cancelRequestAnimation(this.animId);
-          }
-      }, {
-          key: 'clear',
-          value: function clear() {
-              this.destroy();
-          }
-      }, {
-          key: 'on',
-          value: function on(event, callback) {
-              var cbs = this.events[event] || [];
-              cbs.push(callback);
-              this.events[event] = cbs;
-              this.video.addEventListener(event, callback);
-              return this;
-          }
-      }, {
-          key: 'onplaying',
-          value: function onplaying() {
-              if (!this.firstPlaying) {
-                  this.firstPlaying = true;
-                  this.drawFrame();
-              }
-          }
-      }, {
-          key: 'onpause',
-          value: function onpause() {}
-      }, {
-          key: 'onended',
-          value: function onended() {
-              this.destroy();
-          }
-      }, {
-          key: 'onerror',
-          value: function onerror(err) {
-              console.error('[Alpha video]: play error: ', err);
-              this.destroy();
-          }
-      }]);
-      return VapVideo;
+              me.animId = me.requestAnim(cb);
+            });
+          };
+        }
+        return function (cb) {
+          return setTimeout(cb, 1000 / me.fps);
+        };
+      }
+    }, {
+      key: 'cancelRequestAnimation',
+      value: function cancelRequestAnimation() {
+        if (window.cancelAnimationFrame) {
+          cancelAnimationFrame(this.animId);
+        }
+        clearTimeout(this.animId);
+      }
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        if (this.video) {
+          this.video.parentNode && this.video.parentNode.removeChild(this.video);
+          this.video = null;
+        }
+        this.cancelRequestAnimation(this.animId);
+      }
+    }, {
+      key: 'clear',
+      value: function clear() {
+        this.destroy();
+      }
+    }, {
+      key: 'on',
+      value: function on(event, callback) {
+        var cbs = this.events[event] || [];
+        cbs.push(callback);
+        this.events[event] = cbs;
+        this.video.addEventListener(event, callback);
+        return this;
+      }
+    }, {
+      key: 'onplaying',
+      value: function onplaying() {
+        if (!this.firstPlaying) {
+          this.firstPlaying = true;
+          this.drawFrame();
+        }
+      }
+    }, {
+      key: 'onpause',
+      value: function onpause() {}
+    }, {
+      key: 'onended',
+      value: function onended() {
+        this.destroy();
+      }
+    }, {
+      key: 'onerror',
+      value: function onerror(err) {
+        console.error('[Alpha video]: play error: ', err);
+        this.destroy();
+      }
+    }]);
+    return VapVideo;
   }();
 
   /*
