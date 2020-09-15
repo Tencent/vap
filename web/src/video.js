@@ -14,145 +14,195 @@
  * limitations under the License.
  */
 export default class VapVideo {
-    constructor(options) {
-        if (!options.container || !options.src) {
-            return console.warn('[Alpha video]: options container and src cannot be empty!')
-        }
-        this.options = Object.assign(
-            {
-                // 视频url
-                src: '',
-                // 循环播放
-                loop: false,
-                fps: 20,
-                // 视频宽度
-                width: 375,
-                // 视频高度
-                height: 375,
-                // 容器
-                container: null,
-                config: ''
-            },
-            options
-        )
-        this.fps = 20
-        this.requestAnim = this.requestAnimFunc(this.fps)
-        this.container = this.options.container
-        if (!this.options.src || !this.options.config || !this.options.container) {
-            console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)')
+  constructor(options) {
+    if (!options.container || !options.src) {
+      return console.warn('[Alpha video]: options container and src cannot be empty!')
+    }
+    this.options = Object.assign(
+      {
+        // 视频url
+        src: '',
+        // 循环播放
+        loop: false,
+        fps: 20,
+        // 视频宽度
+        width: 375,
+        // 视频高度
+        height: 375,
+        // 容器
+        container: null,
+        config: ''
+      },
+      options
+    )
+    this.fps = 20
+    this.requestAnim = this.requestAnimFunc(this.fps)
+    this.container = this.options.container
+    if (!this.options.src || !this.options.config || !this.options.container) {
+      console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)')
+    } else {
+      // 创建video
+      this.initVideo()
+    }
+  }
+
+  precacheSource(source) {
+    const URL = window.webkitURL || window.URL;
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", source, true);
+      xhr.responseType = "blob";
+      xhr.onload = function() {
+        if (xhr.status === 200 || xhr.status === 304) {
+          const res = xhr.response;
+          if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+            const fileReader = new FileReader();
+            fileReader.onloadend = function() {
+              const raw = atob(
+                fileReader.result.slice(fileReader.result.indexOf(",") + 1)
+              );
+              const buf = Array(raw.length);
+              for (let d = 0; d < raw.length; d++) {
+                buf[d] = raw.charCodeAt(d);
+              }
+              const arr = new Uint8Array(buf);
+              const blob = new Blob([arr], { type: "video/mp4" });
+              resolve(URL.createObjectURL(blob));
+            };
+            fileReader.readAsDataURL(xhr.response);
+          } else {
+            resolve(URL.createObjectURL(res));
+          }
         } else {
-            // 创建video
-            this.initVideo()
+          reject(new Error("http response invalid" + xhr.status));
         }
-    }
+      };
+      xhr.send();
+    });
+  }
 
-    initVideo() {
-        const options = this.options
-        // 创建video
-        const video = (this.video = document.createElement('video'))
-        video.crossOrigin = 'anonymous'
-        video.autoplay = false
-        video.preload = 'auto'
-        video.autoload = true
-        // video.muted = true
-        // video.volume = 0
-        video.style.display = 'none'
-        video.src = options.src
-        video.loop = !!options.loop
-        // 这里要插在body上，避免container移动带来无法播放的问题
-        document.body.appendChild(this.video)
-        // 绑定事件
-        this.events = {}
-        ;['playing', 'pause', 'ended', 'error'].forEach(item => {
-            this.on(item, this['on' + item].bind(this))
+
+  initVideo() {
+    const options = this.options
+    // 创建video
+    const video = (this.video = document.createElement('video'))
+    video.crossOrigin = 'anonymous'
+    video.autoplay = false
+    video.preload = 'auto'
+    video.autoload = true
+    if(options.mute){
+      video.muted = true
+      video.volume = 0
+    }
+    video.style.display = 'none'
+    video.loop = !!options.loop
+    if(options.precache) {
+      this.precacheSource(options.src)
+        .then(blob => {
+          console.log("sample precached.");
+          video.src = blob;
+          document.body.appendChild(video);
         })
-        video.load()
+        .catch(e=>{
+          console.error(e);
+        });
+    }else{
+      video.src = options.src;
+      // 这里要插在body上，避免container移动带来无法播放的问题
+      document.body.appendChild(this.video);
+      video.load();
     }
-    drawFrame() {
-        this._drawFrame = this._drawFrame || this.drawFrame.bind(this)
-        this.animId = this.requestAnim(this._drawFrame)
-    }
+    // 绑定事件
+    this.events = {}
+    ;['playing', 'pause', 'ended', 'error'].forEach(item => {
+      this.on(item, this['on' + item].bind(this))
+    })
+  }
+  drawFrame() {
+    this._drawFrame = this._drawFrame || this.drawFrame.bind(this)
+    this.animId = this.requestAnim(this._drawFrame)
+  }
 
-    play() {
-        const prom = this.video && this.video.play()
+  play() {
+    const prom = this.video && this.video.play()
 
-        if (prom && prom.then) {
-            prom.catch(e => {
-                if (!this.video) {
-                    return
-                }
-                this.video.muted = true
-                this.video.volume = 0
-                this.video.play().catch(e => {
-                    ;(this.events.error || []).forEach(item => {
-                        item(e)
-                    })
-                })
-            })
+    if (prom && prom.then) {
+      prom.catch(e => {
+        if (!this.video) {
+          return
         }
+        this.video.muted = true
+        this.video.volume = 0
+        this.video.play().catch(e => {
+          ;(this.events.error || []).forEach(item => {
+            item(e)
+          })
+        })
+      })
     }
+  }
 
-    requestAnimFunc() {
-        const me = this
-        if (window.requestAnimationFrame) {
-            let index = -1
-            return function(cb) {
-                index++
-                return requestAnimationFrame(() => {
-                    if (!(index % (60 / me.fps))) {
-                        return cb()
-                    }
-                    me.animId = me.requestAnim(cb)
-                })
-            }
-        }
-        return function(cb) {
-            return setTimeout(cb, 1000 / me.fps)
-        }
+  requestAnimFunc() {
+    const me = this
+    if (window.requestAnimationFrame) {
+      let index = -1
+      return function(cb) {
+        index++
+        return requestAnimationFrame(() => {
+          if (!(index % (60 / me.fps))) {
+            return cb()
+          }
+          me.animId = me.requestAnim(cb)
+        })
+      }
     }
-
-    cancelRequestAnimation() {
-        if (window.cancelAnimationFrame) {
-            cancelAnimationFrame(this.animId)
-        }
-        clearTimeout(this.animId)
+    return function(cb) {
+      return setTimeout(cb, 1000 / me.fps)
     }
+  }
 
-    destroy() {
-        if (this.video) {
-            this.video.parentNode && this.video.parentNode.removeChild(this.video)
-            this.video = null
-        }
-        this.cancelRequestAnimation(this.animId)
+  cancelRequestAnimation() {
+    if (window.cancelAnimationFrame) {
+      cancelAnimationFrame(this.animId)
     }
+    clearTimeout(this.animId)
+  }
 
-    clear() {
-        this.destroy()
+  destroy() {
+    if (this.video) {
+      this.video.parentNode && this.video.parentNode.removeChild(this.video)
+      this.video = null
     }
+    this.cancelRequestAnimation(this.animId)
+  }
 
-    on(event, callback) {
-        const cbs = this.events[event] || []
-        cbs.push(callback)
-        this.events[event] = cbs
-        this.video.addEventListener(event, callback)
-        return this
+  clear() {
+    this.destroy()
+  }
+
+  on(event, callback) {
+    const cbs = this.events[event] || []
+    cbs.push(callback)
+    this.events[event] = cbs
+    this.video.addEventListener(event, callback)
+    return this
+  }
+
+  onplaying() {
+    if (!this.firstPlaying) {
+      this.firstPlaying = true
+      this.drawFrame()
     }
+  }
 
-    onplaying() {
-        if (!this.firstPlaying) {
-            this.firstPlaying = true
-            this.drawFrame()
-        }
-    }
+  onpause() {}
 
-    onpause() {}
+  onended() {
+    this.destroy()
+  }
 
-    onended() {
-        this.destroy()
-    }
-
-    onerror(err) {
-        console.error('[Alpha video]: play error: ', err)
-        this.destroy()
-    }
+  onerror(err) {
+    console.error('[Alpha video]: play error: ', err)
+    this.destroy()
+  }
 }
