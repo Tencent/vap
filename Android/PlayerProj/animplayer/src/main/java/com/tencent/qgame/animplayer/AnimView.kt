@@ -223,8 +223,8 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
                 ALog.e(TAG, "AnimView is GONE, can't play")
                 return@ui
             }
-            lastFile = fileContainer
             if (player?.isRunning() == false) {
+                lastFile = fileContainer
                 player?.startPlay(fileContainer)
             } else {
                 ALog.i(TAG, "is running can not start")

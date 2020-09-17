@@ -47,6 +47,8 @@ class AnimPlayer(val animView: AnimView) {
     var isDetachedFromWindow = false
     var isSurfaceAvailable = false
     var startRunnable: Runnable? = null
+    var isStartRunning = false // 启动时运行状态
+
     val configManager = AnimConfigManager(this)
     val pluginManager = AnimPluginManager(this)
 
@@ -68,14 +70,11 @@ class AnimPlayer(val animView: AnimView) {
     }
 
     fun startPlay(fileContainer: FileContainer) {
+        isStartRunning = true
         prepareDecoder()
-        if (isRunning()) {
-            ALog.i(TAG, "is running can not start")
-            return
-        }
-
         if (decoder?.prepareThread() == false) {
             decoder?.onFailed(Constant.REPORT_ERROR_TYPE_CREATE_THREAD, Constant.ERROR_MSG_CREATE_THREAD)
+            isStartRunning = false
             return
         }
         // 在线程中解析配置
@@ -83,6 +82,7 @@ class AnimPlayer(val animView: AnimView) {
             val result = configManager.parseConfig(fileContainer, videoMode, fps)
             if (result != Constant.OK) {
                 decoder?.onFailed(result, Constant.getErrorMsg(result))
+                isStartRunning = false
                 return@post
             }
             ALog.i(TAG, "parse ${configManager.config}")
@@ -99,10 +99,11 @@ class AnimPlayer(val animView: AnimView) {
     private fun innerStartPlay(fileContainer: FileContainer) {
         synchronized(AnimPlayer::class.java) {
             if (isSurfaceAvailable) {
+                isStartRunning = false
                 decoder?.start(fileContainer)
                 audioPlayer?.start(fileContainer)
             } else {
-                 startRunnable = Runnable {
+                startRunnable = Runnable {
                     innerStartPlay(fileContainer)
                 }
                 animView.prepareTextureView()
@@ -116,7 +117,9 @@ class AnimPlayer(val animView: AnimView) {
     }
 
     fun isRunning(): Boolean {
-        return (decoder?.isRunning ?: false) || configManager.isParsingConfig
+        return isStartRunning // 启动过程运行状态
+                || (decoder?.isRunning ?: false) // 解码过程运行状态
+
     }
 
     private fun prepareDecoder() {
