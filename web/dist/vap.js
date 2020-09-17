@@ -147,6 +147,14 @@
 
               return Promise.resolve().then(function () {
                   _this2.initCanvas();
+                  if (/^(http|https):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]\.json$/.test(_this2.config)) {
+                      return Promise.resolve().then(function () {
+                          return _this2.getConfigBySrc(_this2.config);
+                      }).then(function (_resp) {
+                          _this2.config = _resp;
+                      });
+                  }
+              }).then(function () {
                   return _this2.parseSrc(_this2.config);
               }).then(function () {
                   _this2.canvas.parentNode.removeChild(_this2.canvas);
@@ -222,6 +230,32 @@
                   }).then(function () {});
               }));
           }
+
+          /**
+           * 下载json文件
+           * @param jsonUrl json外链
+           * @returns {Promise}
+           */
+
+      }, {
+          key: 'getConfigBySrc',
+          value: function getConfigBySrc(jsonUrl) {
+              return new Promise(function (resolve, reject) {
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("GET", jsonUrl, true);
+                  xhr.responseType = "json";
+                  xhr.onload = function () {
+                      if (xhr.status === 200 || xhr.status === 304 && xhr.response) {
+                          var res = xhr.response;
+                          resolve(res);
+                      } else {
+                          reject(new Error("http response invalid" + xhr.status));
+                      }
+                  };
+                  xhr.send();
+              });
+          }
+
           /**
            * 文字转换图片
            * @param {*} param0

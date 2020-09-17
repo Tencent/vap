@@ -22,6 +22,9 @@ export default class FrameParser {
     }
     async init() {
         this.initCanvas()
+        if(/^(http|https):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]\.json$/.test(this.config)){
+          this.config = await this.getConfigBySrc(this.config);
+        }
         await this.parseSrc(this.config)
         this.canvas.parentNode.removeChild(this.canvas)
         this.frame = this.config.frame || []
@@ -81,6 +84,29 @@ export default class FrameParser {
             })
         )
     }
+
+    /**
+     * 下载json文件
+     * @param jsonUrl json外链
+     * @returns {Promise}
+     */
+    getConfigBySrc(jsonUrl) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", jsonUrl, true);
+      xhr.responseType = "json";
+      xhr.onload = function() {
+        if (xhr.status === 200 || xhr.status === 304 && xhr.response) {
+          const res = xhr.response;
+          resolve(res);
+        } else {
+          reject(new Error("http response invalid" + xhr.status));
+        }
+      };
+      xhr.send();
+    });
+  }
+
     /**
      * 文字转换图片
      * @param {*} param0
