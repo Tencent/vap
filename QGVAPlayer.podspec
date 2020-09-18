@@ -27,7 +27,7 @@ Pod::Spec.new do |spec|
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = "video animation player - 高效的特效动画播放组件."
 
-  spec.homepage     = ""
+  spec.homepage     = "https://github.com/Tencent/vap"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
