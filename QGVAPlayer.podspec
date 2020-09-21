@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "1.0.1"
+  spec.version      = "1.0.2"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
@@ -96,33 +96,35 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.subspec 'Shaders' do |ss|
-    ss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Shaders/**/*'
-  end
+  spec.source_files = 'iOS/QGVAPlayer/QGVAPlayer/**/*.{h,m}'
 
-  spec.subspec 'Classes' do |ss|
-    ss.source_files  = 'iOS/QGVAPlayer/QGVAPlayer/Classes/*.{h,m}'
-      ss.subspec 'Models' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Models/**/*'
-      end
-      ss.subspec 'Views' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Views/**/*'
-      end
-      ss.subspec 'Controllers' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Controllers/**/*'
-      end
-      ss.subspec 'MP4Parser' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/MP4Parser/**/*'
-      end
-      ss.subspec 'Utils' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Utils/**/*'
-      end
-  end
+  # spec.subspec 'Shaders' do |ss|
+  #   ss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Shaders/**/*.{h,m}'
+  # end
+
+  # spec.subspec 'Classes' do |ss|
+  #   ss.source_files  = 'iOS/QGVAPlayer/QGVAPlayer/Classes/*.{h,m}'
+  #     ss.subspec 'Models' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Models/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'Views' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Views/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'Controllers' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Controllers/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'MP4Parser' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/MP4Parser/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'Utils' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Utils/**/*.{h,m}'
+  #     end
+  # end
 
 
   # spec.exclude_files = "Classes/Exclude"
 
-  spec.public_header_files = "iOS/QGVAPlayer/QGVAPlayer/**/*.h"
+  #spec.public_header_files = "iOS/QGVAPlayer/QGVAPlayer/**/*.h"
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
