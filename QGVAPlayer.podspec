@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "2.2.1"
+  spec.version      = "1.0.1"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
@@ -38,13 +38,14 @@ Pod::Spec.new do |spec|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  spec.license      = {
-        :type => 'Copyright',
-        :text => <<-LICENSE
-              © 1998-2019 Tencent. All rights reserved.
-        LICENSE
-    }
-  # spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  #spec.license      = {
+        #:type => 'Copyright',
+        #:text => <<-LICENSE
+              #© 1998-2019 Tencent. All rights reserved.
+        #LICENSE
+    #}
+  #spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  spec.license       = 'MIT'
 
 # 集成源码
     puts "Pod Install #{spec.name} Source"
@@ -59,10 +60,8 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "chanceguo" => "chanceguo@tencent.com" }
-  # Or just: spec.author    = "chanceguo"
-  # spec.authors            = { "chanceguo" => "chanceguo@tencent.com" }
-  # spec.social_media_url   = "https://twitter.com/chanceguo"
+  spec.author             = { "mlzhangyu" => "mlzhangyu@gmail.com" }
+  # Or just: spec.author    = "mlzhangyu"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -158,7 +157,7 @@ Pod::Spec.new do |spec|
   #  If your library depends on compiler flags you can set them in the xcconfig hash
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
-  spec.user_target_xcconfig  = { 'OTHER_LDFLAGS' => "-force_load ${BUILT_PRODUCTS_DIR}/#{spec.name}/lib#{spec.name}.a" }
+  #spec.user_target_xcconfig  = { 'OTHER_LDFLAGS' => "-force_load ${BUILT_PRODUCTS_DIR}/#{spec.name}/lib#{spec.name}.a" }
 
   spec.requires_arc = true
 
