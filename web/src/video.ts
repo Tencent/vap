@@ -13,10 +13,12 @@
  * either express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {VapConfig} from "./type";
+
 export default class VapVideo {
   constructor(options) {
     if (!options.container || !options.src) {
-      return console.warn('[Alpha video]: options container and src cannot be empty!')
+      console.warn('[Alpha video]: options container and src cannot be empty!');
     }
     this.options = Object.assign(
       {
@@ -38,20 +40,30 @@ export default class VapVideo {
         config: ''
       },
       options
-    )
-    this.fps = 20
-    this.requestAnim = this.requestAnimFunc(this.fps)
-    this.container = this.options.container
+    );
+    this.fps = 20;
+    this.requestAnim = this.requestAnimFunc();
+    this.container = this.options.container;
     if (!this.options.src || !this.options.config || !this.options.container) {
-      console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)')
+      console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)');
     } else {
       // 创建video
-      this.initVideo()
+      this.initVideo();
     }
   }
 
-  precacheSource(source) {
-    const URL = window.webkitURL || window.URL;
+  public options:VapConfig;
+  private fps:number;
+  public requestAnim:Function;
+  public container:HTMLElement;
+  public video:HTMLVideoElement;
+  private events;
+  private _drawFrame: Function;
+  private animId: number;
+  private firstPlaying: boolean;
+
+  precacheSource(source): Promise<string> {
+    const URL = (window as any).webkitURL || window.URL;
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", source, true);
@@ -61,9 +73,11 @@ export default class VapVideo {
           const res = xhr.response;
           if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
             const fileReader = new FileReader();
+
             fileReader.onloadend = function() {
+              const resultStr = (fileReader.result as string);
               const raw = atob(
-                fileReader.result.slice(fileReader.result.indexOf(",") + 1)
+                resultStr.slice(resultStr.indexOf(",") + 1)
               );
               const buf = Array(raw.length);
               for (let d = 0; d < raw.length; d++) {
@@ -87,19 +101,18 @@ export default class VapVideo {
 
 
   initVideo() {
-    const options = this.options
+    const options = this.options;
     // 创建video
-    const video = (this.video = document.createElement('video'))
-    video.crossOrigin = 'anonymous'
-    video.autoplay = false
-    video.preload = 'auto'
-    video.autoload = true
+    const video = (this.video = document.createElement('video'));
+    video.crossOrigin = 'anonymous';
+    video.autoplay = false;
+    video.preload = 'auto';
     if(options.mute){
-      video.muted = true
-      video.volume = 0
+      video.muted = true;
+      video.volume = 0;
     }
-    video.style.display = 'none'
-    video.loop = !!options.loop
+    video.style.display = 'none';
+    video.loop = !!options.loop;
     if(options.precache) {
       this.precacheSource(options.src)
         .then(blob => {
@@ -119,27 +132,27 @@ export default class VapVideo {
     // 绑定事件
     this.events = {}
     ;['playing', 'pause', 'ended', 'error'].forEach(item => {
-      this.on(item, this['on' + item].bind(this))
+      this.on(item, this['on' + item].bind(this));
     })
   }
   drawFrame() {
-    this._drawFrame = this._drawFrame || this.drawFrame.bind(this)
-    this.animId = this.requestAnim(this._drawFrame)
+    this._drawFrame = this._drawFrame || this.drawFrame.bind(this);
+    this.animId = this.requestAnim(this._drawFrame);
   }
 
   play() {
-    const prom = this.video && this.video.play()
+    const prom = this.video && this.video.play();
 
     if (prom && prom.then) {
       prom.catch(e => {
         if (!this.video) {
-          return
+          return;
         }
-        this.video.muted = true
-        this.video.volume = 0
+        this.video.muted = true;
+        this.video.volume = 0;
         this.video.play().catch(e => {
-          ;(this.events.error || []).forEach(item => {
-            item(e)
+          (this.events.error || []).forEach(item => {
+            item(e);
           })
         })
       })
@@ -147,16 +160,16 @@ export default class VapVideo {
   }
 
   requestAnimFunc() {
-    const me = this
+    const me = this;
     if (window.requestAnimationFrame) {
-      let index = -1
+      let index = -1;
       return function(cb) {
-        index++
+        index++;
         return requestAnimationFrame(() => {
           if (!(index % (60 / me.fps))) {
-            return cb()
+            return cb();
           }
-          me.animId = me.requestAnim(cb)
+          me.animId = me.requestAnim(cb);
         })
       }
     }
@@ -167,34 +180,34 @@ export default class VapVideo {
 
   cancelRequestAnimation() {
     if (window.cancelAnimationFrame) {
-      cancelAnimationFrame(this.animId)
+      cancelAnimationFrame(this.animId);
     }
-    clearTimeout(this.animId)
+    clearTimeout(this.animId);
   }
 
   destroy() {
     if (this.video) {
-      this.video.parentNode && this.video.parentNode.removeChild(this.video)
+      this.video.parentNode && this.video.parentNode.removeChild(this.video);
       this.video = null
     }
-    this.cancelRequestAnimation(this.animId)
+    this.cancelRequestAnimation();
   }
 
   clear() {
-    this.destroy()
+    this.destroy();
   }
 
-  on(event, callback) {
-    const cbs = this.events[event] || []
-    cbs.push(callback)
-    this.events[event] = cbs
-    this.video.addEventListener(event, callback)
+  on(event, callback:EventListenerObject) {
+    const cbs = this.events[event] || [];
+    cbs.push(callback);
+    this.events[event] = cbs;
+    this.video.addEventListener(event, callback);
     return this
   }
 
   onplaying() {
     if (!this.firstPlaying) {
-      this.firstPlaying = true
+      this.firstPlaying = true;
       this.drawFrame()
     }
   }
@@ -202,11 +215,11 @@ export default class VapVideo {
   onpause() {}
 
   onended() {
-    this.destroy()
+    this.destroy();
   }
 
   onerror(err) {
-    console.error('[Alpha video]: play error: ', err)
-    this.destroy()
+    console.error('[Alpha video]: play error: ', err);
+    this.destroy();
   }
 }
