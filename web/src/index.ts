@@ -13,36 +13,38 @@
  * either express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {VapConfig} from "./type";
 import WebglRenderVap from './webgl-render-vap'
-let isCanWebGL
+let isCanWebGL: Boolean;
 /**
  * @param options
  * @constructor
  * @return {null}
  */
-export default function(options) {
-    if (canWebGL()) {
-        return new WebglRenderVap(Object.assign({}, options))
-    } else {
-        throw new Error('your browser not support webgl')
-    }
+export default function(options: VapConfig) {
+  if (canWebGL()) {
+    return new WebglRenderVap(Object.assign({}, options));
+  } else {
+    throw new Error('your browser not support webgl');
+  }
 }
 
-function canWebGL() {
-    if (typeof isCanWebGL !== 'undefined') {
-        return isCanWebGL
+function canWebGL(): Boolean {
+  if (typeof isCanWebGL !== 'undefined') {
+    return isCanWebGL;
+  }
+  try {
+    // @ts-ignore
+    if (!window.WebGLRenderingContext) {
+      return false;
     }
-    try {
-        if (!window.WebGLRenderingContext) {
-            return false
-        }
-        const canvas = document.createElement('canvas')
-        let context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+    const canvas = document.createElement('canvas');
+    let context = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
-        isCanWebGL = !!context
-        context = null
-    } catch (err) {
-        isCanWebGL = false
-    }
-    return isCanWebGL
+    isCanWebGL = !!context;
+    context = null;
+  } catch (err) {
+    isCanWebGL = false;
+  }
+  return isCanWebGL;
 }

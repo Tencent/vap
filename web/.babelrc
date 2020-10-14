@@ -1,14 +1,10 @@
 {
   "presets": [
-    [
-      "es2015",
-      {
-        "modules": false
-      }
-    ]
+    "@babel/preset-env",
+    "@babel/preset-typescript"
   ],
   "plugins": [
-    "external-helpers",
-    "async-to-promises"
+    "async-to-promises",
+    ["@babel/plugin-transform-runtime"]
   ]
 }
