@@ -38,8 +38,9 @@ export default {
         imgUser: '//shp.qlogo.cn/pghead/Q3auHgzwzM6TmnCKHzBcyxVPEJ5t4Ria7H18tYJyM40c/0',
         imgAnchor: '//shp.qlogo.cn/pghead/PiajxSqBRaEKRa1v87G8wh37GibiaosmfU334GBWgk7aC8/140',
         textUser: 'user1',
-        textAnchor: 'user2'
-      } : {}))
+        textAnchor: 'user2',
+        type: 2
+      } : {type: 1}))
         .on('playing', () => {
           that.access = false
           console.log('playing')

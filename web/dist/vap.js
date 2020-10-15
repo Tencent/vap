@@ -1705,13 +1705,15 @@
 
         if (textureSize > 0) {
           var imgColor = [];
+          var samplers = [];
 
           for (var i = 0; i < textureSize; i++) {
-            imgColor.push("if(ndx == ".concat(i, "){\n                        color = texture2D(textures[").concat(i, "],uv);\n                    }"));
+            imgColor.push("if(ndx == ".concat(i + 1, "){\n                        color = texture2D(u_image").concat(i + 1, ",uv);\n                    }"));
+            samplers.push("uniform sampler2D u_image".concat(i + 1, ";"));
           }
 
-          sourceUniform = "\n            uniform sampler2D u_image[".concat(textureSize, "];\n            uniform float image_pos[").concat(textureSize * PER_SIZE, "];\n            vec4 getSampleFromArray(sampler2D textures[").concat(textureSize, "], int ndx, vec2 uv) {\n                vec4 color;\n                ").concat(imgColor.join(' else '), "\n                return color;\n            }\n            ");
-          sourceTexure = "\n            vec4 srcColor,maskColor;\n            vec2 srcTexcoord,maskTexcoord;\n            int srcIndex;\n            float x1,x2,y1,y2,mx1,mx2,my1,my2; //\u663E\u793A\u7684\u533A\u57DF\n\n            for(int i=0;i<".concat(textureSize * PER_SIZE, ";i+= ").concat(PER_SIZE, "){\n                if ((int(image_pos[i]) > 0)) {\n                  srcIndex = int(image_pos[i]);\n    \n                    x1 = image_pos[i+1];\n                    x2 = image_pos[i+2];\n                    y1 = image_pos[i+3];\n                    y2 = image_pos[i+4];\n                    \n                    mx1 = image_pos[i+5];\n                    mx2 = image_pos[i+6];\n                    my1 = image_pos[i+7];\n                    my2 = image_pos[i+8];\n    \n    \n                    if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {\n                        srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));\n                         maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));\n                         srcColor = getSampleFromArray(u_image,srcIndex,srcTexcoord);\n                         maskColor = texture2D(u_image_video, maskTexcoord);\n                         srcColor.a = srcColor.a*(maskColor.r);\n                      \n                         bgColor = vec4(srcColor.rgb*srcColor.a,srcColor.a) + (1.0-srcColor.a)*bgColor;\n                      \n                    }   \n                }\n            }\n            ");
+          sourceUniform = "\n            ".concat(samplers.join('\n'), "\n            uniform float image_pos[").concat(textureSize * PER_SIZE, "];\n            vec4 getSampleFromArray(int ndx, vec2 uv) {\n                vec4 color;\n                ").concat(imgColor.join(' else '), "\n                return color;\n            }\n            ");
+          sourceTexure = "\n            vec4 srcColor,maskColor;\n            vec2 srcTexcoord,maskTexcoord;\n            int srcIndex;\n            float x1,x2,y1,y2,mx1,mx2,my1,my2; //\u663E\u793A\u7684\u533A\u57DF\n\n            for(int i=0;i<".concat(textureSize * PER_SIZE, ";i+= ").concat(PER_SIZE, "){\n                if ((int(image_pos[i]) > 0)) {\n                  srcIndex = int(image_pos[i]);\n    \n                    x1 = image_pos[i+1];\n                    x2 = image_pos[i+2];\n                    y1 = image_pos[i+3];\n                    y2 = image_pos[i+4];\n                    \n                    mx1 = image_pos[i+5];\n                    mx2 = image_pos[i+6];\n                    my1 = image_pos[i+7];\n                    my2 = image_pos[i+8];\n    \n    \n                    if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {\n                        srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));\n                         maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));\n                         srcColor = getSampleFromArray(srcIndex,srcTexcoord);\n                         maskColor = texture2D(u_image_video, maskTexcoord);\n                         srcColor.a = srcColor.a*(maskColor.r);\n                      \n                         bgColor = vec4(srcColor.rgb*srcColor.a,srcColor.a) + (1.0-srcColor.a)*bgColor;\n                      \n                    }   \n                }\n            }\n            ");
         }
 
         var fragmentSharder = "\n        precision lowp float;\n        varying vec2 v_texcoord;\n        varying vec2 v_alpha_texCoord;\n        uniform sampler2D u_image_video;\n        ".concat(sourceUniform, "\n        \n        void main(void) {\n            vec4 bgColor = ").concat(bgColor, "\n            ").concat(sourceTexure, "\n            // bgColor = texture2D(u_image[0], v_texcoord);\n            gl_FragColor = bgColor;\n        }\n        ");
@@ -1733,7 +1735,7 @@
           var resource = resources[key];
           this.textures.push(createTexture(gl, i, resource.img));
 
-          var _sampler = gl.getUniformLocation(this.program, "u_image[".concat(i, "]"));
+          var _sampler = gl.getUniformLocation(this.program, "u_image".concat(i));
 
           gl.uniform1i(_sampler, i);
           this.vapFrameParser.textureMap[resource.srcId] = i++;

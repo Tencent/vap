@@ -144,18 +144,20 @@ export default class WebglRenderVap extends VapVideo {
     let sourceUniform = '';
     if (textureSize > 0) {
       const imgColor = [];
+      const samplers = [];
       for (let i = 0; i < textureSize; i++) {
         imgColor.push(
-          `if(ndx == ${i}){
-                        color = texture2D(textures[${i}],uv);
+          `if(ndx == ${i + 1}){
+                        color = texture2D(u_image${i + 1},uv);
                     }`
         )
+        samplers.push(`uniform sampler2D u_image${i + 1};`)
       }
 
       sourceUniform = `
-            uniform sampler2D u_image[${textureSize}];
+            ${samplers.join('\n')}
             uniform float image_pos[${textureSize * PER_SIZE}];
-            vec4 getSampleFromArray(sampler2D textures[${textureSize}], int ndx, vec2 uv) {
+            vec4 getSampleFromArray(int ndx, vec2 uv) {
                 vec4 color;
                 ${imgColor.join(' else ')}
                 return color;
@@ -185,7 +187,7 @@ export default class WebglRenderVap extends VapVideo {
                     if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {
                         srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));
                          maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));
-                         srcColor = getSampleFromArray(u_image,srcIndex,srcTexcoord);
+                         srcColor = getSampleFromArray(srcIndex,srcTexcoord);
                          maskColor = texture2D(u_image_video, maskTexcoord);
                          srcColor.a = srcColor.a*(maskColor.r);
                       
@@ -224,7 +226,7 @@ export default class WebglRenderVap extends VapVideo {
     for (const key in resources) {
       const resource = resources[key];
       this.textures.push(glUtil.createTexture(gl, i, resource.img));
-      const sampler = gl.getUniformLocation(this.program, `u_image[${i}]`);
+      const sampler = gl.getUniformLocation(this.program, `u_image${i}`);
       gl.uniform1i(sampler, i);
       this.vapFrameParser.textureMap[resource.srcId] = i++;
     }
