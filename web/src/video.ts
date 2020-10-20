@@ -193,6 +193,7 @@ export default class VapVideo {
       this.video = null
     }
     this.cancelRequestAnimation();
+    this.options.onDestory && this.options.onDestory();
   }
 
   clear() {
@@ -223,5 +224,6 @@ export default class VapVideo {
   onerror(err) {
     console.error('[Alpha video]: play error: ', err);
     this.destroy();
+    this.options.onLoadError && this.options.onLoadError(err);
   }
 }

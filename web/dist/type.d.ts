@@ -9,5 +9,7 @@ export interface VapConfig {
     fps?: number;
     mute?: boolean;
     precache?: boolean;
+    onLoadError?: (e: ErrorEvent) => void;
+    onDestory?: () => void;
     [key: string]: any;
 }
