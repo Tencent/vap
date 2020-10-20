@@ -107,6 +107,8 @@ export default class VapVideo {
     video.crossOrigin = 'anonymous';
     video.autoplay = false;
     video.preload = 'auto';
+    video.setAttribute('playsinline','')
+    video.setAttribute('webkit-playsinline','')
     if(options.mute){
       video.muted = true;
       video.volume = 0;

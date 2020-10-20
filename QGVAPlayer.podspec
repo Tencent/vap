@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "2.2.1"
+  spec.version      = "1.0.2"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
@@ -27,7 +27,7 @@ Pod::Spec.new do |spec|
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = "video animation player - 高效的特效动画播放组件."
 
-  spec.homepage     = ""
+  spec.homepage     = "https://github.com/Tencent/vap"
   # spec.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -38,13 +38,14 @@ Pod::Spec.new do |spec|
   #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
   #
 
-  spec.license      = {
-        :type => 'Copyright',
-        :text => <<-LICENSE
-              © 1998-2019 Tencent. All rights reserved.
-        LICENSE
-    }
-  # spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  #spec.license      = {
+        #:type => 'Copyright',
+        #:text => <<-LICENSE
+              #© 1998-2019 Tencent. All rights reserved.
+        #LICENSE
+    #}
+  #spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  spec.license       = 'MIT'
 
 # 集成源码
     puts "Pod Install #{spec.name} Source"
@@ -59,10 +60,8 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "chanceguo" => "chanceguo@tencent.com" }
-  # Or just: spec.author    = "chanceguo"
-  # spec.authors            = { "chanceguo" => "chanceguo@tencent.com" }
-  # spec.social_media_url   = "https://twitter.com/chanceguo"
+  spec.author             = { "mlzhangyu" => "mlzhangyu@gmail.com" }
+  # Or just: spec.author    = "mlzhangyu"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -86,7 +85,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "", :tag => "#{spec.version}"}
+  spec.source       = { :git => "https://github.com/Tencent/vap.git", :tag => "#{spec.version}"}
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -97,33 +96,35 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.subspec 'Shaders' do |ss|
-    ss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Shaders/**/*'
-  end
+  spec.source_files = 'iOS/QGVAPlayer/QGVAPlayer/**/*.{h,m}'
 
-  spec.subspec 'Classes' do |ss|
-    ss.source_files  = 'iOS/QGVAPlayer/QGVAPlayer/Classes/*.{h,m}'
-      ss.subspec 'Models' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Models/**/*'
-      end
-      ss.subspec 'Views' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Views/**/*'
-      end
-      ss.subspec 'Controllers' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Controllers/**/*'
-      end
-      ss.subspec 'MP4Parser' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/MP4Parser/**/*'
-      end
-      ss.subspec 'Utils' do |sss|
-        sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Utils/**/*'
-      end
-  end
+  # spec.subspec 'Shaders' do |ss|
+  #   ss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Shaders/**/*.{h,m}'
+  # end
+
+  # spec.subspec 'Classes' do |ss|
+  #   ss.source_files  = 'iOS/QGVAPlayer/QGVAPlayer/Classes/*.{h,m}'
+  #     ss.subspec 'Models' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Models/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'Views' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Views/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'Controllers' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Controllers/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'MP4Parser' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/MP4Parser/**/*.{h,m}'
+  #     end
+  #     ss.subspec 'Utils' do |sss|
+  #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Utils/**/*.{h,m}'
+  #     end
+  # end
 
 
   # spec.exclude_files = "Classes/Exclude"
 
-  spec.public_header_files = "iOS/QGVAPlayer/QGVAPlayer/**/*.h"
+  #spec.public_header_files = "iOS/QGVAPlayer/QGVAPlayer/**/*.h"
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -158,7 +159,7 @@ Pod::Spec.new do |spec|
   #  If your library depends on compiler flags you can set them in the xcconfig hash
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
-  spec.user_target_xcconfig  = { 'OTHER_LDFLAGS' => "-force_load ${BUILT_PRODUCTS_DIR}/#{spec.name}/lib#{spec.name}.a" }
+  #spec.user_target_xcconfig  = { 'OTHER_LDFLAGS' => "-force_load ${BUILT_PRODUCTS_DIR}/#{spec.name}/lib#{spec.name}.a" }
 
   spec.requires_arc = true
 

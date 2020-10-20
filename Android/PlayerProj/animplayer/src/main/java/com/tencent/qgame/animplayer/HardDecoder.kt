@@ -183,6 +183,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                         var loop = 0
                         if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
                             loop = --playLoop
+                            player.playLoop = playLoop // 消耗loop次数 自动恢复后能有正确的loop次数
                             outputDone = playLoop <= 0
                         }
                         val doRender = !outputDone
