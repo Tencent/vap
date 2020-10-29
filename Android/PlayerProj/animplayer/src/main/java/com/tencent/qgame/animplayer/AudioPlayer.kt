@@ -74,7 +74,7 @@ class AudioPlayer(val player: AnimPlayer) {
         }
         extractor.selectTrack(audioIndex)
         val format = extractor.getTrackFormat(audioIndex)
-        val mime =format.getString(MediaFormat.KEY_MIME)
+        val mime =format.getString(MediaFormat.KEY_MIME) ?: ""
         val decoder = MediaCodec.createDecoderByType(mime).apply {
             configure(format, null, null, 0)
             start()

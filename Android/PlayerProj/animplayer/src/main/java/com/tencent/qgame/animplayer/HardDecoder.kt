@@ -109,7 +109,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
 
 
         try {
-            val mime = format.getString(MediaFormat.KEY_MIME)
+            val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             ALog.i(TAG, "Video MIME is $mime")
             decoder = MediaCodec.createDecoderByType(mime).apply {
                 configure(format, Surface(glTexture), null, 0)

@@ -34,7 +34,7 @@ object MediaUtil {
         val numTracks = extractor.trackCount
         for (i in 0 until numTracks) {
             val format = extractor.getTrackFormat(i)
-            val mime = format.getString(MediaFormat.KEY_MIME)
+            val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             if (mime.startsWith("video/")) {
                 ALog.d(TAG, "Extractor selected track $i ($mime): $format")
                 return i
@@ -47,7 +47,7 @@ object MediaUtil {
         val numTracks = extractor.trackCount
         for (i in 0 until numTracks) {
             val format = extractor.getTrackFormat(i)
-            val mime = format.getString(MediaFormat.KEY_MIME)
+            val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             if (mime.startsWith("audio/")) {
                 ALog.d(TAG, "Extractor selected track $i ($mime): $format")
                 return i

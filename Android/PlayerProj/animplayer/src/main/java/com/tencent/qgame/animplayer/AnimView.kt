@@ -104,15 +104,15 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         return innerTextureView?.surfaceTexture ?: surface
     }
 
-    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
         ALog.i(TAG, "onSurfaceTextureSizeChanged $width x $height")
         player?.onSurfaceTextureSizeChanged(width, height)
     }
 
-    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
     }
 
-    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         ALog.i(TAG, "onSurfaceTextureDestroyed")
         player?.onSurfaceTextureDestroyed()
         uiHandler.post {
@@ -123,7 +123,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         return !belowKitKat()
     }
 
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
         ALog.i(TAG, "onSurfaceTextureAvailable")
         this.surface = surface
         player?.onSurfaceTextureAvailable(width, height)

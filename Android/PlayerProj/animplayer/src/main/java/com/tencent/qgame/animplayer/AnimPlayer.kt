@@ -103,7 +103,7 @@ class AnimPlayer(val animView: AnimView) {
                 decoder?.start(fileContainer)
                 audioPlayer?.start(fileContainer)
             } else {
-                startRunnable = Runnable {
+                 startRunnable = Runnable {
                     innerStartPlay(fileContainer)
                 }
                 animView.prepareTextureView()
