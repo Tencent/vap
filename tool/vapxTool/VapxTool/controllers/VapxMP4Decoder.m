@@ -64,11 +64,23 @@
                            @"-c:v", @"libx264",
                            @"-pix_fmt", self.yuvFormat?:@"yuv420p",
                            @"-profile:v", self.profile?:@"high",
-                           @"-level",@"3.0",
+                           @"-level",@"4.0",
                            @"-b:v", self.bitRate?: @"2000k",
                            @"-bf", @"0",
                            /*@"-crf", @"29",*/
                            @"-bufsize", @"2000k", output] mutableCopy];
+    
+    arguments = [@[@"-r", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
+                           @"-pattern_type", @"glob",
+                           @"-i", inputPath,
+                           @"-c:v", @"libx265",
+                           @"-pix_fmt", self.yuvFormat?:@"yuv420p",
+                           @"-profile:v", self.profile?:@"main",
+                           @"-level",@"4.0",
+                           @"-b:v", self.bitRate?: @"2000k",
+                           /*@"-bf", @"0",*/
+                           @"-crf", @"29",
+                           /*@"-tag:v", @"hvc1",*/ output] mutableCopy];
     
     if (isVp9) {
         arguments = [@[@"-framerate", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
