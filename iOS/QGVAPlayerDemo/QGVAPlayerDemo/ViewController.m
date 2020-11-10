@@ -83,14 +83,15 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 //vap动画
 - (void)playVapx {
-    NSString *mp4Path = [NSString stringWithFormat:@"%@/Resource/vap1.mp4", [[NSBundle mainBundle] resourcePath]];
+    NSString *mp4Path = [NSString stringWithFormat:@"%@/Resource/vap_265_hvc1.mp4", [[NSBundle mainBundle] resourcePath]];
     VAPView *mp4View = [[VAPView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:mp4View];
     mp4View.center = self.view.center;
     mp4View.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
-    [mp4View playHWDMP4:mp4Path repeatCount:-1 delegate:self];
+    [mp4View playHWDMP4:mp4Path delegate:self];
+    //[mp4View playHWDMP4:mp4Path blendMode:QGHWDTextureBlendMode_AlphaRight delegate:self];
 }
 
 #pragma mark -  mp4 hwd delegate

@@ -91,6 +91,8 @@
 @property (atomic, strong) dispatch_queue_t decodeQueue; //dispatch decode task
 @property (nonatomic, strong) NSData *ppsData; //Picture Parameter Set
 @property (nonatomic, strong) NSData *spsData; //Sequence Parameter Set
+/** Video Parameter Set */
+@property (nonatomic, strong) NSData *vpsData;
 
 @end
 
@@ -191,6 +193,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         return;
     }
     
+    uint64_t currentPts = [_mp4Parser.videoSamples[frameIndex] pts];
+    
     CVPixelBufferRef outputPixelBuffer = NULL;
     // 4. get NALUnit payload into a CMBlockBuffer,
     CMBlockBufferRef blockBuffer = NULL;
@@ -241,10 +245,22 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
             NSTimeInterval decodeTime = [[NSDate date] timeIntervalSinceDate:startDate]*1000;
             newFrame.decodeTime = decodeTime;
             newFrame.defaultFps =(int) strongSelf->_mp4Parser.fps;
+            newFrame.pts = currentPts;
             
             //8. insert into buffer
             NSInteger index = frameIndex % (strongSelf->_buffers.count);
             strongSelf->_buffers[index] = newFrame;
+            
+            // 9. sort
+//            [strongSelf->_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
+//                return [@(obj1.pts) compare:@(obj2.pts)];
+//            }];
+            
+//            if (frameIndex == 70) {
+//                for (int i = 0; i < strongSelf->_buffers.count; i++) {
+//                    NSLog(@"aarony - %lld", [strongSelf->_buffers[i] pts]);
+//                }
+//            }
         });
     } else {
         // 7. use VTDecompressionSessionDecodeFrame
@@ -265,6 +281,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         NSTimeInterval decodeTime = [[NSDate date] timeIntervalSinceDate:startDate]*1000;
         newFrame.decodeTime = decodeTime;
         newFrame.defaultFps = (int)_mp4Parser.fps;
+        
         
         //8. insert into buffer
         NSInteger index = frameIndex%_buffers.count;
@@ -307,6 +324,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     }
     
     _isFinish = NO;
+    self.vpsData = nil;
     self.spsData = nil;
     self.ppsData = nil;
     _outputWidth = (int)_mp4Parser.picWidth;
@@ -323,18 +341,54 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         VAP_Error(kQGVAPModuleCommon, @"sps&pps is already has value.");
         return YES;
     }
+    
     self.spsData = _mp4Parser.spsData;
     self.ppsData = _mp4Parser.ppsData;
+    self.vpsData = _mp4Parser.vpsData;
     
     // 2. create  CMFormatDescription
-    if (self.spsData != nil && self.ppsData != nil) {
-        const uint8_t* const parameterSetPointers[2] = { (const uint8_t*)[self.spsData bytes], (const uint8_t*)[self.ppsData bytes] };
-        const size_t parameterSetSizes[2] = { [self.spsData length], [self.ppsData length] };
-        _status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault, 2, parameterSetPointers, parameterSetSizes, 4, &_mFormatDescription);
-        if (_status != noErr) {
-            VAP_Event(kQGVAPModuleCommon, @"CMVideoFormatDescription. Creation: %@.", (_status == noErr) ? @"successfully." : @"failed.");
-            _constructErr = [NSError errorWithDomain:QGMP4HWDErrorDomain code:QGMP4HWDErrorCode_ErrorCreateVTBDesc userInfo:[self errorUserInfo]];
-            return NO;
+    if (self.spsData != nil && self.ppsData != nil && _mp4Parser.videoCodecID != QGMP4VideoStreamCodecIDUnknown) {
+        if (_mp4Parser.videoCodecID == QGMP4VideoStreamCodecIDH264) {
+            const uint8_t* const parameterSetPointers[2] = { (const uint8_t*)[self.spsData bytes], (const uint8_t*)[self.ppsData bytes] };
+            const size_t parameterSetSizes[2] = { [self.spsData length], [self.ppsData length] };
+            
+            _status = CMVideoFormatDescriptionCreateFromH264ParameterSets(kCFAllocatorDefault,
+                                                                          2,
+                                                                          parameterSetPointers,
+                                                                          parameterSetSizes,
+                                                                          4,
+                                                                          &_mFormatDescription);
+            if (_status != noErr) {
+                VAP_Event(kQGVAPModuleCommon, @"CMVideoFormatDescription. Creation: %@.", (_status == noErr) ? @"successfully." : @"failed.");
+                _constructErr = [NSError errorWithDomain:QGMP4HWDErrorDomain code:QGMP4HWDErrorCode_ErrorCreateVTBDesc userInfo:[self errorUserInfo]];
+                return NO;
+            }
+        } else if (_mp4Parser.videoCodecID == QGMP4VideoStreamCodecIDH265) {
+            if (@available(iOS 11.0, *)) {
+                if(VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC)) {
+                    const uint8_t* const parameterSetPointers[3] = {(const uint8_t*)[self.vpsData bytes], (const uint8_t*)[self.spsData bytes], (const uint8_t*)[self.ppsData bytes]};
+                    const size_t parameterSetSizes[3] = {[self.vpsData length], [self.spsData length], [self.ppsData length]};
+                    
+                    _status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(kCFAllocatorDefault,
+                                                                                  3,                    // parameter_set_count
+                                                                                  parameterSetPointers, // &parameter_set_pointers
+                                                                                  parameterSetSizes,    // &parameter_set_sizes
+                                                                                  4,                    // nal_unit_header_length
+                                                                                  NULL,
+                                                                                  &_mFormatDescription);
+                    if (_status != noErr) {
+                        VAP_Event(kQGVAPModuleCommon, @"CMVideoFormatDescription. Creation: %@.", (_status == noErr) ? @"successfully." : @"failed.");
+                        _constructErr = [NSError errorWithDomain:QGMP4HWDErrorDomain code:QGMP4HWDErrorCode_ErrorCreateVTBDesc userInfo:[self errorUserInfo]];
+                        return NO;
+                    }
+                } else {
+                    VAP_Event(kQGVAPModuleCommon, @"H.265 decoding is un-supported because of the hardware");
+                    return NO;
+                }
+            } else {
+                VAP_Event(kQGVAPModuleCommon, @"System version is too low to support H.265 decoding");
+                return NO;
+            }
         }
     }
     
@@ -390,9 +444,10 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         CFRelease(_mDecodeSession);
         _mDecodeSession = NULL;
     }
-    if (self.spsData || self.ppsData) {
+    if (self.spsData || self.ppsData || self.vpsData) {
         self.spsData = nil;
         self.ppsData = nil;
+        self.vpsData = nil;
     }
     if (_mFormatDescription) {
         CFRelease(_mFormatDescription);

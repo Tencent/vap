@@ -107,6 +107,44 @@ NSInteger const kQGBoxTypeLengthInBytes = 4;
 
 @end
 
+#pragma mark -- hvcc box
+/**
+ * QGMP4HvccBox
+ */
+@implementation QGMP4HvccBox
+@end
+
+/**
+ * QGCttsEntry 通过dts计算pts
+ */
+@implementation QGCttsEntry
+
+@end
+
+/**
+ * QGMP4CttsBox 通过dts计算pts
+ */
+@implementation QGMP4CttsBox
+- (void)boxDidParsed:(QGMp4BoxDataFetcher)datablock {
+    if (!_compositionOffsets) {
+        _compositionOffsets = [NSMutableArray new];
+    }
+
+    NSData *cttsData = datablock(self);
+    const char *bytes = cttsData.bytes;
+    uint32_t entryCount = READ32BIT(&bytes[12]);
+
+    for (int i = 0; i < entryCount; ++i) {
+        uint32_t sampleCount = READ32BIT(&bytes[16+i*8]);
+        uint32_t compositionOffset = READ32BIT(&bytes[16+i*8+4]);
+        for (int j = 0; j < sampleCount; j++) {
+            [_compositionOffsets addObject:@(compositionOffset)];
+        }
+    }
+}
+
+@end
+
 #pragma mark -- mdat box
 @implementation QGMP4MdatBox
 
@@ -331,6 +369,10 @@ stts记录了sample的时间信息，⾥⾯有多个entry，每个entry⾥⾯的
             return [QGMP4SttsBox class];
         case QGMP4BoxType_stco:
             return [QGMP4StcoBox class];
+        case QGMP4BoxType_hvcC:
+            return [QGMP4HvccBox class];
+        case QGMP4BoxType_ctts:
+            return [QGMP4CttsBox class];
         default:
             return nil;
     }
