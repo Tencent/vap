@@ -176,7 +176,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     if (_isFinish) {
         return ;
     }
-    if (!_buffers || _buffers.count == 0) {
+    
+    if (!_buffers) {
         return ;
     }
     
@@ -193,6 +194,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         return;
     }
     
+    // 获取当前帧pts,pts是在parse mp4 box时得到的
     uint64_t currentPts = [_mp4Parser.videoSamples[frameIndex] pts];
     
     CVPixelBufferRef outputPixelBuffer = NULL;
@@ -241,26 +243,19 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
             // imagebuffer会在frame回收时释放
             CVPixelBufferRetain(imageBuffer);
             newFrame.pixelBuffer = imageBuffer;
-            newFrame.frameIndex = frameIndex;
+            newFrame.frameIndex = frameIndex; //dts顺序
             NSTimeInterval decodeTime = [[NSDate date] timeIntervalSinceDate:startDate]*1000;
             newFrame.decodeTime = decodeTime;
             newFrame.defaultFps =(int) strongSelf->_mp4Parser.fps;
             newFrame.pts = currentPts;
             
-            //8. insert into buffer
-            NSInteger index = frameIndex % (strongSelf->_buffers.count);
-            strongSelf->_buffers[index] = newFrame;
+            // 8. insert into buffer
+            [strongSelf->_buffers addObject:newFrame];
             
             // 9. sort
-//            [strongSelf->_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
-//                return [@(obj1.pts) compare:@(obj2.pts)];
-//            }];
-            
-//            if (frameIndex == 70) {
-//                for (int i = 0; i < strongSelf->_buffers.count; i++) {
-//                    NSLog(@"aarony - %lld", [strongSelf->_buffers[i] pts]);
-//                }
-//            }
+            [strongSelf->_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
+                return [@(obj1.pts) compare:@(obj2.pts)];
+            }];
         });
     } else {
         // 7. use VTDecompressionSessionDecodeFrame
@@ -282,10 +277,13 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         newFrame.decodeTime = decodeTime;
         newFrame.defaultFps = (int)_mp4Parser.fps;
         
+        // 8. insert into buffer
+        [_buffers addObject:newFrame];
         
-        //8. insert into buffer
-        NSInteger index = frameIndex%_buffers.count;
-        _buffers[index] = newFrame;
+        // 9. sort
+        [_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
+            return [@(obj1.pts) compare:@(obj2.pts)];
+        }];
     }
 }
 

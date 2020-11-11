@@ -61,13 +61,16 @@
 - (QGBaseAnimatedImageFrame *)consumeDecodedFrame:(NSInteger)frameIndex {
 
     @synchronized (self) {
-        if (frameIndex==0 && ![_bufferManager isBufferFull]) {
+        // 控制何时命中第一帧，缓存满了才命中
+        if (frameIndex == 0 && _bufferManager.buffers.count < _config.bufferCount) {
             return nil;
         }
         [self checkIfDecodeFinish:frameIndex];
-        QGBaseAnimatedImageFrame *frame = [_bufferManager getBufferedFrame:frameIndex];
-        if (frame && frame.frameIndex == frameIndex) {
-            [self decodeFrame:frame.frameIndex+_bufferManager.buffers.count];
+        QGBaseAnimatedImageFrame *frame = [_bufferManager popVideoFrame];
+        if (frame) {
+            // pts顺序
+            frame.frameIndex = frameIndex;
+            [self decodeFrame:frameIndex+_config.bufferCount];
         }
         return frame;
     }
@@ -133,7 +136,7 @@
 
 - (void)initializeBuffers {
     
-    for (int i = 0; i < _bufferManager.buffers.count; i++) {
+    for (int i = 0; i < _config.bufferCount; i++) {
         [self decodeFrame:i];
     }
 }

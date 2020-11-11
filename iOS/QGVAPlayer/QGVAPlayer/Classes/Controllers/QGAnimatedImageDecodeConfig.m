@@ -21,7 +21,7 @@
 
     QGAnimatedImageDecodeConfig *config = [QGAnimatedImageDecodeConfig new];
     config.threadCount= 1;
-    config.bufferCount = 1;
+    config.bufferCount = 5;
     return config;
 }
 
