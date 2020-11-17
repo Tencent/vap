@@ -65,6 +65,7 @@
     }
     NSMutableArray *arguments = nil;
     
+    // high 3.0  main 4.0
     if (isH265) {
         arguments = [@[@"-r", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
                                @"-pattern_type", @"glob",
@@ -75,26 +76,28 @@
                                @"-level",@"4.0",
                                @"-b:v", self.bitRate?: @"2000k",
                                /*@"-bf", @"0",*/
-                               @"-crf", @"29",
-                               @"-tag:v", @"hvc1", output] mutableCopy];
+                               /*@"-crf", @"28",*/
+                               @"-tag:v", @"hvc1",
+                               @"-bufsize", @"2000k", output] mutableCopy];
     } else if (isVp9) {
         arguments = [@[@"-framerate", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
                        @"-pattern_type", @"glob",
                                    @"-i", inputPath,
                                    @"-c:v", @"libvpx-vp9",
                                    @"-pix_fmt", self.yuvFormat?:@"yuv420p",
-                                   @"-b:v", self.bitRate?: @"2000k", output] mutableCopy];
+                                   @"-b:v", self.bitRate?: @"2000k",
+                                   @"-bufsize", @"2000k", output] mutableCopy];
     } else {
         arguments = [@[@"-r", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
                                @"-pattern_type", @"glob",
                                @"-i", inputPath,
                                @"-c:v", @"libx264",
                                @"-pix_fmt", self.yuvFormat?:@"yuv420p",
-                               @"-profile:v", self.profile?:@"high",
+                               @"-profile:v", self.profile?:@"main",
                                @"-level",@"4.0",
                                @"-b:v", self.bitRate?: @"2000k",
                                @"-bf", @"0",
-                               /*@"-crf", @"29",*/
+                               /*@"-crf", @"28",*/
                                @"-bufsize", @"2000k", output] mutableCopy];
     }
     
