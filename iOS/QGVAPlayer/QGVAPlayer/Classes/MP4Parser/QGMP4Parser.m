@@ -240,22 +240,6 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
     return _duration;
 }
 
-//- (NSData *)spsData {
-//
-//    if (!_spsData) {
-//        _spsData = [self readSPSData];
-//    }
-//    return _spsData;
-//}
-//
-//- (NSData *)ppsData {
-//
-//    if (!_ppsData) {
-//        _ppsData = [self readPPSData];
-//    }
-//    return _ppsData;
-//}
-
 - (NSArray *)videoSamples {
     
     if (_videoSamples) {
@@ -404,20 +388,8 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
     }
 }
 
-//- (NSData *)readSPSData {
-//    if (self.videoCodecID == QGMP4VideoStreamCodecIDH264) {
-//        return [self parseAvccSPSData];
-//    } else if (self.videoCodecID == QGMP4VideoStreamCodecIDH265) {
-//        // h.265
-//        return nil;
-//    } else {
-//        return nil;
-//    }
-//}
-
 - (NSData *)parseAvccSPSData {
     //boxsize(32)+boxtype(32)+prefix(40)+预留(3)+spsCount(5)+spssize(16)+...+ppscount(8)+ppssize(16)+...
-    //QGMP4BoxType boxType = self.videoCodecID == QGMP4VideoStreamCodecIDH264 ? QGMP4BoxType_avcC : QGMP4BoxType_hvcC;
     NSData *extraData = [_parser readDataForBox:[self.videoTrackBox subBoxOfType:QGMP4BoxType_avcC]];
     if (extraData.length <= 8) {
         return nil;
@@ -434,19 +406,7 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
     return spsData;
 }
 
-//- (NSData *)readPPSData {
-//    if (self.videoCodecID == QGMP4VideoStreamCodecIDH264) {
-//        return [self parseAvccPPSData];
-//    } else if (self.videoCodecID == QGMP4VideoStreamCodecIDH265) {
-//        // h.265
-//        return nil;
-//    } else {
-//        return nil;
-//    }
-//}
-
 - (NSData *)parseAvccPPSData {
-    //QGMP4BoxType boxType = self.videoCodecID == QGMP4VideoStreamCodecIDH264 ? QGMP4BoxType_avcC : QGMP4BoxType_hvcC;
     NSData *extraData = [_parser readDataForBox:[self.videoTrackBox subBoxOfType:QGMP4BoxType_avcC]];
     if (extraData.length <= 8) {
         return nil;
