@@ -13,6 +13,8 @@ VAP（Video Animation Player）是企鹅电竞开发，用于播放酷炫动画�
 
 特效展示：
 
+[展示主页](https://egame.qq.com/vap)
+
 ![](./images/anim1.gif)
 
 而且VAP还能在动画中融入自定义的属性（比如用户名称, 头像）
