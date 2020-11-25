@@ -58,7 +58,7 @@ public class Main {
         // fps
         commonArg.fps = 24;
         // 素材文件路径
-        commonArg.inputPath = "/Users/hexleo/temp/begod/portrait/god";
+        commonArg.inputPath = "/path/to/your/demo";
         // 中间素材输出路径
         commonArg.outputPath = commonArg.inputPath + "/output";
 
