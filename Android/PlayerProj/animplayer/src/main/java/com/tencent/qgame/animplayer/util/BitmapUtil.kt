@@ -21,6 +21,12 @@ import com.tencent.qgame.animplayer.mix.Src
 
 object BitmapUtil {
 
+    fun createEmptyBitmap() : Bitmap {
+        return Bitmap.createBitmap(16, 16, Bitmap.Config.ARGB_8888).apply {
+            eraseColor(Color.TRANSPARENT)
+        }
+    }
+
     fun createTxtBitmap(src: Src): Bitmap {
         val w = src.w
         val h = src.h

@@ -172,7 +172,10 @@ class MixAnimPlugin(val player: AnimPlayer): IAnimPlugin {
             if (src.srcType == Src.SrcType.IMG) {
                 ALog.i(TAG, "fetch image ${src.srcId}")
                 resourceRequest?.fetchImage(Resource(src)) {
-                    src.bitmap = it
+                    src.bitmap = if (it == null) {
+                        ALog.e(TAG, "fetch image ${src.srcId} bitmap return null")
+                        BitmapUtil.createEmptyBitmap()
+                    } else it
                     ALog.i(TAG, "fetch image ${src.srcId} finish bitmap is ${it?.hashCode()}")
                     resultCall()
                 }
