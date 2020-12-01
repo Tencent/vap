@@ -48,6 +48,11 @@ public class Main {
      */
     public static void animTool() {
         final CommonArg commonArg = new CommonArg();
+        // ffmpeg 命令路径
+        commonArg.ffmpegCmd = "ffmpeg";
+        // bento4 mp4edit 命令路径
+        commonArg.mp4editCmd = "mp4edit";
+
         // 视频对齐方式 ORIN_H = 左右对齐， ORIN_V 上下对齐
         commonArg.orin = CommonArg.ORIN_H;
         // 素材宽高 px

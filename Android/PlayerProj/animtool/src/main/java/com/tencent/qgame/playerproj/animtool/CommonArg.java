@@ -20,6 +20,10 @@ public class CommonArg {
     public static final int ORIN_H = 1; // 左右对齐
     public static final int ORIN_V = 2; // 上下对齐
 
+    public String ffmpegCmd = "ffmpeg"; // ffmpeg 命令地址
+
+    public String mp4editCmd = "mp4edit"; // bento4 mp4edit 命令地址
+
     public int version = 2;
 
     public int orin = ORIN_H;

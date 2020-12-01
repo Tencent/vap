@@ -182,7 +182,7 @@ public class AnimTool {
             // 由json变为bin文件
             mp4BoxTool(input, commonArg.outputPath);
             // 将bin文件合并到mp4里
-            result = mergeBin2Mp4(commonArg.outputPath + "/vapc.bin", commonArg.outputPath);
+            result = mergeBin2Mp4(commonArg, commonArg.outputPath + "/vapc.bin", commonArg.outputPath);
             if (!result) {
                 TLog.i(TAG, "mergeBin2Mp4 fail");
                 return;
@@ -254,7 +254,7 @@ public class AnimTool {
      */
     private boolean createMp4(CommonArg commonArg) throws Exception {
         String path = commonArg.outputPath;
-        String[] cmd = new String[] {"ffmpeg", "-r", String.valueOf(commonArg.fps),
+        String[] cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
                 "-i", path + "/%03d.png",
                 "-pix_fmt", "yuv420p",
                 "-vcodec", "libx264",
@@ -275,8 +275,8 @@ public class AnimTool {
      * @param inputFile
      * @throws Exception
      */
-    private boolean mergeBin2Mp4(String inputFile, String videoPath) throws Exception{
-        String[] cmd = new String[] {"mp4edit", "--insert", ":"+inputFile+":1", videoPath + "/tmp_video.mp4", videoPath + "/video.mp4"};
+    private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String videoPath) throws Exception{
+        String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + "/tmp_video.mp4", videoPath + "/video.mp4"};
         Process pro = Runtime.getRuntime().exec(cmd);
         int result = pro.waitFor();
         TLog.i(TAG, "mergeBin2Mp4 result=" + (result == 0? "success" : "fail"));
