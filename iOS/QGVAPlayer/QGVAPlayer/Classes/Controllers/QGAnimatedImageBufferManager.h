@@ -24,5 +24,6 @@
 - (instancetype)initWithConfig:(QGAnimatedImageDecodeConfig *)config;
 - (QGBaseAnimatedImageFrame *)getBufferedFrame:(NSInteger)frameIndex;
 - (BOOL)isBufferFull;
+- (QGBaseAnimatedImageFrame *)popVideoFrame;
 
 @end

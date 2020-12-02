@@ -48,6 +48,11 @@
         }
     });
     
+    __block BOOL isH265;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        isH265 = [[(AppDelegate *)[NSApplication sharedApplication].delegate encoder] isEqualToString:@"libx265"];
+    });
+    
     NSString *output = [self.resourceDirectory stringByAppendingPathComponent:outputName];
     
     if ([fileManager fileExistsAtPath:output]) {
@@ -58,27 +63,42 @@
             return nil;
         }
     }
-    NSMutableArray *arguments = [@[@"-r", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
-                           @"-pattern_type", @"glob",
-                           @"-i", inputPath,
-                           @"-c:v", @"libx264",
-                           @"-pix_fmt", self.yuvFormat?:@"yuv420p",
-                           @"-profile:v", self.profile?:@"high",
-                           @"-level",@"3.0",
-                           @"-b:v", self.bitRate?: @"2000k",
-                           @"-bf", @"0",
-                           /*@"-crf", @"29",*/
-                           @"-bufsize", @"2000k", output] mutableCopy];
+    NSMutableArray *arguments = nil;
     
-    if (isVp9) {
+    // high 3.0  main 4.0
+    if (isH265) {
+        arguments = [@[@"-r", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
+                               @"-pattern_type", @"glob",
+                               @"-i", inputPath,
+                               @"-c:v", @"libx265",
+                               @"-pix_fmt", self.yuvFormat?:@"yuv420p",
+                               @"-profile:v", self.profile?:@"main",
+                               @"-level",@"4.0",
+                               @"-b:v", self.bitRate?: @"2000k",
+                               /*@"-bf", @"0",*/
+                               /*@"-crf", @"28",*/
+                               @"-tag:v", @"hvc1",
+                               @"-bufsize", @"2000k", output] mutableCopy];
+    } else if (isVp9) {
         arguments = [@[@"-framerate", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
                        @"-pattern_type", @"glob",
                                    @"-i", inputPath,
                                    @"-c:v", @"libvpx-vp9",
                                    @"-pix_fmt", self.yuvFormat?:@"yuv420p",
-                                   @"-b:v", self.bitRate?: @"2000k", output] mutableCopy];
-        
-        
+                                   @"-b:v", self.bitRate?: @"2000k",
+                                   @"-bufsize", @"2000k", output] mutableCopy];
+    } else {
+        arguments = [@[@"-r", [NSString stringWithFormat:@"%@", @(MAX(self.fps, 1))],
+                               @"-pattern_type", @"glob",
+                               @"-i", inputPath,
+                               @"-c:v", @"libx264",
+                               @"-pix_fmt", self.yuvFormat?:@"yuv420p",
+                               @"-profile:v", self.profile?:@"main",
+                               @"-level",@"4.0",
+                               @"-b:v", self.bitRate?: @"2000k",
+                               @"-bf", @"0",
+                               /*@"-crf", @"28",*/
+                               @"-bufsize", @"2000k", output] mutableCopy];
     }
     
     if (self.audioPath.length > 0) {
