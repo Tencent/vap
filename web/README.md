@@ -38,6 +38,7 @@ width | 宽度
 height | 高度
 fps | 动画播放帧数（可用：15、20、30、60）
 mute | 是否对视频静音
+type | 组件基于type字段做了实例化缓存，不同的VAP实例应该使用不同的type值（如0、1、2等）
 precache | 是否预加载视频资源（默认关闭，即边下边播）
 onDestory | 组件销毁时回调
 onLoadError | 加载失败回调
