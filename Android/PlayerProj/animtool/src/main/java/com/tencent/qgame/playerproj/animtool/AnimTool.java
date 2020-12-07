@@ -26,6 +26,14 @@ public class AnimTool {
 
     private static final String TAG = "AnimTool";
 
+    public static final String FRAME_IMAGE_DIR = "frames"+ File.separator;
+    public static final String VIDEO_FILE = "video.mp4";
+    public static final String TEM_VIDEO_FILE = "tmp_video.mp4";
+    public static final String VAPC_BIN_FILE = "vapc.bin";
+    public static final String VAPC_JSON_FILE = "vapc.json";
+
+
+
     private volatile int totalP = 0;
     private volatile int finishThreadCount = 0;
     private long time;
@@ -94,6 +102,9 @@ public class AnimTool {
 
         // 检测output文件是否存在，不存在则生成
         checkDir(commonArg.outputPath);
+        commonArg.frameOutputPath = commonArg.outputPath + FRAME_IMAGE_DIR;
+        checkDir(commonArg.frameOutputPath);
+
         totalP = 0;
         finishThreadCount = 0;
         final int threadNum = 16;
@@ -152,7 +163,7 @@ public class AnimTool {
         BufferedImage outBuf = new BufferedImage(videoFrame.outW, videoFrame.outH, BufferedImage.TYPE_INT_ARGB);
         outBuf.setRGB(0,0, videoFrame.outW, videoFrame.outH, videoFrame.argb, 0, videoFrame.outW);
 
-        File outputFile = new File(commonArg.outputPath  + String.format("%03d", frameIndex) +".png");
+        File outputFile = new File(commonArg.frameOutputPath + String.format("%03d", frameIndex) +".png");
         ImageIO.write(outBuf, "PNG", outputFile);
     }
 
@@ -173,24 +184,25 @@ public class AnimTool {
             // 创建配置json文件
             createVapcJson(commonArg);
             // 创建mp4文件
-            boolean result = createMp4(commonArg);
+            boolean result = createMp4(commonArg, commonArg.outputPath, commonArg.frameOutputPath);
             if (!result) {
                 TLog.i(TAG, "createMp4 fail");
                 return;
             }
-            String input = commonArg.outputPath + "/vapc.json";
+            String input = commonArg.outputPath + VAPC_JSON_FILE;
             // 由json变为bin文件
-            mp4BoxTool(input, commonArg.outputPath);
+            String vapcBinPath = mp4BoxTool(input, commonArg.outputPath);
             // 将bin文件合并到mp4里
-            result = mergeBin2Mp4(commonArg, commonArg.outputPath + "/vapc.bin", commonArg.outputPath);
+            result = mergeBin2Mp4(commonArg, vapcBinPath, commonArg.outputPath);
             if (!result) {
                 TLog.i(TAG, "mergeBin2Mp4 fail");
                 return;
             }
             // 删除临时视频文件
-            new File(commonArg.outputPath + "/tmp_video.mp4").delete();
+            new File(commonArg.outputPath + TEM_VIDEO_FILE).delete();
+            new File(commonArg.outputPath + VAPC_BIN_FILE).delete();
             // 计算文件md5
-            String md5 = new Md5Util().getFileMD5(new File(commonArg.outputPath + "/video.mp4"), commonArg.outputPath);
+            String md5 = new Md5Util().getFileMD5(new File(commonArg.outputPath + VIDEO_FILE), commonArg.outputPath);
             TLog.i(TAG, "md5="+md5);
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,7 +243,7 @@ public class AnimTool {
         json = json.replace("$(aFrame)", aFrame);
         json = json.replace("$(rgbFrame)", rgbFrame);
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(commonArg.outputPath + "/vapc.json"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(commonArg.outputPath + VAPC_JSON_FILE));
             writer.write(json);
             writer.flush();
             writer.close();
@@ -252,17 +264,16 @@ public class AnimTool {
      * @param commonArg
      * @throws Exception
      */
-    private boolean createMp4(CommonArg commonArg) throws Exception {
-        String path = commonArg.outputPath;
+    private boolean createMp4(CommonArg commonArg, String videoPath, String frameImagePath) throws Exception {
         String[] cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
-                "-i", path + "/%03d.png",
+                "-i", frameImagePath + "%03d.png",
                 "-pix_fmt", "yuv420p",
                 "-vcodec", "libx264",
                 "-b:v", "3000k",
                 "-profile:v", "baseline",
                 "-level", "3.0",
                 "-bf", "0",
-                "-y", path+"/tmp_video.mp4"};
+                "-y", videoPath + TEM_VIDEO_FILE};
 
         Process pro = Runtime.getRuntime().exec(cmd);
         int result = pro.waitFor();
@@ -276,7 +287,7 @@ public class AnimTool {
      * @throws Exception
      */
     private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String videoPath) throws Exception{
-        String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + "/tmp_video.mp4", videoPath + "/video.mp4"};
+        String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + TEM_VIDEO_FILE, videoPath + VIDEO_FILE};
         Process pro = Runtime.getRuntime().exec(cmd);
         int result = pro.waitFor();
         TLog.i(TAG, "mergeBin2Mp4 result=" + (result == 0? "success" : "fail"));
@@ -287,9 +298,9 @@ public class AnimTool {
      * 生成对应的box bin
      * 执行 mp4edit --insert :vapc.bin:1 demo_origin.mp4 demo_output.mp4 插入对应box
      */
-    private void mp4BoxTool(String inputFile, String outputPath) throws Exception {
+    private String mp4BoxTool(String inputFile, String outputPath) throws Exception {
         Mp4BoxTool mp4BoxTool = new Mp4BoxTool();
-        mp4BoxTool.create(inputFile, outputPath);
+        return mp4BoxTool.create(inputFile, outputPath);
     }
 
 }

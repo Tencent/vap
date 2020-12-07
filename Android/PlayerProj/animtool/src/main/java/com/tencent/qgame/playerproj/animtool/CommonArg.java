@@ -39,4 +39,6 @@ public class CommonArg {
     public String inputPath; // 输入帧文件地址
 
     public String outputPath; // 输出地址
+
+    public String frameOutputPath; // 帧图片输出路径
 }

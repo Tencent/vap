@@ -29,14 +29,14 @@ public class Mp4BoxTool {
     /**
      * 输入json文件，输出vapc.bin可以直接进行mp4合成
      */
-    public void create(String inputFile, String outputPath) throws Exception {
+    public String create(String inputFile, String outputPath) throws Exception {
         File input = new File(inputFile);
         if (!input.exists() || !input.isFile()) {
             TLog.i(TAG, "input file not exist");
-            return;
+            return null;
         }
         checkDir(outputPath);
-        File output = new File(outputPath + "/vapc.bin");
+        File output = new File(outputPath + AnimTool.VAPC_BIN_FILE);
         InputStream is = new FileInputStream(input);
         OutputStream os = new FileOutputStream(output);
         // 8字节的box头部
@@ -52,6 +52,7 @@ public class Mp4BoxTool {
         is.close();
         os.close();
         TLog.i(TAG, "success");
+        return output.getAbsolutePath();
     }
 
     private void checkDir(String path) {
@@ -120,7 +121,7 @@ public class Mp4BoxTool {
         mp4File.close();
 
         checkDir(outputPath);
-        File output = new File(outputPath + "/vapc.json");
+        File output = new File(outputPath + AnimTool.VAPC_JSON_FILE);
 
         OutputStream os = new FileOutputStream(output);
         // 8字节的box头部
