@@ -265,15 +265,29 @@ public class AnimTool {
      * @throws Exception
      */
     private boolean createMp4(CommonArg commonArg, String videoPath, String frameImagePath) throws Exception {
-        String[] cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
-                "-i", frameImagePath + "%03d.png",
-                "-pix_fmt", "yuv420p",
-                "-vcodec", "libx264",
-                "-b:v", "3000k",
-                "-profile:v", "baseline",
-                "-level", "3.0",
-                "-bf", "0",
-                "-y", videoPath + TEM_VIDEO_FILE};
+        String[] cmd = null;
+        if (commonArg.enableH265) {
+            cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                    "-i", frameImagePath + "%03d.png",
+                    "-pix_fmt", "yuv420p",
+                    "-vcodec", "libx265",
+                    "-b:v", "2000k",
+                    "-profile:v", "main",
+                    "-level", "4.0",
+                    "-tag:v", "hvc1",
+                    "-bufsize", "2000k",
+                    "-y", videoPath + TEM_VIDEO_FILE};
+        } else {
+            cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                    "-i", frameImagePath + "%03d.png",
+                    "-pix_fmt", "yuv420p",
+                    "-vcodec", "libx264",
+                    "-b:v", "3000k",
+                    "-profile:v", "baseline",
+                    "-level", "3.0",
+                    "-bf", "0",
+                    "-y", videoPath + TEM_VIDEO_FILE};
+        }
 
         Process pro = Runtime.getRuntime().exec(cmd);
         int result = pro.waitFor();
