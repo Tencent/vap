@@ -3,6 +3,8 @@
 ## 简介
 vapxTool是专门为vap组件打造的素材生成工具
 
+Mac安装包下载：[download](https://github.com/Tencent/vap/releases/download/iOS1.0.3/VapxTool.dmg)
+
 ## 功能介绍
 
 ### 基本操作

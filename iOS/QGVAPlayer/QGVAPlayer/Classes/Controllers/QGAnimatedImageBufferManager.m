@@ -35,12 +35,7 @@
 }
 
 - (void)createBuffersWithConfig:(QGAnimatedImageDecodeConfig *)config {
-    
-    _buffers = [QGVAPSafeMutableArray new];
-    for (int i = 0; i < config.bufferCount; i++) {
-        NSObject *frame = [NSObject new];
-        [_buffers addObject:frame];
-    }
+    _buffers = [[QGVAPSafeMutableArray alloc] initWithCapacity:config.bufferCount];
 }
 
 /**
@@ -64,6 +59,21 @@
     if (![frame isKindOfClass:[QGBaseAnimatedImageFrame class]] || ([(QGBaseAnimatedImageFrame*)frame frameIndex] != frameIndex)) {
         return nil;
     }
+    return frame;
+}
+
+- (QGBaseAnimatedImageFrame *)popVideoFrame {
+    if (!_buffers.count) {
+        return nil;
+    }
+    
+    if (![_buffers.firstObject isKindOfClass:[QGBaseAnimatedImageFrame class]]) {
+        return nil;
+    }
+    
+    QGBaseAnimatedImageFrame *frame = _buffers.firstObject;
+    [_buffers removeObjectAtIndex:0];
+    
     return frame;
 }
 

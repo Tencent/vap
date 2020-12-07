@@ -52,6 +52,10 @@
 @property (nonatomic, strong) QGMP4Box *rootBox;        //mp4文件根box
 @property (nonatomic, strong) QGMP4TrackBox *videoTrackBox;     //视频track
 @property (nonatomic, strong) QGMP4TrackBox *audioTrackBox;     //音频track
+/** vps */
+@property (nonatomic, strong) NSData *vpsData;
+/** 视频流编码器ID类型 */
+@property (nonatomic, assign) QGMP4VideoStreamCodecID videoCodecID;
 
 - (void)parse;
 - (NSData *)readPacketOfSample:(NSInteger)sampleIndex;

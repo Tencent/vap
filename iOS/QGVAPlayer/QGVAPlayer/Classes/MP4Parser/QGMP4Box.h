@@ -75,8 +75,28 @@ typedef NS_ENUM(NSUInteger, QGMP4BoxType) {
     QGMP4BoxType_wide           =   ATOM_TYPE('w','i','d','e'),//0x77696465,
     QGMP4BoxType_loci           =   ATOM_TYPE('l','o','c','i'),//0x6c6f6369,
     QGMP4BoxType_smhd           =   ATOM_TYPE('s','m','h','d'),//0x736d6864,
-    QGMP4BoxType_vapc           =   ATOM_TYPE('v','a','p','c')//0x76617063,//vap专属，存储json配置信息
+    QGMP4BoxType_vapc           =   ATOM_TYPE('v','a','p','c'),//0x76617063,//vap专属，存储json配置信息
+    QGMP4BoxType_hvc1           =   ATOM_TYPE('h','v','c','1'),
+    QGMP4BoxType_hvcC           =   ATOM_TYPE('h','v','c','C')
 };
+
+typedef NS_ENUM(NSUInteger, QGMP4VideoStreamCodecID) {
+    QGMP4VideoStreamCodecIDUnknown = 0,
+    QGMP4VideoStreamCodecIDH264,
+    QGMP4VideoStreamCodecIDH265
+};
+ 
+/**
+ * QGCttsEntry
+ */
+@interface QGCttsEntry : NSObject
+
+/** sampleCount */
+@property (nonatomic, assign) uint32_t sampleCount;
+/** compositionOffset */
+@property (nonatomic, assign) uint32_t compositionOffset;
+
+@end
 
 @interface QGMP4BoxFactory : NSObject
 
@@ -115,6 +135,9 @@ typedef NS_ENUM(NSUInteger, QGMP4BoxType) {
 @interface QGMP4AvccBox : QGMP4Box
 @end
 
+@interface QGMP4HvccBox : QGMP4Box
+@end
+
 @interface QGMP4MvhdBox : QGMP4Box
 @end
 
@@ -142,6 +165,16 @@ The table is compactly coded. Each entry gives the index of the first chunk of a
 
 @property (nonatomic, assign) uint32_t chunkCount;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *chunkOffsets;
+
+@end
+
+/**
+ * ctts
+ */
+@interface QGMP4CttsBox : QGMP4Box
+
+/** compositionOffsets */
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *compositionOffsets;
 
 @end
 

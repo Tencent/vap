@@ -19,5 +19,7 @@
 
 @property (atomic, assign) NSInteger frameIndex;         //当前帧索引
 @property (atomic, assign) NSTimeInterval duration;      //播放时长
+/** pts */
+@property (atomic, assign) uint64_t pts;
 
 @end
