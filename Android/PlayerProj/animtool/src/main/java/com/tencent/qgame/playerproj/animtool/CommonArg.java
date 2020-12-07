@@ -26,6 +26,19 @@ public class CommonArg {
 
     public boolean enableH265 = false; // 是否开启h265
 
+
+    public int fps = 0;
+
+    public String inputPath; // 输入帧文件地址
+
+    public String outputPath; // 输出地址
+
+
+    /**
+     * 无需手动配置
+     */
+    public String frameOutputPath; // 帧图片输出路径
+
     public int version = 2;
 
     public int orin = ORIN_H;
@@ -34,13 +47,8 @@ public class CommonArg {
 
     public int videoH;
 
+    public int gap; // rgb 与 alpha 之间间隔距离
+
     public int totalFrame;
 
-    public int fps = 0;
-
-    public String inputPath; // 输入帧文件地址
-
-    public String outputPath; // 输出地址
-
-    public String frameOutputPath; // 帧图片输出路径
 }

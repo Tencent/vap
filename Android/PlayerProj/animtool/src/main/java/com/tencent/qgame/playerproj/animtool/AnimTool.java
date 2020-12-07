@@ -73,10 +73,10 @@ public class AnimTool {
         }
 
         // 宽高必须是16的倍数，某些机行会进行对齐
-        if (commonArg.videoW % 16 != 0 || commonArg.videoH % 16 != 0) {
+        /*if (commonArg.videoW % 16 != 0 || commonArg.videoH % 16 != 0) {
             TLog.i(TAG, "error: video size " + commonArg.videoW + "x" + commonArg.videoH + " can not be divisible by 16");
             return false;
-        }
+        }*/
 
         File input = new File(commonArg.inputPath);
         if (!input.exists()) {
@@ -154,7 +154,7 @@ public class AnimTool {
         int w = commonArg.videoW;
         int h = commonArg.videoH;
         File inputFile = new File(commonArg.inputPath + String.format("%03d", frameIndex)+".png");
-        GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg.orin,w, h, inputFile);
+        GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg.orin,w, h, commonArg.gap, inputFile);
         if (videoFrame == null) {
             TLog.i(TAG, "frameIndex="+frameIndex +" is empty");
             return;
@@ -226,15 +226,15 @@ public class AnimTool {
         String aFrame = "[0,0,"+commonArg.videoW+","+commonArg.videoH+"]";
         String rgbFrame = "[0,0,0,0]";
         if (commonArg.orin == CommonArg.ORIN_H) { // 水平对齐
-            realW = 2 * commonArg.videoW;
+            realW = 2 * commonArg.videoW + commonArg.gap;
             realH = commonArg.videoH;
-            cx = commonArg.videoW;
+            cx = commonArg.videoW + commonArg.gap;
             cy = 0;
         } else { // 上下对齐
             realW = commonArg.videoW;
-            realH = 2 * commonArg.videoH;
+            realH = 2 * commonArg.videoH + commonArg.gap;
             cx = 0;
-            cy = commonArg.videoH;
+            cy = commonArg.videoH + commonArg.gap;
         }
         rgbFrame = "["+cx+","+cy+","+commonArg.videoW+","+commonArg.videoH+"]";
 

@@ -25,8 +25,6 @@ public class GetAlphaFrame {
     public static final int ORIN_H = 1; // 左右对齐
     public static final int ORIN_V = 2; // 上下对齐
 
-    public static final int MASK_TEX_GAP = 10; // 遮罩纹理之间的间距，防止光栅化导致边界模糊问题
-
 
     public static class AlphaFrameOut {
 
@@ -37,34 +35,39 @@ public class GetAlphaFrame {
         public int h;
         public int outW;
         public int outH;
+        public int gap;
 
-        // 一帧里纹理开始的位置
-        int lastX;
-        int lastY;
-        int curMaxY;
 
-        public AlphaFrameOut(int orin, int[] argb, int w, int h, int outW, int outH) {
+        public AlphaFrameOut(int orin, int[] argb, int w, int h, int outW, int outH, int gap) {
             this.orin = orin;
             this.argb = argb;
             this.w = w;
             this.h = h;
             this.outW = outW;
             this.outH = outH;
-            lastX = MASK_TEX_GAP;
-            lastY = MASK_TEX_GAP;
-            curMaxY = lastY;
+            this.gap = gap;
         }
 
     }
 
-    public AlphaFrameOut createFrame(int orin, int w, int h, File inputFile) throws IOException {
+    /**
+     *
+     * @param orin
+     * @param w 原图像宽
+     * @param h 原图像高
+     * @param gap rgb 与 alpha 之间间隔距离
+     * @param inputFile
+     * @return
+     * @throws IOException
+     */
+    public AlphaFrameOut createFrame(int orin, int w, int h, int gap, File inputFile) throws IOException {
 
         if (!inputFile.exists()) {
             return null;
         }
 
-        int outW = orin == ORIN_H ? w * 2 : w;
-        int outH = orin == ORIN_H ? h : h * 2;
+        int outW = orin == ORIN_H ? (w * 2 + gap) : w;
+        int outH = orin == ORIN_H ? h : (h * 2 + gap);
 
         BufferedImage inputBuf = ImageIO.read(inputFile);
         int[] inputArgb = inputBuf.getRGB(0, 0, w, h, null, 0, w);
@@ -76,13 +79,11 @@ public class GetAlphaFrame {
         for (int k=0; k<2; k++) {
             for (int x = 0; x < w; x++) {
                 for (int y = 0; y < h; y++) {
-                    int outPoint = orin == ORIN_H ? k * w + x + y * outW : k * w * h + x + y * w;
+                    int outPoint = orin == ORIN_H ? k * (w + gap) + x + y * outW : k * w * (h + gap) + x + y * w;
                     if (k == 0) {
                         int alpha = inputArgb[x + y * w] >>> 24;
                         // r = g = b
                         outputArgb[outPoint] = 0xff000000 + (alpha << 16) + (alpha << 8) + alpha;
-                        // r = b g = 0
-                        // outputArgb[outPoint] = 0xff000000 + (alpha << 16) + (0x00 << 8) + alpha;
                     } else {
                         outputArgb[outPoint] = blendBg(inputArgb[x + y * w], 0xff000000);
                     }
@@ -90,7 +91,7 @@ public class GetAlphaFrame {
             }
         }
 
-        return new AlphaFrameOut(orin, outputArgb, w, h, outW, outH);
+        return new AlphaFrameOut(orin, outputArgb, w, h, outW, outH, gap);
 
     }
 
