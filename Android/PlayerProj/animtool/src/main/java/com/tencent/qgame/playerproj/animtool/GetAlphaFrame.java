@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GetAlphaFrame {
 
@@ -60,26 +61,25 @@ public class GetAlphaFrame {
      * @return
      * @throws IOException
      */
-    public AlphaFrameOut createFrame(int orin, int w, int h, int gap, File inputFile) throws IOException {
+    public AlphaFrameOut createFrame(int orin, int w, int h, int gap, int wFill, int hFill, File inputFile) throws IOException {
 
         if (!inputFile.exists()) {
             return null;
         }
 
-        int outW = orin == ORIN_H ? (w * 2 + gap) : w;
-        int outH = orin == ORIN_H ? h : (h * 2 + gap);
+        int outW = (orin == ORIN_H ? (w * 2 + gap) : w) + wFill;
+        int outH = (orin == ORIN_H ? h : (h * 2 + gap)) + hFill;
 
         BufferedImage inputBuf = ImageIO.read(inputFile);
         int[] inputArgb = inputBuf.getRGB(0, 0, w, h, null, 0, w);
 
-
         int[] outputArgb = new int[outW * outH];
-
+        Arrays.fill(outputArgb, 0xff000000);
 
         for (int k=0; k<2; k++) {
             for (int x = 0; x < w; x++) {
                 for (int y = 0; y < h; y++) {
-                    int outPoint = orin == ORIN_H ? k * (w + gap) + x + y * outW : k * w * (h + gap) + x + y * w;
+                    int outPoint = orin == ORIN_H ? k * (w + gap) + x + y * outW : k * outW * (h + gap) + x + y * outW;
                     if (k == 0) {
                         int alpha = inputArgb[x + y * w] >>> 24;
                         // r = g = b

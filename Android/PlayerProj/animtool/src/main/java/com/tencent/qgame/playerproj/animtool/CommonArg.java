@@ -26,7 +26,6 @@ public class CommonArg {
 
     public boolean enableH265 = false; // 是否开启h265
 
-
     public int fps = 0;
 
     public String inputPath; // 输入帧文件地址
@@ -48,6 +47,10 @@ public class CommonArg {
     public int videoH;
 
     public int gap; // rgb 与 alpha 之间间隔距离
+
+    public int wFill; // 宽度填充
+
+    public int hFill; // 高度填充
 
     public int totalFrame;
 

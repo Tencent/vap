@@ -21,7 +21,11 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        animTool();
+        try {
+            animTool();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
 
@@ -46,26 +50,26 @@ public class Main {
      *
      * ps: 项目是普通的java程序，需要在Run Configuration 里加入Application运行项目，并选择animtool项目，接下来按提示配置即可
      */
-    public static void animTool() {
+    public static void animTool() throws Exception {
         final CommonArg commonArg = new CommonArg();
         // ffmpeg 命令路径
         commonArg.ffmpegCmd = "ffmpeg";
         // bento4 mp4edit 命令路径
         commonArg.mp4editCmd = "mp4edit";
 
-        // 视频对齐方式 ORIN_H = 左右对齐， ORIN_V 上下对齐
-        commonArg.orin = CommonArg.ORIN_H;
-        // 素材宽高 px
-        commonArg.videoW = 672;
-        commonArg.videoH = 1504;
-        // 总帧数
-        commonArg.totalFrame = 240;
+        /*
+         * 是否开启h265（默认关闭）
+         * 优点：压缩率更高，视频更清晰
+         * 缺点：Android 4.x系统 & 部分低端机 无法播放265视频
+         */
+        commonArg.enableH265 = true;
         // fps
         commonArg.fps = 24;
         // 素材文件路径
         commonArg.inputPath = "/path/to/your/demo";
         // 中间素材输出路径
         commonArg.outputPath = commonArg.inputPath + "/output";
+
 
         // 开始运行
         AnimTool animTool = new AnimTool();

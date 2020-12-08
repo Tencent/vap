@@ -44,7 +44,7 @@ public class AnimTool {
      * @param commonArg
      * @param needVideo true 生成完整视频 false 只合成帧图片
      */
-    public void create(final CommonArg commonArg, final boolean needVideo) {
+    public void create(final CommonArg commonArg, final boolean needVideo) throws Exception{
         createAllFrameImage(commonArg, new Runnable() {
             @Override
             public void run() {
@@ -61,39 +61,11 @@ public class AnimTool {
      * @param commonArg
      * @return
      */
-    private boolean checkCommonArg(CommonArg commonArg) {
-        if (commonArg.totalFrame <= 0) {
-            TLog.i(TAG, "error: totalFrame=" + commonArg.totalFrame);
-            return false;
-        }
-
-        if (commonArg.videoW <= 0 || commonArg.videoH <= 0) {
-            TLog.i(TAG, "error: video size " + commonArg.videoW + "x" + commonArg.videoH);
-            return false;
-        }
-
-        // 宽高必须是16的倍数，某些机行会进行对齐
-        /*if (commonArg.videoW % 16 != 0 || commonArg.videoH % 16 != 0) {
-            TLog.i(TAG, "error: video size " + commonArg.videoW + "x" + commonArg.videoH + " can not be divisible by 16");
-            return false;
-        }*/
-
-        File input = new File(commonArg.inputPath);
-        if (!input.exists()) {
-            TLog.i(TAG, "error: input path invalid " + commonArg.inputPath);
-            return false;
-        }
-
-        if (!File.separator.equals(commonArg.inputPath.substring(commonArg.inputPath.length() - 1))) {
-            commonArg.inputPath = commonArg.inputPath + File.separator;
-        }
-        if (!File.separator.equals(commonArg.outputPath.substring(commonArg.outputPath.length() - 1))) {
-            commonArg.outputPath = commonArg.outputPath + File.separator;
-        }
-        return true;
+    private boolean checkCommonArg(CommonArg commonArg) throws Exception {
+        return CommonArgTool.autoFillAndCheck(commonArg);
     }
 
-    private void createAllFrameImage(final CommonArg commonArg, final Runnable finishRunnable) {
+    private void createAllFrameImage(final CommonArg commonArg, final Runnable finishRunnable) throws Exception{
         if (!checkCommonArg(commonArg)) {
             return;
         }
@@ -102,7 +74,6 @@ public class AnimTool {
 
         // 检测output文件是否存在，不存在则生成
         checkDir(commonArg.outputPath);
-        commonArg.frameOutputPath = commonArg.outputPath + FRAME_IMAGE_DIR;
         checkDir(commonArg.frameOutputPath);
 
         totalP = 0;
@@ -154,7 +125,8 @@ public class AnimTool {
         int w = commonArg.videoW;
         int h = commonArg.videoH;
         File inputFile = new File(commonArg.inputPath + String.format("%03d", frameIndex)+".png");
-        GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg.orin,w, h, commonArg.gap, inputFile);
+        GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg.orin, w, h,
+                commonArg.gap, commonArg.wFill, commonArg.hFill, inputFile);
         if (videoFrame == null) {
             TLog.i(TAG, "frameIndex="+frameIndex +" is empty");
             return;
@@ -238,6 +210,8 @@ public class AnimTool {
         }
         rgbFrame = "["+cx+","+cy+","+commonArg.videoW+","+commonArg.videoH+"]";
 
+        realW += commonArg.wFill;
+        realH += commonArg.hFill;
         json = json.replace("$(videoW)", String.valueOf(realW));
         json = json.replace("$(videoH)", String.valueOf(realH));
         json = json.replace("$(aFrame)", aFrame);
