@@ -16,16 +16,11 @@
 package com.tencent.qgame.playerproj.animtool;
 
 
-
 public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        try {
-            animTool();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        animTool();
     }
 
 
@@ -60,16 +55,13 @@ public class Main {
         /*
          * 是否开启h265（默认关闭）
          * 优点：压缩率更高，视频更清晰
-         * 缺点：Android 4.x系统 & 部分低端机 无法播放265视频
+         * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
          */
         commonArg.enableH265 = true;
         // fps
         commonArg.fps = 24;
         // 素材文件路径
         commonArg.inputPath = "/path/to/your/demo";
-        // 中间素材输出路径
-        commonArg.outputPath = commonArg.inputPath + "/output";
-
 
         // 开始运行
         AnimTool animTool = new AnimTool();

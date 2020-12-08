@@ -19,6 +19,9 @@ class CommonArgTool {
      */
     static boolean autoFillAndCheck(CommonArg commonArg) throws Exception {
 
+        String os = System.getProperty("os.name");
+        TLog.i(TAG, os);
+
         //  路径检查
         File input = new File(commonArg.inputPath);
         if (!input.exists()) {
@@ -29,10 +32,8 @@ class CommonArgTool {
         if (!File.separator.equals(commonArg.inputPath.substring(commonArg.inputPath.length() - 1))) {
             commonArg.inputPath = commonArg.inputPath + File.separator;
         }
-        if (!File.separator.equals(commonArg.outputPath.substring(commonArg.outputPath.length() - 1))) {
-            commonArg.outputPath = commonArg.outputPath + File.separator;
-        }
-
+        // output path
+        commonArg.outputPath = commonArg.inputPath + AnimTool.OUTPUT_DIR;
 
         // 帧图片生成路径
         commonArg.frameOutputPath = commonArg.outputPath + AnimTool.FRAME_IMAGE_DIR;

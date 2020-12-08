@@ -26,6 +26,7 @@ public class AnimTool {
 
     private static final String TAG = "AnimTool";
 
+    public static final String OUTPUT_DIR = "output"+ File.separator;
     public static final String FRAME_IMAGE_DIR = "frames"+ File.separator;
     public static final String VIDEO_FILE = "video.mp4";
     public static final String TEM_VIDEO_FILE = "tmp_video.mp4";
