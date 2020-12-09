@@ -39,7 +39,11 @@ public class AnimTool {
     private volatile int finishThreadCount = 0;
     private long time;
     private GetAlphaFrame getAlphaFrame = new GetAlphaFrame();
+    private IToolListener toolListener;
 
+    public void setToolListener(IToolListener toolListener) {
+        this.toolListener = toolListener;
+    }
 
     /**
      * @param commonArg
@@ -99,7 +103,12 @@ public class AnimTool {
                     for(int i = threadIndexSet[k][0]; i<threadIndexSet[k][1]; i++) {
                         synchronized (AnimTool.class) {
                             totalP++;
-                            TLog.i(TAG, "progress " + (totalP * 1.0f / commonArg.totalFrame));
+                            float progress = totalP * 1.0f / commonArg.totalFrame;
+                            if (toolListener != null) {
+                                toolListener.onProgress(progress);
+                            } else {
+                                TLog.i(TAG, "progress " + progress);
+                            }
                         }
                         try {
                             createFrame(commonArg, i);
@@ -115,6 +124,9 @@ public class AnimTool {
                             }
                             long cost = System.currentTimeMillis() - time;
                             TLog.i(TAG,"Finish cost=" + cost);
+                            if (toolListener != null) {
+                                toolListener.onComplete();
+                            }
                         }
                     }
                 }
@@ -290,6 +302,12 @@ public class AnimTool {
     private String mp4BoxTool(String inputFile, String outputPath) throws Exception {
         Mp4BoxTool mp4BoxTool = new Mp4BoxTool();
         return mp4BoxTool.create(inputFile, outputPath);
+    }
+
+
+    public interface IToolListener {
+        void onProgress(float progress);
+        void onComplete();
     }
 
 }

@@ -16,11 +16,16 @@
 package com.tencent.qgame.playerproj.animtool;
 
 
+import com.tencent.qgame.playerproj.animtool.ui.ToolUI;
+
 public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        animTool();
+        // 启动UI界面
+        new ToolUI().run();
+        // java工具
+        // animTool();
     }
 
 

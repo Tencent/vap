@@ -22,6 +22,11 @@ class CommonArgTool {
         String os = System.getProperty("os.name");
         TLog.i(TAG, os);
 
+        if (commonArg.inputPath == null && commonArg.inputPath == "") {
+            TLog.i(TAG, "error: input path invalid");
+            return false;
+        }
+
         //  路径检查
         File input = new File(commonArg.inputPath);
         if (!input.exists()) {
