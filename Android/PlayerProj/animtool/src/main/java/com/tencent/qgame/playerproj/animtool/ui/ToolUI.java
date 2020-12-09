@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -38,7 +37,7 @@ public class ToolUI {
     private static final String TAG = "ToolUI";
     private static final String PROPERTIES_FILE = "setting.properties";
     private final int WIDTH = 550;
-    private final int HEIGHT = 300;
+    private final int HEIGHT = 350;
 
     private final ButtonGroup group = new ButtonGroup();
     private final JRadioButton btnH265 = new JRadioButton("h265");
@@ -49,6 +48,7 @@ public class ToolUI {
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
     private final Properties props = new Properties();
+    private final JButton btnOpenSource = new JButton("open source software");
 
 
 
@@ -122,7 +122,6 @@ public class ToolUI {
     }
 
     private void createUI() {
-        // 创建 JFrame 实例
         JFrame frame = new JFrame("VAP tool");
         frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -131,13 +130,9 @@ public class ToolUI {
         int h = (Toolkit.getDefaultToolkit().getScreenSize().height - HEIGHT) / 2;
         frame.setLocation(w, h);
 
-
         JPanel panel = new JPanel();
         frame.add(panel);
-
         layout(panel);
-
-        // 设置界面可见
         frame.setVisible(true);
     }
 
@@ -154,6 +149,8 @@ public class ToolUI {
         panel.add(getCreateLayout());
         // log
         panel.add(getLogLayout());
+        // open source
+        panel.add(getOpenSourceLayout());
 
     }
 
@@ -263,7 +260,19 @@ public class ToolUI {
         return panel;
     }
 
-    // private JPanel
+    private JPanel getOpenSourceLayout() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+        btnOpenSource.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                new OpenSourceUI().createUI();
+            }
+        });
+        panel.add(btnOpenSource);
+        return panel;
+    }
 
     private void log(String tag, String msg) {
         txtAreaLog.append("[" + tag + "]:" + msg + "\n");
@@ -294,4 +303,6 @@ public class ToolUI {
         props.setProperty("inputPath", commonArg.inputPath == null ? "" : commonArg.inputPath);
         props.store(new FileOutputStream(PROPERTIES_FILE), "");
     }
+
+
 }
