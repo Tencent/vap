@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,11 +46,11 @@ public class ToolUI {
     private final JRadioButton btnH264 = new JRadioButton("h264");
     private final SpinnerModel modelFps = new SpinnerNumberModel(24, 1, 60, 1);
     private final JTextField textInputPath = new JTextField();
+    private final JButton btnCreate = new JButton("create VAP");
     private final JTextArea txtAreaLog = new JTextArea();
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
     private final Properties props = new Properties();
-    private final JButton btnOpenSource = new JButton("open source software");
 
 
 
@@ -85,6 +87,7 @@ public class ToolUI {
                     runAnimTool();
                 } catch (Exception e) {
                     TLog.i(TAG, "ERROR -> " + e.getMessage());
+                    btnCreate.setEnabled(true);
                 }
             }
         }).start();
@@ -92,11 +95,24 @@ public class ToolUI {
 
     private void runAnimTool() throws Exception {
         final CommonArg commonArg = new CommonArg();
+        String os = System.getProperty("os.name").toLowerCase();
+
         commonArg.ffmpegCmd = "ffmpeg";
         commonArg.mp4editCmd = "mp4edit";
+
+        if (os != null && !"".equals(os)) {
+            if (os.contains("mac") && new File("mac").exists()) {
+                commonArg.ffmpegCmd = "mac/ffmpeg";
+                commonArg.mp4editCmd = "mac/mp4edit";
+            } else if (os.contains("windows") && new File("win").exists()) {
+                commonArg.ffmpegCmd = "win/ffmpeg";
+                commonArg.mp4editCmd = "win/mp4edit";
+            }
+        }
         commonArg.enableH265 = group.isSelected(btnH265.getModel());
         commonArg.fps = (Integer)modelFps.getValue();
         commonArg.inputPath = textInputPath.getText();
+        TLog.i(TAG, commonArg.toString());
 
         AnimTool animTool = new AnimTool();
         animTool.setToolListener(new AnimTool.IToolListener() {
@@ -108,7 +124,8 @@ public class ToolUI {
 
             @Override
             public void onComplete() {
-                labelOutInfo.setText("output: " + commonArg.outputPath);
+                btnCreate.setEnabled(true);
+                setOutput(commonArg.outputPath);
                 try {
                     setProperties(commonArg);
                     Desktop.getDesktop().open(new File(commonArg.outputPath));
@@ -117,8 +134,9 @@ public class ToolUI {
                 }
             }
         });
-
+        btnCreate.setEnabled(false);
         animTool.create(commonArg, true);
+
     }
 
     private void createUI() {
@@ -218,16 +236,27 @@ public class ToolUI {
             }
         });
 
-
-
         return panel;
+    }
+
+    private void setOutput(final String path) {
+        labelOutInfo.setText("<html>output: <font color='blue'>" + path + "</font></html>");
+        labelOutInfo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                try {
+                    Desktop.getDesktop().open(new File(path));
+                } catch (IOException e) {
+                    TLog.i(TAG, "ERROR -> " + e.getMessage());
+                }
+            }
+        });
     }
 
 
     private JPanel getCreateLayout() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JButton btnCreate = new JButton("create VAP");
         panel.add(btnCreate);
         btnCreate.addActionListener(new ActionListener() {
             @Override
@@ -264,13 +293,14 @@ public class ToolUI {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        btnOpenSource.addActionListener(new ActionListener() {
+        JLabel label = new JLabel("open source software");
+        label.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void mouseClicked(MouseEvent mouseEvent) {
                 new OpenSourceUI().createUI();
             }
         });
-        panel.add(btnOpenSource);
+        panel.add(label);
         return panel;
     }
 

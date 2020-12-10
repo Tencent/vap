@@ -55,4 +55,14 @@ public class CommonArg {
 
     public int totalFrame;
 
+    @Override
+    public String toString() {
+        return "CommonArg{" +
+                "ffmpegCmd='" + ffmpegCmd + '\'' +
+                ", mp4editCmd='" + mp4editCmd + '\'' +
+                ", enableH265=" + enableH265 +
+                ", fps=" + fps +
+                ", inputPath='" + inputPath + '\'' +
+                '}';
+    }
 }

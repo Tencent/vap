@@ -17,10 +17,13 @@ package com.tencent.qgame.playerproj.animtool;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 public class AnimTool {
 
@@ -50,6 +53,7 @@ public class AnimTool {
      * @param needVideo true 生成完整视频 false 只合成帧图片
      */
     public void create(final CommonArg commonArg, final boolean needVideo) throws Exception{
+        TLog.i(TAG, "start create");
         createAllFrameImage(commonArg, new Runnable() {
             @Override
             public void run() {
@@ -75,6 +79,7 @@ public class AnimTool {
             return;
         }
 
+        TLog.i(TAG, "createAllFrameImage");
         time = System.currentTimeMillis();
 
         // 检测output文件是否存在，不存在则生成
@@ -276,8 +281,8 @@ public class AnimTool {
                     "-y", videoPath + TEM_VIDEO_FILE};
         }
 
-        Process pro = Runtime.getRuntime().exec(cmd);
-        int result = pro.waitFor();
+        TLog.i(TAG, "run createMp4");
+        int result = ProcessUtil.run(cmd);
         TLog.i(TAG, "createMp4 result=" + (result == 0? "success" : "fail"));
         return result == 0;
     }
@@ -289,8 +294,8 @@ public class AnimTool {
      */
     private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String videoPath) throws Exception{
         String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + TEM_VIDEO_FILE, videoPath + VIDEO_FILE};
-        Process pro = Runtime.getRuntime().exec(cmd);
-        int result = pro.waitFor();
+        TLog.i(TAG, "run mergeBin2Mp4");
+        int result = ProcessUtil.run(cmd);
         TLog.i(TAG, "mergeBin2Mp4 result=" + (result == 0? "success" : "fail"));
         return result == 0;
     }
