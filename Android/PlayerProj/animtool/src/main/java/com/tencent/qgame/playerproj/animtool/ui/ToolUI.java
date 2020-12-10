@@ -123,6 +123,11 @@ public class ToolUI {
             }
 
             @Override
+            public void onError() {
+                btnCreate.setEnabled(true);
+            }
+
+            @Override
             public void onComplete() {
                 btnCreate.setEnabled(true);
                 setOutput(commonArg.outputPath);

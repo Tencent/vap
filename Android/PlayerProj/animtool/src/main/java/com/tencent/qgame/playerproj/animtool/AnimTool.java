@@ -76,6 +76,7 @@ public class AnimTool {
 
     private void createAllFrameImage(final CommonArg commonArg, final Runnable finishRunnable) throws Exception{
         if (!checkCommonArg(commonArg)) {
+            if (toolListener != null) toolListener.onError();
             return;
         }
 
@@ -312,6 +313,7 @@ public class AnimTool {
 
     public interface IToolListener {
         void onProgress(float progress);
+        void onError();
         void onComplete();
     }
 

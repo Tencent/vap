@@ -46,7 +46,7 @@ class CommonArgTool {
         // 检查第一帧
         File firstFrame = new File(commonArg.inputPath + "000.png");
         if (!firstFrame.exists()) {
-            TLog.i(TAG, "first frame 000.png does not exist");
+            TLog.i(TAG, "error: first frame 000.png does not exist");
             return false;
         }
         // 获取视频高度
