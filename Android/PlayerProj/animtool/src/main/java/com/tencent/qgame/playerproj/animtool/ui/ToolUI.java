@@ -240,7 +240,7 @@ public class ToolUI {
     }
 
     private void setOutput(final String path) {
-        labelOutInfo.setText("<html>output: <font color='blue'>" + path + "</font></html>");
+        labelOutInfo.setText("<html><font color='blue'>open output</font></html>");
         labelOutInfo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
