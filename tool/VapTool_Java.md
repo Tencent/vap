@@ -63,3 +63,9 @@ chmod +x mac_start.sh
 * md5.txt: video.mp4的md5，可以做文件校验
 * frames: 临时图片文件
 
+## VAP字段说明
+
+欢迎大家一起来完善Java版本功能，下表为VAP json配置信息字段说明。
+
+![](images/vap_field_info.png)
+
