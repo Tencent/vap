@@ -16,6 +16,8 @@
 package com.tencent.qgame.playerproj.animtool;
 
 import com.tencent.qgame.playerproj.animtool.data.PointRect;
+import com.tencent.qgame.playerproj.animtool.vapx.FrameSet;
+import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
 
 public class CommonArg {
 
@@ -51,6 +53,15 @@ public class CommonArg {
     public int outputW = 0; // 输出最终视频的宽高
 
     public int outputH = 0;
+
+    /**
+     * 融合动画相关参数
+     */
+
+    public boolean isVapx = false;
+
+    public SrcSet srcSet = new SrcSet();
+    public FrameSet frameSet = new FrameSet();
 
     @Override
     public String toString() {

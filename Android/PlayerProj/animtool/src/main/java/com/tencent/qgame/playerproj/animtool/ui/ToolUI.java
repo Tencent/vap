@@ -39,8 +39,8 @@ public class ToolUI {
 
     private static final String TAG = "ToolUI";
     private static final String PROPERTIES_FILE = "setting.properties";
-    private final int WIDTH = 550;
-    private final int HEIGHT = 350;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
 
     private final ButtonGroup group = new ButtonGroup();
     private final JRadioButton btnH265 = new JRadioButton("h265");
@@ -54,6 +54,8 @@ public class ToolUI {
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
     private final Properties props = new Properties();
+
+    private final VapxUI vapxUI = new VapxUI();
 
 
 
@@ -182,6 +184,8 @@ public class ToolUI {
         panel.add(getScaleLayout());
         // path
         panel.add(getPathLayout());
+        // vapx
+        panel.add(vapxUI.createUI());
         // create
         panel.add(getCreateLayout());
         // log

@@ -202,7 +202,7 @@ public class AnimTool {
      * @param commonArg
      */
     private void createVapcJson(CommonArg commonArg) {
-        String json = "{\"info\":{\"v\":$(v),\"f\":$(f),\"w\":$(w),\"h\":$(h),\"videoW\":$(videoW),\"videoH\":$(videoH),\"orien\":0,\"fps\":$(fps),\"isVapx\":0,\"aFrame\":$(aFrame),\"rgbFrame\":$(rgbFrame)}}";
+        String json = "\"info\":{\"v\":$(v),\"f\":$(f),\"w\":$(w),\"h\":$(h),\"videoW\":$(videoW),\"videoH\":$(videoH),\"orien\":0,\"fps\":$(fps),\"isVapx\":0,\"aFrame\":$(aFrame),\"rgbFrame\":$(rgbFrame)}";
         json = json.replace("$(v)", String.valueOf(commonArg.version));
         json = json.replace("$(f)", String.valueOf(commonArg.totalFrame));
         json = json.replace("$(w)", String.valueOf(commonArg.rgbPoint.w));
@@ -212,6 +212,19 @@ public class AnimTool {
         json = json.replace("$(videoH)", String.valueOf(commonArg.outputH));
         json = json.replace("$(aFrame)", commonArg.alphaPoint.toString());
         json = json.replace("$(rgbFrame)", commonArg.rgbPoint.toString());
+
+        TLog.i(TAG, "{" + json + "}");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append(json);
+        if (commonArg.isVapx) {
+            sb.append(",");
+            sb.append(commonArg.srcSet.toString());
+        }
+        sb.append("}");
+        json = sb.toString();
+
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(commonArg.outputPath + VAPC_JSON_FILE));
             writer.write(json);
@@ -221,7 +234,7 @@ public class AnimTool {
             e.printStackTrace();
             throw new RuntimeException();
         }
-        TLog.i(TAG,json);
+
 
     }
 

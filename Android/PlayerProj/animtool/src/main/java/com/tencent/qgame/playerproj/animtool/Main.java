@@ -17,15 +17,20 @@ package com.tencent.qgame.playerproj.animtool;
 
 
 import com.tencent.qgame.playerproj.animtool.ui.ToolUI;
+import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
 
 public class Main {
 
 
     public static void main(String[] args) throws Exception {
         // 启动UI界面
-        new ToolUI().run();
+        // new ToolUI().run();
+
         // java工具
         // animTool();
+
+        // 融合动画
+        animVapxTool();
     }
 
 
@@ -74,6 +79,93 @@ public class Main {
         // needVideo true 直接生成video false 生成帧图片，由用户手动生成最终视频文件
         animTool.create(commonArg, true);
     }
+
+
+    public static void animVapxTool() throws Exception {
+        final CommonArg commonArg = new CommonArg();
+        // ffmpeg 命令路径
+        commonArg.ffmpegCmd = "ffmpeg";
+        // bento4 mp4edit 命令路径
+        commonArg.mp4editCmd = "mp4edit";
+
+        String path = "/Users/hexleo/temp/moon/Demo/";
+        /*
+         * 是否开启h265（默认关闭）
+         * 优点：压缩率更高，视频更清晰
+         * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
+         */
+        commonArg.enableH265 = false;
+        // fps
+        commonArg.fps = 24;
+        // 素材文件路径
+        commonArg.inputPath = path + "video";
+        // alpha 区域缩放大小  (0.5 - 1)
+        commonArg.scale = 0.5f;
+        // 启动融合动画
+        commonArg.isVapx = true;
+        // src 设置
+        commonArg.srcSet = getSrcSet(path);
+
+
+        // 开始运行
+        AnimTool animTool = new AnimTool();
+        // needVideo true 直接生成video false 生成帧图片，由用户手动生成最终视频文件
+        animTool.create(commonArg, true);
+    }
+
+
+    private static SrcSet getSrcSet(String path) {
+        SrcSet srcSet = new SrcSet();
+
+        {
+            SrcSet.Src src = new SrcSet.Src();
+            src.srcPath = path + "mask1";
+            src.srcId = "1";
+            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            src.srcTag = "head1";
+            src.fitType = SrcSet.Src.FIT_TYPE_CF;
+            srcSet.srcs.add(src);
+        }
+
+
+        {
+            SrcSet.Src src = new SrcSet.Src();
+            src.srcPath = path + "mask2";
+            src.srcId = "2";
+            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            src.srcTag = "head2";
+            src.fitType = SrcSet.Src.FIT_TYPE_CF;
+            srcSet.srcs.add(src);
+        }
+
+        {
+            SrcSet.Src src = new SrcSet.Src();
+            src.srcPath = path + "mask3";
+            src.srcId = "3";
+            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            src.srcTag = "text1";
+            src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
+            src.color = "#0000ff";
+            src.style = SrcSet.Src.TEXT_STYLE_BOLD;
+            srcSet.srcs.add(src);
+        }
+
+        {
+            SrcSet.Src src = new SrcSet.Src();
+            src.srcPath = path + "mask4";
+            src.srcId = "4";
+            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            src.srcTag = "text2";
+            src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
+            src.color = "#00ff00";
+            src.style = SrcSet.Src.TEXT_STYLE_BOLD;
+            srcSet.srcs.add(src);
+        }
+
+
+        return srcSet;
+    }
+
     /**
      * 生成对应的box bin
      * 执行 mp4edit --insert :vapc.bin:1 demo_origin.mp4 demo_output.mp4 插入对应box
