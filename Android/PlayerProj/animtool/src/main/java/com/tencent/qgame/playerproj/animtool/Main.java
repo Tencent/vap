@@ -26,10 +26,10 @@ public class Main {
         // 启动UI界面
         // new ToolUI().run();
 
-        // java工具
+        // java工具普通动画
         // animTool();
 
-        // 融合动画
+        // java工具融合动画
         animVapxTool();
     }
 
@@ -81,6 +81,9 @@ public class Main {
     }
 
 
+    /**
+     * 融合动画 demo
+     */
     public static void animVapxTool() throws Exception {
         final CommonArg commonArg = new CommonArg();
         // ffmpeg 命令路径
@@ -88,12 +91,8 @@ public class Main {
         // bento4 mp4edit 命令路径
         commonArg.mp4editCmd = "mp4edit";
 
-        String path = "/Users/hexleo/temp/moon/Demo/";
-        /*
-         * 是否开启h265（默认开启）
-         * 优点：压缩率更高，视频更清晰
-         * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
-         */
+        String path = "/path/to/your/demo";
+
         commonArg.enableH265 = true;
         // fps
         commonArg.fps = 24;
