@@ -23,9 +23,9 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // 启动UI界面
-        // new ToolUI().run();
+        new ToolUI().run();
         // java工具
-        animTool();
+        // animTool();
     }
 
 
@@ -66,8 +66,7 @@ public class Main {
         // fps
         commonArg.fps = 24;
         // 素材文件路径
-        // commonArg.inputPath = "/path/to/your/demo";
-        commonArg.inputPath = "/Users/hexleo/temp/moon/DemoH/video";
+        commonArg.inputPath = "/path/to/your/demo";
         // alpha 区域缩放大小  (0.5 - 1)
         commonArg.scale = 0.5f;
 

@@ -22,6 +22,7 @@ import java.util.Properties;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -45,6 +46,8 @@ public class ToolUI {
     private final JRadioButton btnH265 = new JRadioButton("h265");
     private final JRadioButton btnH264 = new JRadioButton("h264");
     private final SpinnerModel modelFps = new SpinnerNumberModel(24, 1, 60, 1);
+    private final Float[] scaleArray = new Float[]{0.5f, 1f};
+    private final JComboBox<Float> boxScale = new JComboBox<>(scaleArray);
     private final JTextField textInputPath = new JTextField();
     private final JButton btnCreate = new JButton("create VAP");
     private final JTextArea txtAreaLog = new JTextArea();
@@ -72,6 +75,13 @@ public class ToolUI {
             group.setSelected(commonArg.enableH265 ? btnH265.getModel() : btnH264.getModel(), true);
             modelFps.setValue(commonArg.fps);
             textInputPath.setText(commonArg.inputPath);
+            float scale = commonArg.scale;
+            for (int i=0; i<scaleArray.length ; i++) {
+                if (scaleArray[i] == scale) {
+                    boxScale.setSelectedIndex(i);
+                    break;
+                }
+            }
         } catch (Exception e) {
             TLog.i(TAG, "ERROR -> " + e.getMessage());
         }
@@ -112,6 +122,8 @@ public class ToolUI {
         commonArg.enableH265 = group.isSelected(btnH265.getModel());
         commonArg.fps = (Integer)modelFps.getValue();
         commonArg.inputPath = textInputPath.getText();
+        commonArg.scale = scaleArray[boxScale.getSelectedIndex()];
+
         TLog.i(TAG, commonArg.toString());
 
         AnimTool animTool = new AnimTool();
@@ -166,6 +178,8 @@ public class ToolUI {
         panel.add(getCodecLayout());
         // fps
         panel.add(getFpsLayout());
+        // scale
+        panel.add(getScaleLayout());
         // path
         panel.add(getPathLayout());
         // create
@@ -206,6 +220,17 @@ public class ToolUI {
         JSpinner spinner = new JSpinner(modelFps);
         spinner.setPreferredSize(new Dimension(60, 20));
         panel.add(spinner);
+        return panel;
+    }
+
+    private JPanel getScaleLayout() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("alpha scale");
+        label.setPreferredSize(labelSize);
+        panel.add(label);
+
+        panel.add(boxScale);
         return panel;
     }
 
@@ -317,25 +342,33 @@ public class ToolUI {
 
     private CommonArg getProperties() {
         CommonArg commonArg = new CommonArg();
+        String version = props.getProperty("version", "0");
         String enableH265 = props.getProperty("enableH265", Boolean.TRUE.toString());
-        String fps = props.getProperty("fps", "24");
+        String fps = props.getProperty("fps", String.valueOf(commonArg.fps));
         String inputPath = props.getProperty("inputPath", "");
+        String scale = props.getProperty("scale", String.valueOf(scaleArray[0]));
 
-        commonArg.enableH265 = Boolean.TRUE.toString().equals(enableH265);
         try {
+            int v = Integer.parseInt(version);
+            // 版本不符直接返回默认值
+            if (v != commonArg.version) return commonArg;
             commonArg.fps = Integer.parseInt(fps);
+            commonArg.scale = Float.parseFloat(scale);
+            commonArg.enableH265 = Boolean.TRUE.toString().equals(enableH265);
+            commonArg.inputPath = inputPath;
         } catch (Exception e) {
-            commonArg.fps = 24;
+            TLog.i(TAG, "getProperties error:" + e.getMessage());
         }
-        commonArg.inputPath = inputPath;
         return commonArg;
     }
 
 
     private void setProperties(CommonArg commonArg) throws IOException {
+        props.setProperty("version", commonArg.version + "");
         props.setProperty("enableH265", commonArg.enableH265? Boolean.TRUE.toString() : Boolean.FALSE.toString());
         props.setProperty("fps", commonArg.fps + "");
         props.setProperty("inputPath", commonArg.inputPath == null ? "" : commonArg.inputPath);
+        props.setProperty("scale", commonArg.scale + "");
         props.store(new FileOutputStream(PROPERTIES_FILE), "");
     }
 
