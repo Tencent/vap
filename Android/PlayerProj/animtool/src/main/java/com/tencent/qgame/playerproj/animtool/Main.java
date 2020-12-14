@@ -23,9 +23,9 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // 启动UI界面
-        new ToolUI().run();
+        // new ToolUI().run();
         // java工具
-        // animTool();
+        animTool();
     }
 
 
@@ -62,11 +62,14 @@ public class Main {
          * 优点：压缩率更高，视频更清晰
          * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
          */
-        commonArg.enableH265 = true;
+        commonArg.enableH265 = false;
         // fps
         commonArg.fps = 24;
         // 素材文件路径
-        commonArg.inputPath = "/path/to/your/demo";
+        // commonArg.inputPath = "/path/to/your/demo";
+        commonArg.inputPath = "/Users/hexleo/temp/moon/DemoH/video";
+        // alpha 区域缩放大小  (0.5 - 1)
+        commonArg.scale = 0.5f;
 
         // 开始运行
         AnimTool animTool = new AnimTool();

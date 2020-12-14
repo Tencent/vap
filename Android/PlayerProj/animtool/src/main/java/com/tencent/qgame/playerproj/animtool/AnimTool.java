@@ -141,18 +141,15 @@ public class AnimTool {
     }
 
     private void createFrame(CommonArg commonArg, int frameIndex) throws Exception {
-        int w = commonArg.videoW;
-        int h = commonArg.videoH;
         File inputFile = new File(commonArg.inputPath + String.format("%03d", frameIndex)+".png");
-        GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg.orin, w, h,
-                commonArg.gap, commonArg.wFill, commonArg.hFill, inputFile);
+        GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg, inputFile);
         if (videoFrame == null) {
             TLog.i(TAG, "frameIndex="+frameIndex +" is empty");
             return;
         }
         // 最后保存图片
-        BufferedImage outBuf = new BufferedImage(videoFrame.outW, videoFrame.outH, BufferedImage.TYPE_INT_ARGB);
-        outBuf.setRGB(0,0, videoFrame.outW, videoFrame.outH, videoFrame.argb, 0, videoFrame.outW);
+        BufferedImage outBuf = new BufferedImage(commonArg.outputW, commonArg.outputH, BufferedImage.TYPE_INT_ARGB);
+        outBuf.setRGB(0,0, commonArg.outputW, commonArg.outputH, videoFrame.argb, 0, commonArg.outputW);
 
         File outputFile = new File(commonArg.frameOutputPath + String.format("%03d", frameIndex) +".png");
         ImageIO.write(outBuf, "PNG", outputFile);
@@ -208,33 +205,13 @@ public class AnimTool {
         String json = "{\"info\":{\"v\":$(v),\"f\":$(f),\"w\":$(w),\"h\":$(h),\"videoW\":$(videoW),\"videoH\":$(videoH),\"orien\":0,\"fps\":$(fps),\"isVapx\":0,\"aFrame\":$(aFrame),\"rgbFrame\":$(rgbFrame)}}";
         json = json.replace("$(v)", String.valueOf(commonArg.version));
         json = json.replace("$(f)", String.valueOf(commonArg.totalFrame));
-        json = json.replace("$(w)", String.valueOf(commonArg.videoW));
-        json = json.replace("$(h)", String.valueOf(commonArg.videoH));
+        json = json.replace("$(w)", String.valueOf(commonArg.rgbPoint.w));
+        json = json.replace("$(h)", String.valueOf(commonArg.rgbPoint.h));
         json = json.replace("$(fps)", String.valueOf(commonArg.fps));
-        int realW = 0;
-        int realH = 0;
-        int cx, cy;
-        String aFrame = "[0,0,"+commonArg.videoW+","+commonArg.videoH+"]";
-        String rgbFrame = "[0,0,0,0]";
-        if (commonArg.orin == CommonArg.ORIN_H) { // 水平对齐
-            realW = 2 * commonArg.videoW + commonArg.gap;
-            realH = commonArg.videoH;
-            cx = commonArg.videoW + commonArg.gap;
-            cy = 0;
-        } else { // 上下对齐
-            realW = commonArg.videoW;
-            realH = 2 * commonArg.videoH + commonArg.gap;
-            cx = 0;
-            cy = commonArg.videoH + commonArg.gap;
-        }
-        rgbFrame = "["+cx+","+cy+","+commonArg.videoW+","+commonArg.videoH+"]";
-
-        realW += commonArg.wFill;
-        realH += commonArg.hFill;
-        json = json.replace("$(videoW)", String.valueOf(realW));
-        json = json.replace("$(videoH)", String.valueOf(realH));
-        json = json.replace("$(aFrame)", aFrame);
-        json = json.replace("$(rgbFrame)", rgbFrame);
+        json = json.replace("$(videoW)", String.valueOf(commonArg.outputW));
+        json = json.replace("$(videoH)", String.valueOf(commonArg.outputH));
+        json = json.replace("$(aFrame)", commonArg.alphaPoint.toString());
+        json = json.replace("$(rgbFrame)", commonArg.rgbPoint.toString());
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(commonArg.outputPath + VAPC_JSON_FILE));
             writer.write(json);
@@ -276,9 +253,10 @@ public class AnimTool {
                     "-pix_fmt", "yuv420p",
                     "-vcodec", "libx264",
                     "-b:v", "3000k",
-                    "-profile:v", "baseline",
-                    "-level", "3.0",
+                    "-profile:v", "main",
+                    "-level", "4.0",
                     "-bf", "0",
+                    "-bufsize", "3000k",
                     "-y", videoPath + TEM_VIDEO_FILE};
         }
 
