@@ -114,29 +114,27 @@ public class GetMaskFrame {
 
         PointRect point = new PointRect();
 
-        int startX = -1;
-        int startY = -1;
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
         int maxX = 0;
         int maxY = 0;
         for (int y=0; y<h; y++) {
             for (int x = 0; x < w; x++) {
                 int alpha = maskArgb[x + y*w] >>> 24;
                 if (alpha > 0) {
-                    if (startX == -1 || startY == -1) {
-                        startX = x;
-                        startY = y;
-                    }
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
                     if (x > maxX) maxX = x;
                     if (y > maxY) maxY = y;
                 }
             }
         }
 
-        point.x = startX;
-        point.y = startY;
-        point.w = maxX - startX;
-        point.h = maxY - startY;
-        if (point.x == -1 || point.y == -1 || point.w <=0 || point.h <= 0) return null;
+        point.x = minX;
+        point.y = minY;
+        point.w = maxX - minX;
+        point.h = maxY - minY;
+        if (point.w <=0 || point.h <= 0) return null;
 
         return point;
 
