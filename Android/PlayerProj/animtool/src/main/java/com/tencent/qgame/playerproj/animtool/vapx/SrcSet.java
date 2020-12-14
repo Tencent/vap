@@ -28,7 +28,7 @@ public class SrcSet {
          */
         public String srcId = "";
         public String srcType = SRC_TYPE_IMG;
-        public String loadTyp = LOAD_TYPE_NET;
+        public String loadType = LOAD_TYPE_NET;
         public String srcTag = "";
         public String color = "#000000";
         public String style = TEXT_STYLE_DEFAULT;
@@ -54,9 +54,9 @@ public class SrcSet {
                     json.append("\"color\":").append("\"").append(color.trim()).append("\",");
                 }
                 json.append("\"style\":").append("\"").append(style).append("\",");
-                json.append("\"loadTyp\":").append("\"").append(LOAD_TYPE_LOC).append("\",");
+                json.append("\"loadType\":").append("\"").append(LOAD_TYPE_LOC).append("\",");
             } else {
-                json.append("\"loadTyp\":").append("\"").append(loadTyp).append("\",");
+                json.append("\"loadType\":").append("\"").append(loadType).append("\",");
             }
 
 

@@ -50,6 +50,8 @@ public class CommonArg {
 
     public PointRect alphaPoint = new PointRect();  // alpha 区域
 
+    public boolean isVLayout = false; // 是否为垂直布局
+
     public int outputW = 0; // 输出最终视频的宽高
 
     public int outputH = 0;

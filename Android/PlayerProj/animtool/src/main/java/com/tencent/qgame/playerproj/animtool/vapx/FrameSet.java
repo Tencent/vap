@@ -4,11 +4,12 @@ import com.tencent.qgame.playerproj.animtool.data.PointRect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class FrameSet {
 
-
-    public List<FrameObj> frameObjs = new ArrayList<>();
+    // for sync
+    public Vector<FrameObj> frameObjs = new Vector<>();
 
     @Override
     public String toString() {

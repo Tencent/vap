@@ -1,5 +1,7 @@
 package com.tencent.qgame.playerproj.animtool;
 
+import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -43,10 +45,28 @@ class CommonArgTool {
         // 帧图片生成路径
         commonArg.frameOutputPath = commonArg.outputPath + AnimTool.FRAME_IMAGE_DIR;
 
+        // srcId自动生成 & 融合动画路径检查 & z序
+        if (commonArg.isVapx) {
+            int size = commonArg.srcSet.srcs.size();
+            SrcSet.Src src;
+            for (int i=0; i<size; i++) {
+                src = commonArg.srcSet.srcs.get(i);
+                src.srcId = String.valueOf(i);
+                src.z = i;
+                File srcPath = new File(src.srcPath);
+                if (!srcPath.exists()) {
+                    TLog.i(TAG, "error: src="+ src.srcId+",path invalid " + src.srcPath);
+                    continue;
+                }
+                if (!File.separator.equals(src.srcPath.substring(src.srcPath.length() - 1))) {
+                    src.srcPath = src.srcPath + File.separator;
+                }
+            }
+        }
 
         // 限定scale的值
         if (commonArg.scale < 0.5f) {
-            commonArg.scale =0.5f;
+            commonArg.scale = 0.5f;
         }
 
         if (commonArg.scale > 1f) {
@@ -85,12 +105,14 @@ class CommonArgTool {
         int vMaxLen = Math.max(vW, vH);
 
         if (hMaxLen > vMaxLen) { // 竖直布局
+            commonArg.isVLayout = true;
             commonArg.alphaPoint.x = 0;
             commonArg.alphaPoint.y = commonArg.rgbPoint.h + commonArg.gap;
 
             commonArg.outputW = commonArg.rgbPoint.w;
             commonArg.outputH = commonArg.rgbPoint.h + commonArg.gap + commonArg.alphaPoint.h;
         } else { // 水平布局
+            commonArg.isVLayout = false;
             commonArg.alphaPoint.x = commonArg.rgbPoint.w + commonArg.gap;
             commonArg.alphaPoint.y = 0;
 

@@ -62,11 +62,11 @@ public class Main {
         commonArg.mp4editCmd = "mp4edit";
 
         /*
-         * 是否开启h265（默认关闭）
+         * 是否开启h265（默认开启）
          * 优点：压缩率更高，视频更清晰
          * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
          */
-        commonArg.enableH265 = false;
+        commonArg.enableH265 = true;
         // fps
         commonArg.fps = 24;
         // 素材文件路径
@@ -90,19 +90,21 @@ public class Main {
 
         String path = "/Users/hexleo/temp/moon/Demo/";
         /*
-         * 是否开启h265（默认关闭）
+         * 是否开启h265（默认开启）
          * 优点：压缩率更高，视频更清晰
          * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
          */
-        commonArg.enableH265 = false;
+        commonArg.enableH265 = true;
         // fps
         commonArg.fps = 24;
         // 素材文件路径
         commonArg.inputPath = path + "video";
-        // alpha 区域缩放大小  (0.5 - 1)
-        commonArg.scale = 0.5f;
         // 启动融合动画
         commonArg.isVapx = true;
+        if (commonArg.isVapx) {
+            // 融合动画默认需要缩放0.5f 空出区域
+            commonArg.scale = 0.5f;
+        }
         // src 设置
         commonArg.srcSet = getSrcSet(path);
 
@@ -142,7 +144,7 @@ public class Main {
             SrcSet.Src src = new SrcSet.Src();
             src.srcPath = path + "mask3";
             src.srcId = "3";
-            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            src.srcType = SrcSet.Src.SRC_TYPE_TXT;
             src.srcTag = "text1";
             src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
             src.color = "#0000ff";
@@ -154,7 +156,7 @@ public class Main {
             SrcSet.Src src = new SrcSet.Src();
             src.srcPath = path + "mask4";
             src.srcId = "4";
-            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            src.srcType = SrcSet.Src.SRC_TYPE_TXT;
             src.srcTag = "text2";
             src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
             src.color = "#00ff00";

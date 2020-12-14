@@ -15,6 +15,10 @@
  */
 package com.tencent.qgame.playerproj.animtool;
 
+import com.tencent.qgame.playerproj.animtool.vapx.FrameSet;
+import com.tencent.qgame.playerproj.animtool.vapx.GetMaskFrame;
+import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -42,6 +46,7 @@ public class AnimTool {
     private volatile int finishThreadCount = 0;
     private long time;
     private GetAlphaFrame getAlphaFrame = new GetAlphaFrame();
+    private GetMaskFrame getMaskFrame = new GetMaskFrame();
     private IToolListener toolListener;
 
     public void setToolListener(IToolListener toolListener) {
@@ -57,7 +62,7 @@ public class AnimTool {
         createAllFrameImage(commonArg, new Runnable() {
             @Override
             public void run() {
-                if (needVideo) {
+                if (finalCheck(commonArg) && needVideo) {
                     // 最终生成视频文件
                     createVideo(commonArg);
                 }
@@ -72,6 +77,22 @@ public class AnimTool {
      */
     private boolean checkCommonArg(CommonArg commonArg) throws Exception {
         return CommonArgTool.autoFillAndCheck(commonArg);
+    }
+
+    private boolean finalCheck(CommonArg commonArg) {
+        if (commonArg.isVapx) {
+            if (commonArg.srcSet.srcs.isEmpty()) {
+                TLog.i(TAG, "vapx error: src is empty");
+                return false;
+            }
+            for (SrcSet.Src src : commonArg.srcSet.srcs) {
+                if (src.w <=0 || src.h <= 0) {
+                    TLog.i(TAG, "vapx error: src.w=" + src.w + ",src.h=" + src.h);
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void createAllFrameImage(final CommonArg commonArg, final Runnable finishRunnable) throws Exception{
@@ -143,6 +164,12 @@ public class AnimTool {
     private void createFrame(CommonArg commonArg, int frameIndex) throws Exception {
         File inputFile = new File(commonArg.inputPath + String.format("%03d", frameIndex)+".png");
         GetAlphaFrame.AlphaFrameOut videoFrame = getAlphaFrame.createFrame(commonArg, inputFile);
+        if (commonArg.isVapx) {
+            FrameSet.FrameObj frameObj = getMaskFrame.getFrameObj(frameIndex, commonArg, videoFrame.argb);
+            if (frameObj != null) {
+                commonArg.frameSet.frameObjs.add(frameObj);
+            }
+        }
         if (videoFrame == null) {
             TLog.i(TAG, "frameIndex="+frameIndex +" is empty");
             return;
@@ -202,17 +229,20 @@ public class AnimTool {
      * @param commonArg
      */
     private void createVapcJson(CommonArg commonArg) {
-        String json = "\"info\":{\"v\":$(v),\"f\":$(f),\"w\":$(w),\"h\":$(h),\"videoW\":$(videoW),\"videoH\":$(videoH),\"orien\":0,\"fps\":$(fps),\"isVapx\":0,\"aFrame\":$(aFrame),\"rgbFrame\":$(rgbFrame)}";
-        json = json.replace("$(v)", String.valueOf(commonArg.version));
-        json = json.replace("$(f)", String.valueOf(commonArg.totalFrame));
-        json = json.replace("$(w)", String.valueOf(commonArg.rgbPoint.w));
-        json = json.replace("$(h)", String.valueOf(commonArg.rgbPoint.h));
-        json = json.replace("$(fps)", String.valueOf(commonArg.fps));
-        json = json.replace("$(videoW)", String.valueOf(commonArg.outputW));
-        json = json.replace("$(videoH)", String.valueOf(commonArg.outputH));
-        json = json.replace("$(aFrame)", commonArg.alphaPoint.toString());
-        json = json.replace("$(rgbFrame)", commonArg.rgbPoint.toString());
 
+        String json = "\"info\":{" +
+                "\"v\":" + commonArg.version + "," +
+                "\"f\":" + commonArg.totalFrame + "," +
+                "\"w\":" + commonArg.rgbPoint.w + "," +
+                "\"h\":" + commonArg.rgbPoint.h + "," +
+                "\"fps\":" + commonArg.fps + "," +
+                "\"videoW\":" + commonArg.outputW + "," +
+                "\"videoH\":" + commonArg.outputH + "," +
+                "\"aFrame\":" + commonArg.alphaPoint.toString() + "," +
+                "\"rgbFrame\":" + commonArg.rgbPoint.toString() + "," +
+                "\"isVapx\":" + (commonArg.isVapx ? 1 : 0) + "," +
+                "\"orien\":" + 0 +
+                "}";
         TLog.i(TAG, "{" + json + "}");
 
         StringBuilder sb = new StringBuilder();
@@ -221,6 +251,8 @@ public class AnimTool {
         if (commonArg.isVapx) {
             sb.append(",");
             sb.append(commonArg.srcSet.toString());
+            sb.append(",");
+            sb.append(commonArg.frameSet.toString());
         }
         sb.append("}");
         json = sb.toString();
@@ -234,8 +266,6 @@ public class AnimTool {
             e.printStackTrace();
             throw new RuntimeException();
         }
-
-
     }
 
 
