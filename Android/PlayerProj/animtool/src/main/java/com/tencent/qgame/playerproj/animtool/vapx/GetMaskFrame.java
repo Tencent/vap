@@ -156,7 +156,8 @@ public class GetMaskFrame {
                 // 文字mask 黑色部分不遮挡，红色部分被遮挡
                 if (isTxtMask) {
                     int maskRed = (maskColor & 0x00ff0000) >>> 16;
-                    alpha = 255 - maskRed; // 红色部分算遮挡
+                    int txtAlpha = 255 - maskRed; // 红色部分算遮挡
+                    alpha = (int) ((txtAlpha / 255f) * (alpha / 255f) * 255f);
                 }
                 // 最终color
                 int color = 0xff000000 + (alpha << 16) + (alpha << 8) + alpha;
