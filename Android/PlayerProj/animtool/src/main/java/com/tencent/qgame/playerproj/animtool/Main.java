@@ -36,13 +36,12 @@ public class Main {
      * 生成图片的工具
      * step 1 填写如下参数，运行后生成中间图片
      * step 2 进入outputPath目录，运行如下ffmpeg命令（需要预先安装ffmpeng）
-     * ffmpeg -r 24 -i "%03d.png" -pix_fmt yuv420p -vcodec libx264 -b:v 3000k -profile:v baseline -level 3.0 -bf 0 -y demo.mp4
      *
+     * h264
+     * ffmpeg -r 24 -i "%03d.png" -pix_fmt yuv420p -vcodec libx264 -b:v 3000k -profile:v main -level 4.0 -bf 0 -bufsize 3000k -y demo.mp4
      *
-     * -vcodec libx264 h264编码
-     * -b:v 3000K 表示码率为3000K，可以改变码率调节文件大小和视频清晰度
-     * -bf 0 没有B帧
-     * -profile:v baseline baseline模式
+     * h265
+     * ffmpeg -r 24 -i "%03d.png" -pix_fmt yuv420p -vcodec libx265 -b:v 2000k -profile:v main -level 4.0 -bf 0 -bufsize 2000k -tag:v hvc1 -y demo.mp4
      *
      * 使用固定码率能使文件更小，但会损失清晰度
      * 使用-crf 参数可以提高清晰度但文件大小不可控（会变大），推荐值 29（0 最好 51 最差）
