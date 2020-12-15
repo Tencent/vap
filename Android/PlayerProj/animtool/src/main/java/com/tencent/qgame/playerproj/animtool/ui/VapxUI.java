@@ -184,8 +184,7 @@ public class VapxUI {
         }
 
         private void setMaskPath() {
-            String text = "<html>---id:" + index + " mask path: "
-                    +  (maskPath == null? "<font color='red'>empty</font></html>" : maskPath);
+            String text = maskPath == null? "<html><font color='red'>empty</font></html>" : maskPath;
             labelMaskPathState.setText(text);
         }
 
@@ -210,7 +209,7 @@ public class VapxUI {
             boxSrcType.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent itemEvent) {
-                    txtPanel.setVisible(SrcSet.Src.SRC_TYPE_TXT.equals(itemEvent.getItem()));
+                    txtPanel.setVisible(srcTypeArray[1].equals(itemEvent.getItem()));
                 }
             });
             // fitType
@@ -219,23 +218,7 @@ public class VapxUI {
             panel.add(boxFitType);
 
 
-            // mask path
-            panel.add(new JLabel(" mask path:"));
-            JButton btnMaskPath = new JButton("choose");
-            panel.add(btnMaskPath);
-            btnMaskPath.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    JFileChooser fileChooser = new JFileChooser();
-                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    int returnVal = fileChooser.showOpenDialog(fileChooser);
-                    if(returnVal == JFileChooser.APPROVE_OPTION) {
-                        // 文件夹路径
-                        maskPath = fileChooser.getSelectedFile().getAbsolutePath();
-                        setMaskPath();
-                    }
-                }
-            });
+
 
             // delete
             JLabel labelDelete = new JLabel("<html><font color='red'>delete</font></html>");
@@ -271,6 +254,26 @@ public class VapxUI {
         private JPanel part3Layout() {
             JPanel panel = new JPanel();
             panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+
+            // mask path
+            panel.add(new JLabel(" mask path:"));
+            JButton btnMaskPath = new JButton("choose");
+            panel.add(btnMaskPath);
+            btnMaskPath.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    int returnVal = fileChooser.showOpenDialog(fileChooser);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+                        // 文件夹路径
+                        maskPath = fileChooser.getSelectedFile().getAbsolutePath();
+                        setMaskPath();
+                    }
+                }
+            });
+
 
             panel.add(labelMaskPathState);
 
