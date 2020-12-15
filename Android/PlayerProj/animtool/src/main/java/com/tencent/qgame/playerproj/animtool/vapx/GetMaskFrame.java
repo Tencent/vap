@@ -4,6 +4,8 @@ import com.tencent.qgame.playerproj.animtool.CommonArg;
 import com.tencent.qgame.playerproj.animtool.TLog;
 import com.tencent.qgame.playerproj.animtool.data.PointRect;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -77,14 +79,32 @@ public class GetMaskFrame {
             return null;
         }
 
+        PointRect maskPoint = new PointRect(
+            frame.frame.x,
+            frame.frame.y,
+            frame.frame.w,
+            frame.frame.h
+        );
+
         PointRect mFrame = new PointRect(x, y, frame.frame.w, frame.frame.h);
         // 计算是否能放下遮罩
         if (mFrame.x + mFrame.w > outW) { // 超宽换行
             mFrame.x = startX;
             mFrame.y = lastMaxY;
             if (mFrame.x + mFrame.w > outW) {
-                TLog.e(TAG, "frameIndex=" + frameIndex + ",src=" + src.srcId + ", no more space for(w)" + mFrame);
-                return null;
+
+                // 超长后缩放mask
+                float scale = (outW - mFrame.x) * 1f / mFrame.w;
+
+                mFrame.w = outW - mFrame.x;
+                mFrame.h = (int) (mFrame.h * scale);
+
+                maskPoint.x = (int) (maskPoint.x * scale);
+                maskPoint.y = (int) (maskPoint.y * scale);
+
+                maskArgb = scaleMask(scale, inputBuf);
+
+                TLog.w(TAG, "frameIndex=" + frameIndex + ",src=" + src.srcId + ", no more space for(w)" + mFrame + ",scale=" + scale);
             }
         }
         if (mFrame.y + mFrame.h > outH) { // 高度不够直接错误
@@ -93,7 +113,7 @@ public class GetMaskFrame {
         }
         frame.mFrame = mFrame;
 
-        fillMaskToOutput(outputArgb, outW, maskArgb, maskW, frame.frame, frame.mFrame, SrcSet.Src.SRC_TYPE_TXT.equals(src.srcType));
+        fillMaskToOutput(outputArgb, outW, maskArgb, maskW, maskPoint, frame.mFrame, SrcSet.Src.SRC_TYPE_TXT.equals(src.srcType));
 
         // 设置src的w,h 取所有遮罩里最大值
         synchronized (GetMaskFrame.class) {
@@ -106,6 +126,21 @@ public class GetMaskFrame {
         return frame;
     }
 
+    /**
+     * 缩放遮罩
+     */
+    private int[] scaleMask(float scale, BufferedImage inputBuf) {
+        AffineTransform at = new AffineTransform();
+        at.scale(scale, scale);
+
+        int w = inputBuf.getWidth();
+        int h = inputBuf.getHeight();
+        BufferedImage alphaBuf = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        alphaBuf = scaleOp.filter(inputBuf, alphaBuf);
+
+        return alphaBuf.getRGB(0, 0, w, h, null, 0, w);
+    }
 
     /**
      * 获取遮罩位置信息 并转换为黑白

@@ -85,7 +85,7 @@ public class AnimTool {
             }
             for (SrcSet.Src src : commonArg.srcSet.srcs) {
                 if (src.w <=0 || src.h <= 0) {
-                    TLog.i(TAG, "vapx error: src.w=" + src.w + ",src.h=" + src.h);
+                    TLog.i(TAG, "vapx error: src.id=" + src.srcId + ",src.w=" + src.w + ",src.h=" + src.h);
                     return false;
                 }
             }

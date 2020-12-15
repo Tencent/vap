@@ -1,12 +1,14 @@
 package com.tencent.qgame.playerproj.animtool.ui;
 
+import com.tencent.qgame.playerproj.animtool.TLog;
 import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,9 +16,11 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -24,6 +28,7 @@ import javax.swing.JTextField;
 
 public class VapxUI {
 
+    private static final String TAG = "VapxUI";
 
     private final Dimension labelSize = new Dimension(100, 20);
     private final JPanel controlPanel = new JPanel();
@@ -41,13 +46,31 @@ public class VapxUI {
     public JPanel createUI() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        panel.setPreferredSize(new Dimension(ToolUI.WIDTH, ToolUI.HEIGHT / 3));
-        panel.setMinimumSize(new Dimension(ToolUI.WIDTH, ToolUI.HEIGHT / 3));
+        panel.setPreferredSize(new Dimension(ToolUI.WIDTH, 300));
+        panel.setMinimumSize(new Dimension(ToolUI.WIDTH, 300));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.PAGE_AXIS));
         controlPanel.add(getAddLayout());
         JScrollPane areaScrollPane = new JScrollPane(controlPanel);
         panel.add(areaScrollPane);
         return panel;
+    }
+
+    public boolean isVapxEnable() {
+        return !maskUiList.isEmpty();
+    }
+
+    public SrcSet getSrcSet() {
+        if (maskUiList.isEmpty()) return null;
+        SrcSet srcSet = new SrcSet();
+
+        SrcSet.Src src;
+        for (MaskUI maskUI : maskUiList) {
+            src = maskUI.getSrc();
+            if (src == null) return null;
+            srcSet.srcs.add(src);
+        }
+
+        return srcSet;
     }
 
 
@@ -92,6 +115,10 @@ public class VapxUI {
         private final String[] fitTypeArray = new String[]{SrcSet.Src.FIT_TYPE_FITXY, SrcSet.Src.FIT_TYPE_CF};
         private final JComboBox<String> boxFitType = new JComboBox<>(fitTypeArray);
 
+        private final JPanel txtPanel = new JPanel();
+        private final JTextField textTxtColor = new JTextField();
+        private final JCheckBox checkTxtBold = new JCheckBox("text Bold");
+
         final JLabel labelMaskPathState = new JLabel();
 
         public MaskUI(int index, IMaskUIListener listener) {
@@ -104,12 +131,44 @@ public class VapxUI {
             return panel;
         }
 
+        public SrcSet.Src getSrc() {
+            SrcSet.Src src = new SrcSet.Src();
+            src.srcId = String.valueOf(index);
+            src.srcTag = textSrcTag.getText().trim();
+            src.srcType = (String) boxSrcType.getSelectedItem();
+            src.fitType = (String) boxFitType.getSelectedItem();
+            src.srcPath = maskPath;
+
+            if (SrcSet.Src.SRC_TYPE_TXT.equals(src.srcType)) {
+                src.color = textTxtColor.getText().trim();
+                if (checkTxtBold.isSelected()) {
+                    src.style = SrcSet.Src.TEXT_STYLE_BOLD;
+                }
+            }
+
+            if (src.srcTag == null || "".equals(src.srcTag)) {
+                String msg = "id:" + index + " source tag is empty";
+                TLog.e(TAG, msg);
+                JOptionPane.showMessageDialog(panel, msg, "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+
+            if (src.srcPath == null || "".equals(src.srcPath)) {
+                String msg = "id:" + index + " mask path is empty";
+                TLog.e(TAG, msg);
+                JOptionPane.showMessageDialog(panel, msg, "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            return src;
+        }
+
         private void createUI() {
             panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
             setMaskPath();
             panel.add(part1Layout());
             panel.add(part2Layout());
+            panel.add(part3Layout());
             panel.add(new JSeparator());
         }
 
@@ -137,7 +196,12 @@ public class VapxUI {
             panel.add(new JLabel(" source type:"));
             boxSrcType.setSelectedIndex(0);
             panel.add(boxSrcType);
-
+            boxSrcType.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent itemEvent) {
+                    txtPanel.setVisible(SrcSet.Src.SRC_TYPE_TXT.equals(itemEvent.getItem()));
+                }
+            });
             // fitType
             panel.add(new JLabel(" fit type:"));
             boxFitType.setSelectedIndex(0);
@@ -177,7 +241,23 @@ public class VapxUI {
             return panel;
         }
 
+
         private JPanel part2Layout() {
+            JPanel panel = txtPanel;
+            panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+            panel.add(new JLabel(" text color:"));
+            textTxtColor.setPreferredSize(new Dimension(100, 20));
+            textTxtColor.setText("#000000");
+            panel.add(textTxtColor);
+
+            panel.add(checkTxtBold);
+            panel.setVisible(false);
+            return panel;
+        }
+
+
+        private JPanel part3Layout() {
             JPanel panel = new JPanel();
             panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -185,9 +265,6 @@ public class VapxUI {
 
             return panel;
         }
-
-
-
     }
 
     private interface IMaskUIListener {

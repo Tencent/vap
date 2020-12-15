@@ -62,6 +62,8 @@ class CommonArgTool {
 
         // srcId自动生成 & 融合动画路径检查 & z序
         if (commonArg.isVapx) {
+            // vapx 强制缩小
+            commonArg.scale = 0.5f;
             int size = commonArg.srcSet.srcs.size();
             SrcSet.Src src;
             for (int i=0; i<size; i++) {

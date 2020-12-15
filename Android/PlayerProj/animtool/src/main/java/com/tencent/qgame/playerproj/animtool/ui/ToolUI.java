@@ -152,6 +152,14 @@ public class ToolUI {
             commonArg.audioPath = textAudioPath.getText();
         }
 
+        if (vapxUI.isVapxEnable()) {
+            commonArg.isVapx = true;
+            commonArg.srcSet = vapxUI.getSrcSet();
+            if (commonArg.srcSet == null) {
+                return;
+            }
+        }
+
         TLog.i(TAG, commonArg.toString());
 
         AnimTool animTool = new AnimTool();
@@ -396,8 +404,8 @@ public class ToolUI {
         JScrollPane areaScrollPane = new JScrollPane(txtAreaLog);
         areaScrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        areaScrollPane.setPreferredSize(new Dimension(WIDTH, 150));
-        areaScrollPane.setMinimumSize(new Dimension(WIDTH, 150));
+        areaScrollPane.setPreferredSize(new Dimension(WIDTH, 100));
+        areaScrollPane.setMinimumSize(new Dimension(WIDTH, 100));
 
         panel.add(areaScrollPane);
         panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
