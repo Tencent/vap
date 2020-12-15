@@ -164,12 +164,12 @@ public class VapxUI {
 
         private void createUI() {
             panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
             setMaskPath();
+            panel.add(new JSeparator());
             panel.add(part1Layout());
             panel.add(part2Layout());
             panel.add(part3Layout());
-            panel.add(new JSeparator());
+
         }
 
         private void setMaskPath() {

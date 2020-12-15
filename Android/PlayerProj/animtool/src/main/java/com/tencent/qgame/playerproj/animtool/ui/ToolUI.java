@@ -318,7 +318,7 @@ public class ToolUI {
         JPanel panel = new JPanel();
 
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel label = new JLabel("audio path");
+        JLabel label = new JLabel("audio(mp3)");
         label.setPreferredSize(labelSize);
         panel.add(label);
         panel.add(panelAudioPath);

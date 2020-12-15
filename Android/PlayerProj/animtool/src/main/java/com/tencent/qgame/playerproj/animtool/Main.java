@@ -133,16 +133,6 @@ public class Main {
             SrcSet.Src src = new SrcSet.Src();
             src.srcPath = path + "mask2";
             src.srcId = "2";
-            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
-            src.srcTag = "head2";
-            src.fitType = SrcSet.Src.FIT_TYPE_CF;
-            srcSet.srcs.add(src);
-        }
-
-        {
-            SrcSet.Src src = new SrcSet.Src();
-            src.srcPath = path + "mask3";
-            src.srcId = "3";
             src.srcType = SrcSet.Src.SRC_TYPE_TXT;
             src.srcTag = "text1";
             src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
@@ -151,17 +141,7 @@ public class Main {
             srcSet.srcs.add(src);
         }
 
-        {
-            SrcSet.Src src = new SrcSet.Src();
-            src.srcPath = path + "mask4";
-            src.srcId = "4";
-            src.srcType = SrcSet.Src.SRC_TYPE_TXT;
-            src.srcTag = "text2";
-            src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
-            src.color = "#00ff00";
-            src.style = SrcSet.Src.TEXT_STYLE_BOLD;
-            srcSet.srcs.add(src);
-        }
+
 
 
         return srcSet;
