@@ -93,6 +93,10 @@ export default class WebglRenderVap extends VapVideo {
       gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     }
+
+    // 清除界面，解决同类型type切换MP4时，第一帧是上一个mp4最后一帧的问题
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
     if (gl) {
       gl.viewport(0, 0, canvas.width, canvas.height);
       if (!vertexShader) {
