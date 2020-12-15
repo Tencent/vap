@@ -40,8 +40,8 @@ public class ToolUI {
 
     private static final String TAG = "ToolUI";
     private static final String PROPERTIES_FILE = "setting.properties";
-    private final int WIDTH = 800;
-    private final int HEIGHT = 600;
+    public static final int WIDTH = 900;
+    public static final int HEIGHT = 700;
 
     private final JFrame frame = new JFrame("VAP tool");
     private final ButtonGroup group = new ButtonGroup();
@@ -396,7 +396,8 @@ public class ToolUI {
         JScrollPane areaScrollPane = new JScrollPane(txtAreaLog);
         areaScrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        areaScrollPane.setPreferredSize(new Dimension(WIDTH, 200));
+        areaScrollPane.setPreferredSize(new Dimension(WIDTH, 150));
+        areaScrollPane.setMinimumSize(new Dimension(WIDTH, 150));
 
         panel.add(areaScrollPane);
         panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));

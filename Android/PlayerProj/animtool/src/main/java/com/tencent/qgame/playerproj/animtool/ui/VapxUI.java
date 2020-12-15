@@ -1,33 +1,197 @@
 package com.tencent.qgame.playerproj.animtool.ui;
 
+import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
+
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
-class VapxUI {
+public class VapxUI {
 
+
+    private final Dimension labelSize = new Dimension(100, 20);
+    private final JPanel controlPanel = new JPanel();
+    private final List<MaskUI> maskUiList = new ArrayList<>();
+    private int index = 0;
+    private final IMaskUIListener listener = new IMaskUIListener() {
+        @Override
+        public void onDelete(MaskUI maskUI) {
+            controlPanel.remove(maskUI.getPanel());
+            maskUiList.remove(maskUI);
+            controlPanel.revalidate();
+        }
+    };
 
     public JPanel createUI() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-        JPanel controlPanel = new JPanel();
+        panel.setPreferredSize(new Dimension(ToolUI.WIDTH, ToolUI.HEIGHT / 3));
+        panel.setMinimumSize(new Dimension(ToolUI.WIDTH, ToolUI.HEIGHT / 3));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.PAGE_AXIS));
-
-
+        controlPanel.add(getAddLayout());
         JScrollPane areaScrollPane = new JScrollPane(controlPanel);
+        panel.add(areaScrollPane);
+        return panel;
+    }
 
-        for (int i = 0; i<100 ; i++) {
-            // controlPanel.add(new JLabel("codec:" + i));
+
+    private JPanel getAddLayout() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("add source");
+        label.setPreferredSize(labelSize);
+
+        JButton btnAdd = new JButton("add");
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                createMaskUI();
+            }
+        });
+
+        panel.add(label);
+        panel.add(btnAdd);
+        panel.add(new JLabel("(simple video don't need add source)"));
+        return panel;
+    }
+
+    private void createMaskUI() {
+        MaskUI maskUI = new MaskUI(++index, listener);
+        controlPanel.add(maskUI.getPanel());
+        maskUiList.add(maskUI);
+        controlPanel.revalidate();
+    }
+
+    private static class MaskUI {
+        public IMaskUIListener listener;
+        public int index;
+        public String maskPath;
+        public JPanel panel = new JPanel();
+
+        private final JLabel labelIndex = new JLabel();
+        private final JTextField textSrcTag = new JTextField();
+        private final String[] srcTypeArray = new String[]{SrcSet.Src.SRC_TYPE_IMG, SrcSet.Src.SRC_TYPE_TXT};
+        private final JComboBox<String> boxSrcType = new JComboBox<>(srcTypeArray);
+
+        private final String[] fitTypeArray = new String[]{SrcSet.Src.FIT_TYPE_FITXY, SrcSet.Src.FIT_TYPE_CF};
+        private final JComboBox<String> boxFitType = new JComboBox<>(fitTypeArray);
+
+        final JLabel labelMaskPathState = new JLabel();
+
+        public MaskUI(int index, IMaskUIListener listener) {
+            this.index = index;
+            this.listener = listener;
+            createUI();
+        }
+
+        public JPanel getPanel() {
+            return panel;
+        }
+
+        private void createUI() {
+            panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
+            setMaskPath();
+            panel.add(part1Layout());
+            panel.add(part2Layout());
+            panel.add(new JSeparator());
+        }
+
+        private void setMaskPath() {
+            String text = "<html>---id:" + index + " mask path: "
+                    +  (maskPath == null? "<font color='red'>empty</font></html>" : maskPath);
+            labelMaskPathState.setText(text);
+        }
+
+        public JPanel part1Layout() {
+            JPanel panel = new JPanel();
+            panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+            // index
+            labelIndex.setText("id:" + index);
+            panel.add(labelIndex);
+
+            // srcTag
+            panel.add(new JLabel(" source tag:"));
+            textSrcTag.setPreferredSize(new Dimension(50, 20));
+            textSrcTag.setText("tag" + index);
+            panel.add(textSrcTag);
+
+            // srcType
+            panel.add(new JLabel(" source type:"));
+            boxSrcType.setSelectedIndex(0);
+            panel.add(boxSrcType);
+
+            // fitType
+            panel.add(new JLabel(" fit type:"));
+            boxFitType.setSelectedIndex(0);
+            panel.add(boxFitType);
+
+
+            // mask path
+            panel.add(new JLabel(" mask path:"));
+            JButton btnMaskPath = new JButton("choose");
+            panel.add(btnMaskPath);
+            btnMaskPath.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    int returnVal = fileChooser.showOpenDialog(fileChooser);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+                        // 文件夹路径
+                        maskPath = fileChooser.getSelectedFile().getAbsolutePath();
+                        setMaskPath();
+                    }
+                }
+            });
+
+            // delete
+            JLabel labelDelete = new JLabel("<html><font color='red'>delete</font></html>");
+            panel.add(labelDelete);
+            labelDelete.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent mouseEvent) {
+                    if (listener != null) {
+                        listener.onDelete(MaskUI.this);
+                    }
+                }
+            });
+
+            return panel;
+        }
+
+        private JPanel part2Layout() {
+            JPanel panel = new JPanel();
+            panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+            panel.add(labelMaskPathState);
+
+            return panel;
         }
 
 
 
-        panel.add(areaScrollPane);
-        return panel;
+    }
+
+    private interface IMaskUIListener {
+        void onDelete(MaskUI maskUI);
     }
 
 }
