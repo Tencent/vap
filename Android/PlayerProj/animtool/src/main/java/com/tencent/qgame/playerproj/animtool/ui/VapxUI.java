@@ -109,10 +109,12 @@ public class VapxUI {
 
         private final JLabel labelIndex = new JLabel();
         private final JTextField textSrcTag = new JTextField();
-        private final String[] srcTypeArray = new String[]{SrcSet.Src.SRC_TYPE_IMG, SrcSet.Src.SRC_TYPE_TXT};
+        // image -> SrcSet.Src.SRC_TYPE_IMG text -> SrcSet.Src.SRC_TYPE_TXT
+        private final String[] srcTypeArray = new String[]{"image", "text"};
         private final JComboBox<String> boxSrcType = new JComboBox<>(srcTypeArray);
 
-        private final String[] fitTypeArray = new String[]{SrcSet.Src.FIT_TYPE_FITXY, SrcSet.Src.FIT_TYPE_CF};
+        // centerCrop -> SrcSet.Src.FIT_TYPE_CF
+        private final String[] fitTypeArray = new String[]{"fitXY", "centerCrop"};
         private final JComboBox<String> boxFitType = new JComboBox<>(fitTypeArray);
 
         private final JPanel txtPanel = new JPanel();
@@ -135,8 +137,17 @@ public class VapxUI {
             SrcSet.Src src = new SrcSet.Src();
             src.srcId = String.valueOf(index);
             src.srcTag = textSrcTag.getText().trim();
-            src.srcType = (String) boxSrcType.getSelectedItem();
-            src.fitType = (String) boxFitType.getSelectedItem();
+
+            src.srcType = SrcSet.Src.SRC_TYPE_IMG;
+            if (boxSrcType.getSelectedIndex() == 1) {
+                src.srcType = SrcSet.Src.SRC_TYPE_TXT;
+            }
+
+            src.fitType = SrcSet.Src.FIT_TYPE_FITXY;
+            if (boxFitType.getSelectedIndex() == 1) {
+                src.fitType = SrcSet.Src.FIT_TYPE_CF;
+            }
+
             src.srcPath = maskPath;
 
             if (SrcSet.Src.SRC_TYPE_TXT.equals(src.srcType)) {
