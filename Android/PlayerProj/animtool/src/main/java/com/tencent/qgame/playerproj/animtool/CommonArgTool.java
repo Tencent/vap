@@ -126,10 +126,10 @@ class CommonArgTool {
         commonArg.outputW += size[0];
         commonArg.outputH += size[1];
 
-        if (true || commonArg.outputW > 1504 || commonArg.outputH > 1504) {
+        if (commonArg.outputW > 1504 || commonArg.outputH > 1504) {
 
             String msg = "[Warning] Output video width:" + commonArg.outputW + " or height:" + commonArg.outputH
-                    + " is over 1504. Some devices will display exception, like video turn to green!";
+                    + " is over 1504. Some devices will display exception, like video turn green!";
             TLog.w(TAG, msg);
             if (toolListener != null) {
                 toolListener.onWarning(msg);
