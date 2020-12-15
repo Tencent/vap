@@ -19,20 +19,20 @@ class CommonArgTool {
      * 参数自动填充
      * @param commonArg
      */
-    static boolean autoFillAndCheck(CommonArg commonArg) throws Exception {
+    static boolean autoFillAndCheck(CommonArg commonArg, AnimTool.IToolListener toolListener) throws Exception {
 
         String os = System.getProperty("os.name");
         TLog.i(TAG, os);
 
         if (commonArg.inputPath == null && "".equals(commonArg.inputPath)) {
-            TLog.i(TAG, "error: input path invalid");
+            TLog.e(TAG, "input path invalid");
             return false;
         }
 
         //  路径检查
         File input = new File(commonArg.inputPath);
         if (!input.exists()) {
-            TLog.i(TAG, "error: input path invalid " + commonArg.inputPath);
+            TLog.e(TAG, "input path invalid " + commonArg.inputPath);
             return false;
         }
 
@@ -55,7 +55,7 @@ class CommonArgTool {
                 src.z = i;
                 File srcPath = new File(src.srcPath);
                 if (!srcPath.exists()) {
-                    TLog.i(TAG, "error: src="+ src.srcId+",path invalid " + src.srcPath);
+                    TLog.e(TAG, "src="+ src.srcId+",path invalid " + src.srcPath);
                     continue;
                 }
                 if (!File.separator.equals(src.srcPath.substring(src.srcPath.length() - 1))) {
@@ -76,7 +76,7 @@ class CommonArgTool {
         // 检查第一帧
         File firstFrame = new File(commonArg.inputPath + "000.png");
         if (!firstFrame.exists()) {
-            TLog.i(TAG, "error: first frame 000.png does not exist");
+            TLog.e(TAG, "first frame 000.png does not exist");
             return false;
         }
         // 获取视频高度
@@ -84,7 +84,7 @@ class CommonArgTool {
         commonArg.rgbPoint.w = inputBuf.getWidth();
         commonArg.rgbPoint.h = inputBuf.getHeight();
         if (commonArg.rgbPoint.w <= 0 || commonArg.rgbPoint.h <= 0) {
-            TLog.i(TAG, "error: video size " + commonArg.rgbPoint.w + "x" + commonArg.rgbPoint.h);
+            TLog.e(TAG, "video size " + commonArg.rgbPoint.w + "x" + commonArg.rgbPoint.h);
             return false;
         }
 
@@ -121,11 +121,20 @@ class CommonArgTool {
         }
 
         // 计算出 16倍数的视频
-        int[] size = calSizeFill( commonArg.outputW, commonArg.outputH, 0, 0);
+        int[] size = calSizeFill(commonArg.outputW, commonArg.outputH, 0, 0);
         // 得到最终视频宽高
         commonArg.outputW += size[0];
         commonArg.outputH += size[1];
 
+        if (true || commonArg.outputW > 1504 || commonArg.outputH > 1504) {
+
+            String msg = "[Warning] Output video width:" + commonArg.outputW + " or height:" + commonArg.outputH
+                    + " is over 1504. Some devices will display exception, like video turn to green!";
+            TLog.w(TAG, msg);
+            if (toolListener != null) {
+                toolListener.onWarning(msg);
+            }
+        }
 
         // 获取总帧数
         commonArg.totalFrame = 0;
@@ -140,7 +149,7 @@ class CommonArgTool {
 
 
         if (commonArg.totalFrame <= 0) {
-            TLog.i(TAG, "error: totalFrame=" + commonArg.totalFrame);
+            TLog.e(TAG, "totalFrame=" + commonArg.totalFrame);
             return false;
         }
 

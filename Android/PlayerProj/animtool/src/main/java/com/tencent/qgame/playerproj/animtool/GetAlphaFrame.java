@@ -75,7 +75,6 @@ public class GetAlphaFrame {
         // alpha 区域
         fillColor(outputArgb, outW, commonArg.alphaPoint, true, alphaArgb, w);
 
-
         return new AlphaFrameOut(outputArgb);
 
     }
@@ -88,10 +87,6 @@ public class GetAlphaFrame {
             outY = point.y + y;
             for (int x = 0; x < point.w ; x++) {
                 outX = point.x + x;
-                int tmpP = x + y * inputW;
-                if (tmpP >= inputArgb.length) {
-                    TLog.i("hexleo_test", "x=" + x + ",y=" + y + ",inputW=" + inputW);
-                }
                 int color = inputArgb[x + y * inputW];
                 outputArgb[outX + outY * outputW] = isAlpha ? getAlpha(color) : getColor(color);
             }

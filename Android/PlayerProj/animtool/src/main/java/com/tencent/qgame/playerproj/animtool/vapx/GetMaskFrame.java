@@ -83,12 +83,12 @@ public class GetMaskFrame {
             mFrame.x = startX;
             mFrame.y = lastMaxY;
             if (mFrame.x + mFrame.w > outW) {
-                TLog.i(TAG, "Error: frameIndex=" + frameIndex + ",src=" + src.srcId + ", no more space for(w)" + mFrame);
+                TLog.e(TAG, "frameIndex=" + frameIndex + ",src=" + src.srcId + ", no more space for(w)" + mFrame);
                 return null;
             }
         }
         if (mFrame.y + mFrame.h > outH) { // 高度不够直接错误
-            TLog.i(TAG, "Error: frameIndex=" + frameIndex + ",src=" + src.srcId + ", no more space(h)" + mFrame);
+            TLog.e(TAG, "frameIndex=" + frameIndex + ",src=" + src.srcId + ", no more space(h)" + mFrame);
             return null;
         }
         frame.mFrame = mFrame;

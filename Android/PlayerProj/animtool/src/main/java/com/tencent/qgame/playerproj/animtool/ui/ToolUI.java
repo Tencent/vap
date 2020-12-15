@@ -26,6 +26,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -42,6 +43,7 @@ public class ToolUI {
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
 
+    private final JFrame frame = new JFrame("VAP tool");
     private final ButtonGroup group = new ButtonGroup();
     private final JRadioButton btnH265 = new JRadioButton("h265");
     private final JRadioButton btnH264 = new JRadioButton("h264");
@@ -57,16 +59,32 @@ public class ToolUI {
 
     private final VapxUI vapxUI = new VapxUI();
 
-
-
-    public void run() {
+    public ToolUI() {
         TLog.logger = new TLog.ITLog() {
             @Override
             public void i(String tag, String msg) {
                 log(tag, msg);
             }
+
+            @Override
+            public void e(String tag, String msg) {
+                log(tag, "Error:" + msg);
+            }
+
+            @Override
+            public void w(String tag, String msg) {
+                log(tag, "Warning:" + msg);
+            }
         };
+    }
+
+
+    public void run() {
         createUI();
+        loadProperties();
+    }
+
+    private void loadProperties() {
         try {
             File file = new File(PROPERTIES_FILE);
             if (!file.exists()) {
@@ -85,10 +103,9 @@ public class ToolUI {
                 }
             }
         } catch (Exception e) {
-            TLog.i(TAG, "ERROR -> " + e.getMessage());
+            TLog.e(TAG, e.getMessage());
         }
     }
-
 
     private void runTool() {
         txtAreaLog.setText("");
@@ -98,7 +115,7 @@ public class ToolUI {
                 try {
                     runAnimTool();
                 } catch (Exception e) {
-                    TLog.i(TAG, "ERROR -> " + e.getMessage());
+                    TLog.e(TAG, e.getMessage());
                     btnCreate.setEnabled(true);
                 }
             }
@@ -137,6 +154,11 @@ public class ToolUI {
             }
 
             @Override
+            public void onWarning(String msg) {
+                JOptionPane.showMessageDialog(frame, msg, "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+
+            @Override
             public void onError() {
                 btnCreate.setEnabled(true);
             }
@@ -149,7 +171,7 @@ public class ToolUI {
                     setProperties(commonArg);
                     Desktop.getDesktop().open(new File(commonArg.outputPath));
                 } catch (IOException e) {
-                    TLog.i(TAG, "ERROR -> " + e.getMessage());
+                    TLog.e(TAG, e.getMessage());
                 }
             }
         });
@@ -159,7 +181,6 @@ public class ToolUI {
     }
 
     private void createUI() {
-        JFrame frame = new JFrame("VAP tool");
         frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -281,7 +302,7 @@ public class ToolUI {
                 try {
                     Desktop.getDesktop().open(new File(path));
                 } catch (IOException e) {
-                    TLog.i(TAG, "ERROR -> " + e.getMessage());
+                    TLog.e(TAG, e.getMessage());
                 }
             }
         });
@@ -361,7 +382,7 @@ public class ToolUI {
             commonArg.enableH265 = Boolean.TRUE.toString().equals(enableH265);
             commonArg.inputPath = inputPath;
         } catch (Exception e) {
-            TLog.i(TAG, "getProperties error:" + e.getMessage());
+            TLog.e(TAG, "getProperties error:" + e.getMessage());
         }
         return commonArg;
     }

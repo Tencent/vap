@@ -24,13 +24,13 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // 启动UI界面
-        // new ToolUI().run();
+        new ToolUI().run();
 
         // java工具普通动画
         // animTool();
 
         // java工具融合动画
-        animVapxTool();
+        // animVapxTool();
     }
 
 

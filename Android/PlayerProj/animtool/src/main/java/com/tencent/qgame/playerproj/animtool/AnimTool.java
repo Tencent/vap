@@ -76,7 +76,7 @@ public class AnimTool {
      * @return
      */
     private boolean checkCommonArg(CommonArg commonArg) throws Exception {
-        return CommonArgTool.autoFillAndCheck(commonArg);
+        return CommonArgTool.autoFillAndCheck(commonArg, toolListener);
     }
 
     private boolean finalCheck(CommonArg commonArg) {
@@ -334,6 +334,7 @@ public class AnimTool {
 
     public interface IToolListener {
         void onProgress(float progress);
+        void onWarning(String msg);
         void onError();
         void onComplete();
     }
