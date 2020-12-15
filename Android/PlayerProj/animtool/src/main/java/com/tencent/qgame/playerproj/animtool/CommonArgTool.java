@@ -39,6 +39,21 @@ class CommonArgTool {
         if (!File.separator.equals(commonArg.inputPath.substring(commonArg.inputPath.length() - 1))) {
             commonArg.inputPath = commonArg.inputPath + File.separator;
         }
+
+        // 检查音频文件是否存在
+        if (commonArg.needAudio) {
+            File audio = new File(commonArg.audioPath);
+            if (!audio.exists() || commonArg.audioPath == null || commonArg.audioPath.length() < 3) {
+                TLog.e(TAG , "audio file not exists " + commonArg.audioPath);
+                return false;
+            }
+            String type = commonArg.audioPath.substring(commonArg.audioPath.length() - 3).toLowerCase();
+            if (!"mp3".equals(type)) {
+                TLog.e(TAG , "audio file must be mp3 file " + commonArg.audioPath);
+                return false;
+            }
+        }
+
         // output path
         commonArg.outputPath = commonArg.inputPath + AnimTool.OUTPUT_DIR;
 
@@ -127,7 +142,6 @@ class CommonArgTool {
         commonArg.outputH += size[1];
 
         if (commonArg.outputW > 1504 || commonArg.outputH > 1504) {
-
             String msg = "[Warning] Output video width:" + commonArg.outputW + " or height:" + commonArg.outputH
                     + " is over 1504. Some devices will display exception, like video turn green!";
             TLog.w(TAG, msg);

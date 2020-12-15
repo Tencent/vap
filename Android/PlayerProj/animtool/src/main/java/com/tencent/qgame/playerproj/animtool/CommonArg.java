@@ -56,6 +56,10 @@ public class CommonArg {
 
     public int outputH = 0;
 
+    public boolean needAudio = false;
+
+    public String audioPath; // 音频地址
+
     /**
      * 融合动画相关参数
      */
@@ -74,6 +78,8 @@ public class CommonArg {
                 ", fps=" + fps +
                 ", scale=" + scale +
                 ", inputPath='" + inputPath + '\'' +
+                ", needAudio=" + needAudio + '\'' +
+                ", audioPath='" + audioPath + '\'' +
                 '}';
     }
 }

@@ -21,13 +21,10 @@ import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.concurrent.TimeUnit;
 
 public class AnimTool {
 
@@ -36,7 +33,8 @@ public class AnimTool {
     public static final String OUTPUT_DIR = "output"+ File.separator;
     public static final String FRAME_IMAGE_DIR = "frames"+ File.separator;
     public static final String VIDEO_FILE = "video.mp4";
-    public static final String TEM_VIDEO_FILE = "tmp_video.mp4";
+    public static final String TEMP_VIDEO_FILE = "tmp_video.mp4";
+    public static final String TEMP_VIDEO_AUDIO_FILE = "tmp_video_audio.mp4";
     public static final String VAPC_BIN_FILE = "vapc.bin";
     public static final String VAPC_JSON_FILE = "vapc.json";
 
@@ -204,17 +202,30 @@ public class AnimTool {
                 TLog.i(TAG, "createMp4 fail");
                 return;
             }
+            String tempVideoName = TEMP_VIDEO_FILE;
+            if (commonArg.needAudio) {
+                result = mergeAudio2Mp4(commonArg, tempVideoName);
+                if (!result) {
+                    TLog.i(TAG, "mergeAudio2Mp4 fail");
+                    return;
+                }
+                tempVideoName = TEMP_VIDEO_AUDIO_FILE;
+            }
+
             String input = commonArg.outputPath + VAPC_JSON_FILE;
             // 由json变为bin文件
             String vapcBinPath = mp4BoxTool(input, commonArg.outputPath);
             // 将bin文件合并到mp4里
-            result = mergeBin2Mp4(commonArg, vapcBinPath, commonArg.outputPath);
+            result = mergeBin2Mp4(commonArg, vapcBinPath, tempVideoName, commonArg.outputPath);
             if (!result) {
                 TLog.i(TAG, "mergeBin2Mp4 fail");
                 return;
             }
             // 删除临时视频文件
-            new File(commonArg.outputPath + TEM_VIDEO_FILE).delete();
+            new File(commonArg.outputPath + TEMP_VIDEO_FILE).delete();
+            if (commonArg.needAudio) {
+                new File(commonArg.outputPath + TEMP_VIDEO_AUDIO_FILE).delete();
+            }
             new File(commonArg.outputPath + VAPC_BIN_FILE).delete();
             // 计算文件md5
             String md5 = new Md5Util().getFileMD5(new File(commonArg.outputPath + VIDEO_FILE), commonArg.outputPath);
@@ -274,8 +285,6 @@ public class AnimTool {
 
     /**
      * 创建mp4
-     * @param commonArg
-     * @throws Exception
      */
     private boolean createMp4(CommonArg commonArg, String videoPath, String frameImagePath) throws Exception {
         String[] cmd = null;
@@ -289,7 +298,7 @@ public class AnimTool {
                     "-level", "4.0",
                     "-tag:v", "hvc1",
                     "-bufsize", "2000k",
-                    "-y", videoPath + TEM_VIDEO_FILE};
+                    "-y", videoPath + TEMP_VIDEO_FILE};
         } else {
             cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
                     "-i", frameImagePath + "%03d.png",
@@ -300,7 +309,7 @@ public class AnimTool {
                     "-level", "4.0",
                     "-bf", "0",
                     "-bufsize", "3000k",
-                    "-y", videoPath + TEM_VIDEO_FILE};
+                    "-y", videoPath + TEMP_VIDEO_FILE};
         }
 
         TLog.i(TAG, "run createMp4");
@@ -310,12 +319,25 @@ public class AnimTool {
     }
 
     /**
-     * 合并vapc.bin到mp4里
-     * @param inputFile
-     * @throws Exception
+     * 合并音频文件
      */
-    private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String videoPath) throws Exception{
-        String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + TEM_VIDEO_FILE, videoPath + VIDEO_FILE};
+    private boolean mergeAudio2Mp4(CommonArg commonArg, String tempVideoFile) throws Exception {
+        String[] cmd = new String[] {commonArg.ffmpegCmd,
+                "-i", commonArg.audioPath,
+                "-i", commonArg.outputPath + tempVideoFile,
+                "-y", commonArg.outputPath + TEMP_VIDEO_AUDIO_FILE};
+        TLog.i(TAG, "run mergeAudio2Mp4");
+        int result = ProcessUtil.run(cmd);
+        TLog.i(TAG, "mergeAudio2Mp4 result=" + (result == 0? "success" : "fail"));
+        return result == 0;
+    }
+
+
+    /**
+     * 合并vapc.bin到mp4里
+     */
+    private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String tempVideoFile, String videoPath) throws Exception{
+        String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + tempVideoFile, videoPath + VIDEO_FILE};
         TLog.i(TAG, "run mergeBin2Mp4");
         int result = ProcessUtil.run(cmd);
         TLog.i(TAG, "mergeBin2Mp4 result=" + (result == 0? "success" : "fail"));

@@ -53,11 +53,15 @@ public class ToolUI {
     private final JTextField textInputPath = new JTextField();
     private final JButton btnCreate = new JButton("create VAP");
     private final JTextArea txtAreaLog = new JTextArea();
+    private final JTextField textAudioPath = new JTextField();
+    private final JPanel panelAudioPath = new JPanel();
+
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
     private final Properties props = new Properties();
-
     private final VapxUI vapxUI = new VapxUI();
+
+    private boolean needAudio = false;
 
     public ToolUI() {
         TLog.logger = new TLog.ITLog() {
@@ -95,6 +99,7 @@ public class ToolUI {
             group.setSelected(commonArg.enableH265 ? btnH265.getModel() : btnH264.getModel(), true);
             modelFps.setValue(commonArg.fps);
             textInputPath.setText(commonArg.inputPath);
+            textAudioPath.setText(commonArg.audioPath);
             float scale = commonArg.scale;
             for (int i=0; i<scaleArray.length ; i++) {
                 if (scaleArray[i] == scale) {
@@ -142,6 +147,10 @@ public class ToolUI {
         commonArg.fps = (Integer)modelFps.getValue();
         commonArg.inputPath = textInputPath.getText();
         commonArg.scale = scaleArray[boxScale.getSelectedIndex()];
+        if (needAudio) {
+            commonArg.needAudio = true;
+            commonArg.audioPath = textAudioPath.getText();
+        }
 
         TLog.i(TAG, commonArg.toString());
 
@@ -205,6 +214,8 @@ public class ToolUI {
         panel.add(getScaleLayout());
         // path
         panel.add(getPathLayout());
+        // audio path
+        panel.add(getAudioPathLayout());
         // vapx
         panel.add(vapxUI.createUI());
         // create
@@ -263,7 +274,7 @@ public class ToolUI {
         JPanel panel = new JPanel();
 
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel label = new JLabel("input path");
+        JLabel label = new JLabel("frames path");
         label.setPreferredSize(labelSize);
         panel.add(label);
         JPanel gPanel = new JPanel();
@@ -272,7 +283,7 @@ public class ToolUI {
         BoxLayout layout = new BoxLayout(gPanel, BoxLayout.LINE_AXIS);
         gPanel.setLayout(layout);
 
-        textInputPath.setPreferredSize(new Dimension(300,20));
+        textInputPath.setPreferredSize(new Dimension(400,20));
         gPanel.add(textInputPath);
 
         JButton btnInputPath = new JButton("choose");
@@ -290,6 +301,55 @@ public class ToolUI {
                 }
             }
         });
+
+        return panel;
+    }
+
+
+    private JPanel getAudioPathLayout() {
+        JPanel panel = new JPanel();
+
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("audio path");
+        label.setPreferredSize(labelSize);
+        panel.add(label);
+        panel.add(panelAudioPath);
+        final JLabel labelAudioAction = new JLabel("+");
+        panel.add(labelAudioAction);
+        labelAudioAction.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                needAudio = !needAudio;
+                panelAudioPath.setVisible(needAudio);
+                labelAudioAction.setText(needAudio ? "x" : "+");
+            }
+        });
+
+        BoxLayout layout = new BoxLayout(panelAudioPath, BoxLayout.LINE_AXIS);
+        panelAudioPath.setLayout(layout);
+
+        textAudioPath.setPreferredSize(new Dimension(400,20));
+        panelAudioPath.add(textAudioPath);
+
+        JButton btnInputPath = new JButton("choose");
+        panelAudioPath.add(btnInputPath);
+        btnInputPath.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                int returnVal = fileChooser.showOpenDialog(fileChooser);
+                if(returnVal == JFileChooser.APPROVE_OPTION) {
+                    // 文件夹路径
+                    String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    textAudioPath.setText(filePath);
+                }
+            }
+        });
+
+        if (!needAudio) {
+            panelAudioPath.setVisible(false);
+        }
 
         return panel;
     }
@@ -367,13 +427,14 @@ public class ToolUI {
 
     private CommonArg getProperties() {
         CommonArg commonArg = new CommonArg();
-        String version = props.getProperty("version", "0");
-        String enableH265 = props.getProperty("enableH265", Boolean.TRUE.toString());
-        String fps = props.getProperty("fps", String.valueOf(commonArg.fps));
-        String inputPath = props.getProperty("inputPath", "");
-        String scale = props.getProperty("scale", String.valueOf(scaleArray[0]));
-
         try {
+            String version = props.getProperty("version", "0");
+            String enableH265 = props.getProperty("enableH265", Boolean.TRUE.toString());
+            String fps = props.getProperty("fps", String.valueOf(commonArg.fps));
+            String inputPath = props.getProperty("inputPath", "");
+            String scale = props.getProperty("scale", String.valueOf(scaleArray[0]));
+            String audioPath = props.getProperty("audioPath", "");
+
             int v = Integer.parseInt(version);
             // 版本不符直接返回默认值
             if (v != commonArg.version) return commonArg;
@@ -381,6 +442,7 @@ public class ToolUI {
             commonArg.scale = Float.parseFloat(scale);
             commonArg.enableH265 = Boolean.TRUE.toString().equals(enableH265);
             commonArg.inputPath = inputPath;
+            commonArg.audioPath = audioPath;
         } catch (Exception e) {
             TLog.e(TAG, "getProperties error:" + e.getMessage());
         }
@@ -393,6 +455,7 @@ public class ToolUI {
         props.setProperty("enableH265", commonArg.enableH265? Boolean.TRUE.toString() : Boolean.FALSE.toString());
         props.setProperty("fps", commonArg.fps + "");
         props.setProperty("inputPath", commonArg.inputPath == null ? "" : commonArg.inputPath);
+        props.setProperty("audioPath", commonArg.audioPath == null ? "" : commonArg.audioPath);
         props.setProperty("scale", commonArg.scale + "");
         props.store(new FileOutputStream(PROPERTIES_FILE), "");
     }
