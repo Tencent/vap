@@ -126,6 +126,11 @@ public class AnimTool {
                 @Override
                 public void run() {
                     for(int i = threadIndexSet[k][0]; i<threadIndexSet[k][1]; i++) {
+                        try {
+                            createFrame(commonArg, i);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         synchronized (AnimTool.class) {
                             totalP++;
                             float progress = totalP * 1.0f / commonArg.totalFrame;
@@ -134,11 +139,6 @@ public class AnimTool {
                             } else {
                                 TLog.i(TAG, "progress " + progress);
                             }
-                        }
-                        try {
-                            createFrame(commonArg, i);
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
                     }
                     synchronized (AnimTool.class) {
@@ -325,6 +325,8 @@ public class AnimTool {
         String[] cmd = new String[] {commonArg.ffmpegCmd,
                 "-i", commonArg.audioPath,
                 "-i", commonArg.outputPath + tempVideoFile,
+                "-c:v", "copy",
+                "-c:a", "aac",
                 "-y", commonArg.outputPath + TEMP_VIDEO_AUDIO_FILE};
         TLog.i(TAG, "run mergeAudio2Mp4");
         int result = ProcessUtil.run(cmd);
