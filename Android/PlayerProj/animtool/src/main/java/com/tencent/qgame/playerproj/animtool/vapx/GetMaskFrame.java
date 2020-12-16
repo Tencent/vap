@@ -92,15 +92,17 @@ public class GetMaskFrame {
             mFrame.x = startX;
             mFrame.y = lastMaxY;
             if (mFrame.x + mFrame.w > outW) {
-
                 // 超长后缩放mask
                 float scale = (outW - mFrame.x) * 1f / mFrame.w;
 
                 mFrame.w = outW - mFrame.x;
                 mFrame.h = (int) (mFrame.h * scale);
 
+                // 设置缩放区域
                 maskPoint.x = (int) (maskPoint.x * scale);
                 maskPoint.y = (int) (maskPoint.y * scale);
+                maskPoint.h = mFrame.h;
+                maskPoint.w = mFrame.w;
 
                 maskArgb = scaleMask(scale, inputBuf);
 
@@ -113,7 +115,7 @@ public class GetMaskFrame {
         }
         frame.mFrame = mFrame;
 
-        fillMaskToOutput(outputArgb, outW, maskArgb, maskW, maskPoint, frame.mFrame, SrcSet.Src.SRC_TYPE_TXT.equals(src.srcType));
+        fillMaskToOutput(outputArgb, outW, maskArgb, maskW, maskPoint, frame.mFrame);
 
         // 设置src的w,h 取所有遮罩里最大值
         synchronized (GetMaskFrame.class) {
@@ -167,8 +169,8 @@ public class GetMaskFrame {
 
         point.x = minX;
         point.y = minY;
-        point.w = maxX - minX;
-        point.h = maxY - minY;
+        point.w = maxX - minX + 1;
+        point.h = maxY - minY + 1;
         if (point.w <=0 || point.h <= 0) return null;
 
         return point;
@@ -179,8 +181,7 @@ public class GetMaskFrame {
     private void fillMaskToOutput(int[] outputArgb, int outW,
                                   int[] maskArgb, int maskW,
                                   PointRect frame,
-                                  PointRect mFrame,
-                                  boolean isTxtMask) {
+                                  PointRect mFrame) {
         for (int y=0; y < frame.h; y++) {
             for (int x=0; x < frame.w; x++) {
                 int maskXOffset = frame.x;
