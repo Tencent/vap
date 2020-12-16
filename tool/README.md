@@ -2,10 +2,16 @@
 
 VapTool Java版本支持 Windows 与Mac
 
+版本: [tool2.0.0](https://github.com/Tencent/vap/releases/tag/tool2.0.0)
+
 os|download|description
 ---|---|---
-Windows|[VapTool\_Java\_Win\_Full.zip](https://github.com/Tencent/vap/releases/download/v1.0.0/VapTool_Java_Win_Full.zip)|包含jre 可直接运行
-Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releases/download/v1.0.0/VapTool_Java_Mac_without_jre.zip)|未含jre 但Mac基本自带java 
+Windows|[VapTool\_Java\_Win\_Full.zip](https://github.com/Tencent/vap/releases/download/tool2.0.0/VapTool_Java_Win_Full.zip)|包含jre 可直接运行
+Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releases/download/tool2.0.0/VapTool_Java_Mac_without_jre.zip)|未含jre 但Mac基本自带java 
+
+运行包中包含其它工具，可以单独下载jar文件，替换后运行：
+
+download jar: [animtool_tool2.0.0.zip](https://github.com/Tencent/vap/releases/download/tool2.0.0/animtool_tool2.0.0.zip)
 
 
 ## Windows
@@ -38,18 +44,18 @@ chmod +x mac_start.sh
 ![](images/vaptool_java_01.png)
 
 * codec: 编码类型(默认h264)
- 	* h264: **优点**：兼容性好，几乎所有机器都能播放；**缺点**：压缩率没有h265高
-	* h265: **优点**：压缩率更高，画面更清晰；**缺点**：Android 4.x 版本无法播放，部分低端机器兼容性差; Web端浏览器可能不支持h265
+ 	* h264: **优点**: 兼容性好，几乎所有机器都能播放；**缺点**: 压缩率没有h265高;
+	* h265: **优点**: 压缩率更高，画面更清晰；**缺点**: Android 4.x 版本无法播放，部分低端机器兼容性差; Web端浏览器可能不支持h265;
 
-* fps: 每秒播放多少帧
-* alpha scale: 视频alpha区域是否缩放(默认缩放0.5)，目前可选: 缩放0.5;不缩放1. 缩放视频能最终减小视频分辨率，提高兼容性
+* fps: 每秒播放多少帧;
+* alpha scale: 视频alpha区域是否缩放(默认缩放0.5)，目前可选: 缩放0.5;不缩放1. 缩放视频能最终减小视频分辨率，提高兼容性;
 * frames path: 视频帧存放的位置
-	* 视频帧命名方法 **000.png 001.png ... 099.png**。第一帧一定是**000.png**不然无法正常生成，可以参考"simple_demo"
-* audio: 需要集成到视频里的声音文件(目前支持mp3文件)
+	* 视频帧命名方法 **000.png 001.png ... 099.png**。第一帧一定是**000.png**不然无法正常生成，可以参考"simple_demo";
+* audio: 需要集成到视频里的声音文件(目前支持mp3文件).
 
-普通VAP视频完成以上配置即可。
+普通VAP视频完成以上配置即可.
  
-点击"create VAP" 开始生成视频。
+点击"create VAP" 开始生成视频.
 
 
 ### 文件输出
