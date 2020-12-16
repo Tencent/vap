@@ -36,14 +36,18 @@ class AnimConfigManager(val player: AnimPlayer) {
      * 解析配置
      * @return true 解析成功 false 解析失败
      */
-    fun parseConfig(fileContainer: FileContainer, defaultVideoMode: Int, defaultFps: Int): Int {
+    fun parseConfig(fileContainer: FileContainer, enableVersion1: Boolean, defaultVideoMode: Int, defaultFps: Int): Int {
         try {
             isParsingConfig = true
             // 解析vapc
             val time = SystemClock.elapsedRealtime()
             val result = parse(fileContainer, defaultVideoMode, defaultFps)
-            ALog.i(TAG, "parseConfig cost=${SystemClock.elapsedRealtime() - time}ms")
+            ALog.i(TAG, "parseConfig cost=${SystemClock.elapsedRealtime() - time}ms enableVersion1=$enableVersion1 result=$result")
             if (!result) {
+                isParsingConfig = false
+                return Constant.REPORT_ERROR_TYPE_PARSE_CONFIG
+            }
+            if (config?.isDefaultConfig == true && !enableVersion1) {
                 isParsingConfig = false
                 return Constant.REPORT_ERROR_TYPE_PARSE_CONFIG
             }

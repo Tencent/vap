@@ -188,6 +188,12 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         player?.updateMaskConfig(maskConfig)
     }
 
+
+    @Deprecated("Compatible older version mp4, default false")
+    fun enableVersion1(enable: Boolean) {
+        player?.enableVersion1 = enable
+    }
+
     // 兼容老版本视频模式
     @Deprecated("Compatible older version mp4")
     fun setVideoMode(mode: Int) {
