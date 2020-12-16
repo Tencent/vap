@@ -327,7 +327,7 @@ public class ToolUI {
         btnInputPath.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(new File(getInputPath()));
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int returnVal = fileChooser.showOpenDialog(fileChooser);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
