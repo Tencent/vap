@@ -62,11 +62,11 @@ public class Main {
         commonArg.mp4editCmd = "mp4edit";
 
         /*
-         * 是否开启h265（默认开启）
+         * 是否开启h265
          * 优点：压缩率更高，视频更清晰
          * 缺点：Android 4.x系统 & 极少部分低端机 无法播放265视频
          */
-        commonArg.enableH265 = true;
+        commonArg.enableH265 = false;
         // fps
         commonArg.fps = 24;
         // 素材文件路径
@@ -93,7 +93,7 @@ public class Main {
 
         String path = "/path/to/your/demo";
 
-        commonArg.enableH265 = true;
+        commonArg.enableH265 = false;
         // fps
         commonArg.fps = 24;
         // 素材文件路径

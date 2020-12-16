@@ -45,8 +45,8 @@ public class ToolUI {
 
     private final JFrame frame = new JFrame("VAP tool");
     private final ButtonGroup group = new ButtonGroup();
-    private final JRadioButton btnH265 = new JRadioButton("h265");
     private final JRadioButton btnH264 = new JRadioButton("h264");
+    private final JRadioButton btnH265 = new JRadioButton("h265");
     private final SpinnerModel modelFps = new SpinnerNumberModel(24, 1, 60, 1);
     private final Float[] scaleArray = new Float[]{0.5f, 1f};
     private final JComboBox<Float> boxScale = new JComboBox<>(scaleArray);
@@ -245,11 +245,11 @@ public class ToolUI {
 
         JPanel panelRadio = new JPanel();
         panelRadio.setLayout(new GridLayout(1, 2));
-        panelRadio.add(btnH265);
         panelRadio.add(btnH264);
-        group.add(btnH265);
+        panelRadio.add(btnH265);
         group.add(btnH264);
-        group.setSelected(btnH265.getModel(), true);
+        group.add(btnH265);
+        group.setSelected(btnH264.getModel(), true);
         panel.add(panelRadio);
 
         return panel;
@@ -438,7 +438,7 @@ public class ToolUI {
         CommonArg commonArg = new CommonArg();
         try {
             String version = props.getProperty("version", "0");
-            String enableH265 = props.getProperty("enableH265", Boolean.TRUE.toString());
+            String enableH265 = props.getProperty("enableH265", Boolean.toString(commonArg.enableH265));
             String fps = props.getProperty("fps", String.valueOf(commonArg.fps));
             String inputPath = props.getProperty("inputPath", "");
             String scale = props.getProperty("scale", String.valueOf(scaleArray[0]));

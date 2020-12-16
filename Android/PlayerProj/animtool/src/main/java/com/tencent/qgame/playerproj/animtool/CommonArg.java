@@ -25,7 +25,7 @@ public class CommonArg {
 
     public String mp4editCmd = "mp4edit"; // bento4 mp4edit 命令地址
 
-    public boolean enableH265 = true; // 是否开启h265
+    public boolean enableH265 = false; // 是否开启h265
 
     public int fps = 24;
 
