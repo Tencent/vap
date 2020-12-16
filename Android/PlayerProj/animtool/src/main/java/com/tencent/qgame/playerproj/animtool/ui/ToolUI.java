@@ -63,7 +63,7 @@ public class ToolUI {
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
     private final Properties props = new Properties();
-    private final VapxUI vapxUI = new VapxUI();
+    private final VapxUI vapxUI = new VapxUI(this);
 
     private boolean needAudio = false;
 
@@ -221,6 +221,10 @@ public class ToolUI {
         frame.setVisible(true);
     }
 
+    public String getInputPath() {
+        return textInputPath.getText();
+    }
+
     private void layout(JPanel panel) {
         BoxLayout layout = new BoxLayout(panel, BoxLayout.PAGE_AXIS);
         panel.setLayout(layout);
@@ -368,7 +372,7 @@ public class ToolUI {
         btnInputPath.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser fileChooser = new JFileChooser();
+                JFileChooser fileChooser = new JFileChooser(new File(getInputPath()));
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 int returnVal = fileChooser.showOpenDialog(fileChooser);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {

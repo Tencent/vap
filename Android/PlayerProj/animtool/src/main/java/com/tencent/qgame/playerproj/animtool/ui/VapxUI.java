@@ -11,6 +11,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class VapxUI {
     private final JPanel controlPanel = new JPanel();
     private final List<MaskUI> maskUiList = new ArrayList<>();
     private int index = 0;
+    private ToolUI toolUI;
     private final IMaskUIListener listener = new IMaskUIListener() {
         @Override
         public void onDelete(MaskUI maskUI) {
@@ -42,6 +44,10 @@ public class VapxUI {
             controlPanel.revalidate();
         }
     };
+
+    public VapxUI(ToolUI toolUI) {
+        this.toolUI = toolUI;
+    }
 
     public JPanel createUI() {
         JPanel panel = new JPanel();
@@ -95,13 +101,14 @@ public class VapxUI {
     }
 
     private void createMaskUI() {
-        MaskUI maskUI = new MaskUI(++index, listener);
+        MaskUI maskUI = new MaskUI(toolUI, ++index, listener);
         controlPanel.add(maskUI.getPanel());
         maskUiList.add(maskUI);
         controlPanel.revalidate();
     }
 
     private static class MaskUI {
+        private ToolUI toolUI;
         public IMaskUIListener listener;
         public int index;
         public String maskPath;
@@ -123,7 +130,9 @@ public class VapxUI {
 
         final JLabel labelMaskPathState = new JLabel();
 
-        public MaskUI(int index, IMaskUIListener listener) {
+
+        public MaskUI(ToolUI toolUI, int index, IMaskUIListener listener) {
+            this.toolUI = toolUI;
             this.index = index;
             this.listener = listener;
             createUI();
@@ -254,8 +263,6 @@ public class VapxUI {
         private JPanel part3Layout() {
             JPanel panel = new JPanel();
             panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-
             // mask path
             panel.add(new JLabel(" mask path:"));
             JButton btnMaskPath = new JButton("choose");
@@ -263,7 +270,7 @@ public class VapxUI {
             btnMaskPath.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    JFileChooser fileChooser = new JFileChooser();
+                    JFileChooser fileChooser = new JFileChooser(new File(toolUI.getInputPath()));
                     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     int returnVal = fileChooser.showOpenDialog(fileChooser);
                     if(returnVal == JFileChooser.APPROVE_OPTION) {
