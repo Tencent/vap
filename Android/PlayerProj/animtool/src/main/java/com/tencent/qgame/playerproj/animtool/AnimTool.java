@@ -287,13 +287,13 @@ public class AnimTool {
      * 创建mp4
      */
     private boolean createMp4(CommonArg commonArg, String videoPath, String frameImagePath) throws Exception {
-        String[] cmd = null;
+        String[] cmd;
         if (commonArg.enableH265) {
             cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
                     "-i", frameImagePath + "%03d.png",
                     "-pix_fmt", "yuv420p",
                     "-vcodec", "libx265",
-                    "-b:v", "2000k",
+                    "-b:v", commonArg.bitrate + "k",
                     "-profile:v", "main",
                     "-level", "4.0",
                     "-tag:v", "hvc1",
@@ -304,11 +304,11 @@ public class AnimTool {
                     "-i", frameImagePath + "%03d.png",
                     "-pix_fmt", "yuv420p",
                     "-vcodec", "libx264",
-                    "-b:v", "3000k",
+                    "-b:v", commonArg.bitrate + "k",
                     "-profile:v", "main",
                     "-level", "4.0",
                     "-bf", "0",
-                    "-bufsize", "3000k",
+                    "-bufsize", "2000k",
                     "-y", videoPath + TEMP_VIDEO_FILE};
         }
 

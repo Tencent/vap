@@ -169,6 +169,12 @@ class CommonArgTool {
             return false;
         }
 
+        // 码率检查
+        if (commonArg.bitrate <= 0) {
+            TLog.e(TAG, "bitrate=" + commonArg.bitrate);
+            return false;
+        }
+
         return true;
     }
 

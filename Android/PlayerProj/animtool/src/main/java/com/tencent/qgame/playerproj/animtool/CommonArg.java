@@ -33,6 +33,8 @@ public class CommonArg {
 
     public float scale = 0.5f; // alpha 区域缩放大小
 
+    public int bitrate = 2000; // 码率
+
     /**
      * 自动填充参数配置
      */
@@ -76,6 +78,7 @@ public class CommonArg {
                 ", mp4editCmd='" + mp4editCmd + '\'' +
                 ", enableH265=" + enableH265 +
                 ", fps=" + fps +
+                ", bitrate=" + bitrate +
                 ", scale=" + scale +
                 ", inputPath='" + inputPath + '\'' +
                 ", needAudio=" + needAudio + '\'' +

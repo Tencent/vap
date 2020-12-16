@@ -58,6 +58,7 @@ public class ToolUI {
     private final JTextArea txtAreaLog = new JTextArea();
     private final JTextField textAudioPath = new JTextField();
     private final JPanel panelAudioPath = new JPanel();
+    private final JTextField textBitrate = new JTextField();
 
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
@@ -103,6 +104,7 @@ public class ToolUI {
             modelFps.setValue(commonArg.fps);
             textInputPath.setText(commonArg.inputPath);
             textAudioPath.setText(commonArg.audioPath);
+            textBitrate.setText(String.valueOf(commonArg.bitrate));
             float scale = commonArg.scale;
             for (int i=0; i<scaleArray.length ; i++) {
                 if (scaleArray[i] == scale) {
@@ -161,6 +163,11 @@ public class ToolUI {
             if (commonArg.srcSet == null) {
                 return;
             }
+        }
+        try {
+            commonArg.bitrate = Integer.parseInt(textBitrate.getText());
+        } catch (NumberFormatException e) {
+            TLog.e(TAG, "bitrate format error " + textBitrate.getText() + e.getMessage());
         }
 
         TLog.i(TAG, commonArg.toString());
@@ -221,6 +228,8 @@ public class ToolUI {
         panel.add(getCodecLayout());
         // fps
         panel.add(getFpsLayout());
+        // bitrate
+        panel.add(getBitrateLayout());
         // scale
         panel.add(getScaleLayout());
         // path
@@ -267,6 +276,18 @@ public class ToolUI {
         JSpinner spinner = new JSpinner(modelFps);
         spinner.setPreferredSize(new Dimension(60, 20));
         panel.add(spinner);
+        return panel;
+    }
+
+    private JPanel getBitrateLayout() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("bitrate");
+        label.setPreferredSize(labelSize);
+        panel.add(label);
+        textBitrate.setPreferredSize(new Dimension(60, 20));
+        panel.add(textBitrate);
+        panel.add(new JLabel("k (default 2000k)"));
         return panel;
     }
 
@@ -446,6 +467,7 @@ public class ToolUI {
             String inputPath = props.getProperty("inputPath", "");
             String scale = props.getProperty("scale", String.valueOf(scaleArray[0]));
             String audioPath = props.getProperty("audioPath", "");
+            String bitrate = props.getProperty("bitrate", String.valueOf(commonArg.bitrate));
 
             int v = Integer.parseInt(version);
             // 版本不符直接返回默认值
@@ -455,6 +477,7 @@ public class ToolUI {
             commonArg.enableH265 = Boolean.TRUE.toString().equals(enableH265);
             commonArg.inputPath = inputPath;
             commonArg.audioPath = audioPath;
+            commonArg.bitrate = Integer.parseInt(bitrate);
         } catch (Exception e) {
             TLog.e(TAG, "getProperties error:" + e.getMessage());
         }
@@ -463,12 +486,13 @@ public class ToolUI {
 
 
     private void setProperties(CommonArg commonArg) throws IOException {
-        props.setProperty("version", commonArg.version + "");
+        props.setProperty("version", String.valueOf(commonArg.version));
         props.setProperty("enableH265", commonArg.enableH265? Boolean.TRUE.toString() : Boolean.FALSE.toString());
-        props.setProperty("fps", commonArg.fps + "");
+        props.setProperty("fps", String.valueOf(commonArg.fps));
         props.setProperty("inputPath", commonArg.inputPath == null ? "" : commonArg.inputPath);
         props.setProperty("audioPath", commonArg.audioPath == null ? "" : commonArg.audioPath);
-        props.setProperty("scale", commonArg.scale + "");
+        props.setProperty("scale", String.valueOf(commonArg.scale));
+        props.setProperty("bitrate", String.valueOf(commonArg.bitrate));
         props.store(new OutputStreamWriter(new FileOutputStream(PROPERTIES_FILE), StandardCharsets.UTF_8), "");
     }
 
