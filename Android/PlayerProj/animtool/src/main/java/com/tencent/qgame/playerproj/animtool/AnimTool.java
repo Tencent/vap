@@ -120,6 +120,9 @@ public class AnimTool {
         threadIndexSet[threadNum-1][0] = (threadNum-1) * block;
         threadIndexSet[threadNum-1][1] = totalFrame;
 
+        if (toolListener != null) {
+            toolListener.onProgress(0f);
+        }
         for (int i=0; i<threadNum; i++) {
             final int k = i;
             new Thread(new Runnable() {
