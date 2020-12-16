@@ -297,8 +297,8 @@ public class ToolUI {
         JLabel label = new JLabel("alpha scale");
         label.setPreferredSize(labelSize);
         panel.add(label);
-
         panel.add(boxScale);
+        panel.add(new JLabel("(default 0.5)"));
         return panel;
     }
 
