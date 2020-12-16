@@ -2,16 +2,16 @@
 
 VapTool Java版本支持 Windows 与Mac
 
-版本: [tool2.0.0](https://github.com/Tencent/vap/releases/tag/tool2.0.0)
+版本: [tool2.0.1](https://github.com/Tencent/vap/releases/tag/tool2.0.1)
 
 os|download|description
 ---|---|---
-Windows|[VapTool\_Java\_Win\_Full.zip](https://github.com/Tencent/vap/releases/download/tool2.0.0/VapTool_Java_Win_Full.zip)|包含jre 可直接运行
-Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releases/download/tool2.0.0/VapTool_Java_Mac_without_jre.zip)|未含jre 但Mac基本自带java 
+Windows|[VapTool\_Java\_Win\_Full.zip](https://github.com/Tencent/vap/releases/download/tool2.0.1/VapTool_Java_Win_Full.zip)|包含jre 可直接运行
+Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releases/download/tool2.0.1/VapTool_Java_Mac_without_jre.zip)|未含jre 但Mac基本自带java 
 
 运行包中包含其它工具，可以单独下载jar文件，替换后运行：
 
-download jar: [animtool_tool2.0.0.zip](https://github.com/Tencent/vap/releases/download/tool2.0.0/animtool_tool2.0.0.zip)
+download jar: [animtool_tool2.0.1.zip](https://github.com/Tencent/vap/releases/download/tool2.0.1/animtool_tool2.0.1.zip)
 
 
 ## Windows
