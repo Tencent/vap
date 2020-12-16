@@ -17,6 +17,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import javax.swing.BoxLayout;
@@ -94,7 +97,7 @@ public class ToolUI {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            props.load(new FileInputStream(PROPERTIES_FILE));
+            props.load(new InputStreamReader(new FileInputStream(PROPERTIES_FILE), StandardCharsets.UTF_8));
             CommonArg commonArg = getProperties();
             group.setSelected(commonArg.enableH265 ? btnH265.getModel() : btnH264.getModel(), true);
             modelFps.setValue(commonArg.fps);
@@ -466,7 +469,7 @@ public class ToolUI {
         props.setProperty("inputPath", commonArg.inputPath == null ? "" : commonArg.inputPath);
         props.setProperty("audioPath", commonArg.audioPath == null ? "" : commonArg.audioPath);
         props.setProperty("scale", commonArg.scale + "");
-        props.store(new FileOutputStream(PROPERTIES_FILE), "");
+        props.store(new OutputStreamWriter(new FileOutputStream(PROPERTIES_FILE), StandardCharsets.UTF_8), "");
     }
 
 
