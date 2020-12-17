@@ -26,7 +26,9 @@ object MediaUtil {
 
     private const val TAG = "${Constant.TAG}.MediaUtil"
 
-    val isDeviceSupportHevc by lazy { checkCodec("video/hevc") }
+    val isDeviceSupportHevc by lazy {
+        checkCodec("video/hevc")
+    }
 
     fun getExtractor(file: FileContainer): MediaExtractor {
         val extractor = MediaExtractor()
@@ -73,19 +75,25 @@ object MediaUtil {
      * 检查设备解码支持类型
      */
     private fun checkCodec(mimeType: String): Boolean {
-        val numCodecs = MediaCodecList.getCodecCount()
-        for (i in 0 until numCodecs) {
-            val codecInfo = MediaCodecList.getCodecInfoAt(i)
-            if (!codecInfo.isEncoder) {
-                continue
-            }
-            val types = codecInfo.supportedTypes
-            for (j in types.indices) {
-                if (types[j].equals(mimeType, ignoreCase = true)) {
-                    return true
+        try {
+            val numCodecs = MediaCodecList.getCodecCount()
+            for (i in 0 until numCodecs) {
+                val codecInfo = MediaCodecList.getCodecInfoAt(i)
+                if (!codecInfo.isEncoder) {
+                    continue
+                }
+                val types = codecInfo.supportedTypes
+                for (j in types.indices) {
+                    if (types[j].equals(mimeType, ignoreCase = true)) {
+                        return true
+                    }
                 }
             }
+            return false
+        } catch (t: Throwable) {
+            ALog.e(TAG, "checkCodec $t")
+            return false
         }
-        return false
+
     }
 }
