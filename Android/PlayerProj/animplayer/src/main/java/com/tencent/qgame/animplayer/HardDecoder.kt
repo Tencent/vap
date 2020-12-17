@@ -91,9 +91,13 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
 
             // 是否支持h265
             if (MediaUtil.checkIsHevc(format)) {
-                if (Build.VERSION.SDK_INT  < Build.VERSION_CODES.LOLLIPOP ) {
+                if (Build.VERSION.SDK_INT  < Build.VERSION_CODES.LOLLIPOP
+                    || !MediaUtil.isDeviceSupportHevc) {
+
                     onFailed(Constant.REPORT_ERROR_TYPE_HEVC_NOT_SUPPORT,
-                        "${Constant.ERROR_MSG_HEVC_NOT_SUPPORT} sdk:${Build.VERSION.SDK_INT}")
+                        "${Constant.ERROR_MSG_HEVC_NOT_SUPPORT} " +
+                                "sdk:${Build.VERSION.SDK_INT}" +
+                                ",support hevc:" + MediaUtil.isDeviceSupportHevc)
                     release(null, null)
                     return
                 }
