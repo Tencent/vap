@@ -80,7 +80,6 @@ class AnimPluginManager(val player: AnimPlayer) {
     }
 
     fun onRendering() {
-        frameIndex++
         if (decodeIndex > frameIndex + 1 || frameDiffTimes >= DIFF_TIMES) {
             ALog.i(TAG, "jump frameIndex= $frameIndex,decodeIndex=$decodeIndex,frameDiffTimes=$frameDiffTimes")
             frameIndex = decodeIndex
@@ -92,8 +91,9 @@ class AnimPluginManager(val player: AnimPlayer) {
         }
         ALog.d(TAG, "onRendering frameIndex=$frameIndex")
         plugins.forEach {
-            it.onRendering(frameIndex - 1) // 第一帧算0
+            it.onRendering(frameIndex) // 第一帧 0
         }
+        frameIndex++
     }
 
     fun onRelease() {

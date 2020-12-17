@@ -30,13 +30,21 @@ object MediaUtil {
         return extractor
     }
 
+    /**
+     * 是否为h265的视频
+     */
+    fun checkIsHevc(videoFormat: MediaFormat):Boolean {
+        val mime = videoFormat.getString(MediaFormat.KEY_MIME) ?: ""
+        return mime.contains("hevc")
+    }
+
     fun selectVideoTrack(extractor: MediaExtractor): Int {
         val numTracks = extractor.trackCount
         for (i in 0 until numTracks) {
             val format = extractor.getTrackFormat(i)
             val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             if (mime.startsWith("video/")) {
-                ALog.d(TAG, "Extractor selected track $i ($mime): $format")
+                ALog.i(TAG, "Extractor selected track $i ($mime): $format")
                 return i
             }
         }
@@ -49,7 +57,7 @@ object MediaUtil {
             val format = extractor.getTrackFormat(i)
             val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             if (mime.startsWith("audio/")) {
-                ALog.d(TAG, "Extractor selected track $i ($mime): $format")
+                ALog.i(TAG, "Extractor selected track $i ($mime): $format")
                 return i
             }
         }

@@ -19,6 +19,7 @@ import android.graphics.SurfaceTexture
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import android.os.Build
 import android.view.Surface
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.MediaUtil
@@ -87,6 +88,17 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             extractor.selectTrack(trackIndex)
             format = extractor.getTrackFormat(trackIndex)
             if (format == null) throw RuntimeException("format is null")
+
+            // 是否支持h265
+            if (MediaUtil.checkIsHevc(format)) {
+                if (Build.VERSION.SDK_INT  < Build.VERSION_CODES.LOLLIPOP ) {
+                    onFailed(Constant.REPORT_ERROR_TYPE_HEVC_NOT_SUPPORT,
+                        "${Constant.ERROR_MSG_HEVC_NOT_SUPPORT} sdk:${Build.VERSION.SDK_INT}")
+                    release(null, null)
+                    return
+                }
+            }
+
             val videoWidth = format.getInteger(MediaFormat.KEY_WIDTH)
             val videoHeight = format.getInteger(MediaFormat.KEY_HEIGHT)
             ALog.i(TAG, "Video size is $videoWidth x $videoHeight")
@@ -138,7 +150,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         var inputChunk = 0
         var outputDone = false
         var inputDone = false
-        var frameIndex = 1
+        var frameIndex = 0
 
         val decoderInputBuffers = decoder.inputBuffers
 
@@ -190,12 +202,16 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                         if (doRender) {
                             speedControlUtil.preRender(bufferInfo.presentationTimeUs)
                         }
+
+                        // release & render
                         decoder.releaseOutputBuffer(decoderStatus, doRender)
-                        if (frameIndex == 1) {
+
+                        if (frameIndex == 0) {
                             onVideoStart()
                         }
                         player.pluginManager.onDecoding(frameIndex)
                         onVideoRender(frameIndex, player.configManager.config)
+
                         frameIndex++
                         ALog.d(TAG, "decode frameIndex=$frameIndex")
                         if (loop > 0) {

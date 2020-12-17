@@ -22,7 +22,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.RandomAccessFile
 
-class FileContainer {
+open class FileContainer {
 
     private var isAssets = false
 
