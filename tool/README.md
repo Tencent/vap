@@ -2,16 +2,16 @@
 
 VapTool Java版本支持 Windows 与Mac
 
-版本: [tool2.0.1](https://github.com/Tencent/vap/releases/tag/tool2.0.1)
+版本: [tool2.0.2](https://github.com/Tencent/vap/releases/tag/tool2.0.2)
 
 os|download|description
 ---|---|---
-Windows|[VapTool\_Java\_Win\_Full.zip](https://github.com/Tencent/vap/releases/download/tool2.0.1/VapTool_Java_Win_Full.zip)|包含jre 可直接运行
-Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releases/download/tool2.0.1/VapTool_Java_Mac_without_jre.zip)|未含jre 但Mac基本自带java 
+Windows|[VapTool\_Java\_Win\_Full.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/VapTool_Java_Win_Full.zip)|包含jre 可直接运行
+Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/VapTool_Java_Mac_without_jre.zip)|未含jre 但Mac基本自带java 
 
 运行包中包含其它工具，可以单独下载jar文件，替换后运行：
 
-download jar: [animtool_tool2.0.1.zip](https://github.com/Tencent/vap/releases/download/tool2.0.1/animtool_tool2.0.1.zip)
+download jar: [animtool_tool2.0.2.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/animtool_tool2.0.2.zip)
 
 
 ## Windows
@@ -26,17 +26,24 @@ win_start.bat
 
 需要打开终端命令行，进入到工具目录执行以下命令
 
+检查 & 初始化工作
 ```sh
 // 先检查是否已经安装java
 // 如未有版本信息输出，请先安装java
 java -version
 
+// 检查mac 文件夹下 ffmpeg 与 mp4edit 工具是否有执行权限，没有权限请赋予运行权限
+ffmpeg -version
+md4edit -v
+
 // 赋予脚本可执行权限（只需要执行一次）
 chmod +x mac_start.sh
 
-// 启动工具
-./mac_start.sh
+```
 
+启动工具
+```sh
+./mac_start.sh
 ```
 
 ## 工具说明
