@@ -126,7 +126,7 @@ public class ToolUI {
                     runAnimTool();
                 } catch (Exception e) {
                     TLog.e(TAG, e.getMessage());
-                    btnCreate.setEnabled(true);
+                    setOutput(false, "");
                 }
             }
         }).start();
@@ -187,13 +187,12 @@ public class ToolUI {
 
             @Override
             public void onError() {
-                btnCreate.setEnabled(true);
+                setOutput(false, "");
             }
 
             @Override
             public void onComplete() {
-                btnCreate.setEnabled(true);
-                setOutput(commonArg.outputPath);
+                setOutput(true, commonArg.outputPath);
                 try {
                     setProperties(commonArg);
                     Desktop.getDesktop().open(new File(commonArg.outputPath));
@@ -390,18 +389,23 @@ public class ToolUI {
         return panel;
     }
 
-    private void setOutput(final String path) {
-        labelOutInfo.setText("<html><font color='blue'>open output</font></html>");
-        labelOutInfo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent) {
-                try {
-                    Desktop.getDesktop().open(new File(path));
-                } catch (IOException e) {
-                    TLog.e(TAG, e.getMessage());
+    private void setOutput(boolean success, final String path) {
+        btnCreate.setEnabled(true);
+        if (success) {
+            labelOutInfo.setText("<html><font color='blue'>open output</font></html>");
+            labelOutInfo.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent mouseEvent) {
+                    try {
+                        Desktop.getDesktop().open(new File(path));
+                    } catch (IOException e) {
+                        TLog.e(TAG, e.getMessage());
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            labelOutInfo.setText("<html><font color='red'>create error!</font></html>");
+        }
     }
 
 

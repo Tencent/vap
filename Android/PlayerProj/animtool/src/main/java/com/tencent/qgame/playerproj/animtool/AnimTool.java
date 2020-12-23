@@ -57,13 +57,14 @@ public class AnimTool {
      */
     public void create(final CommonArg commonArg, final boolean needVideo) throws Exception{
         TLog.i(TAG, "start create");
-        createAllFrameImage(commonArg, new Runnable() {
+        createAllFrameImage(commonArg, new IRunResult() {
             @Override
-            public void run() {
+            public boolean run() {
                 if (finalCheck(commonArg) && needVideo) {
                     // 最终生成视频文件
-                    createVideo(commonArg);
+                    return createVideo(commonArg);
                 }
+                return false;
             }
         });
     }
@@ -93,7 +94,7 @@ public class AnimTool {
         return true;
     }
 
-    private void createAllFrameImage(final CommonArg commonArg, final Runnable finishRunnable) throws Exception{
+    private void createAllFrameImage(final CommonArg commonArg, final IRunResult finishRunnable) throws Exception{
         if (!checkCommonArg(commonArg)) {
             if (toolListener != null) toolListener.onError();
             return;
@@ -147,13 +148,18 @@ public class AnimTool {
                     synchronized (AnimTool.class) {
                         finishThreadCount++;
                         if (finishThreadCount == threadNum) {
+                            boolean result = false;
                             if (finishRunnable != null) {
-                                finishRunnable.run();
+                                result = finishRunnable.run();
                             }
                             long cost = System.currentTimeMillis() - time;
                             TLog.i(TAG,"Finish cost=" + cost);
                             if (toolListener != null) {
-                                toolListener.onComplete();
+                                if (result) {
+                                    toolListener.onComplete();
+                                } else {
+                                    toolListener.onError();
+                                }
                             }
                         }
                     }
@@ -195,7 +201,7 @@ public class AnimTool {
      * 创建最终的视频
      * @param commonArg
      */
-    private void createVideo(CommonArg commonArg){
+    private boolean createVideo(CommonArg commonArg) {
         try {
             // 创建配置json文件
             createVapcJson(commonArg);
@@ -203,14 +209,16 @@ public class AnimTool {
             boolean result = createMp4(commonArg, commonArg.outputPath, commonArg.frameOutputPath);
             if (!result) {
                 TLog.i(TAG, "createMp4 fail");
-                return;
+                deleteFile(commonArg);
+                return false;
             }
             String tempVideoName = TEMP_VIDEO_FILE;
             if (commonArg.needAudio) {
                 result = mergeAudio2Mp4(commonArg, tempVideoName);
                 if (!result) {
                     TLog.i(TAG, "mergeAudio2Mp4 fail");
-                    return;
+                    deleteFile(commonArg);
+                    return false;
                 }
                 tempVideoName = TEMP_VIDEO_AUDIO_FILE;
             }
@@ -222,20 +230,31 @@ public class AnimTool {
             result = mergeBin2Mp4(commonArg, vapcBinPath, tempVideoName, commonArg.outputPath);
             if (!result) {
                 TLog.i(TAG, "mergeBin2Mp4 fail");
-                return;
+                deleteFile(commonArg);
+                return false;
             }
-            // 删除临时视频文件
-            new File(commonArg.outputPath + TEMP_VIDEO_FILE).delete();
-            if (commonArg.needAudio) {
-                new File(commonArg.outputPath + TEMP_VIDEO_AUDIO_FILE).delete();
-            }
-            new File(commonArg.outputPath + VAPC_BIN_FILE).delete();
+            deleteFile(commonArg);
             // 计算文件md5
             String md5 = new Md5Util().getFileMD5(new File(commonArg.outputPath + VIDEO_FILE), commonArg.outputPath);
             TLog.i(TAG, "md5="+md5);
         } catch (Exception e) {
-            e.printStackTrace();
+            TLog.e(TAG, "createVideo error:" + e.getMessage());
+            return false;
         }
+        return true;
+    }
+
+    private void deleteFile(CommonArg commonArg) {
+        // 删除临时视频文件
+        File file;
+        file = new File(commonArg.outputPath + TEMP_VIDEO_FILE);
+        if (file.exists()) file.delete();
+        if (commonArg.needAudio) {
+            file = new File(commonArg.outputPath + TEMP_VIDEO_AUDIO_FILE);
+            if (file.exists()) file.delete();
+        }
+        file = new File(commonArg.outputPath + VAPC_BIN_FILE);
+        if (file.exists()) file.delete();
     }
 
     /**
@@ -364,6 +383,10 @@ public class AnimTool {
         void onWarning(String msg);
         void onError();
         void onComplete();
+    }
+
+    private interface IRunResult {
+        boolean run();
     }
 
 }
