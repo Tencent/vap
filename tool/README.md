@@ -124,3 +124,7 @@ Java工具源码路径:Android/PlayerProj  项目：[animtool](https://github.co
 
 VAP json配置信息字段说明[Image](images/vap_field_info.png).
 
+## FAQ
+
+[常见问题说明](https://github.com/Tencent/vap/wiki/FAQ)
+
