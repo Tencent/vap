@@ -52,6 +52,9 @@ VAP|***1.5M***|***硬解***|***全支持***
 
 ![](./images/qq_group.png)
 
+## FAQ
+
+[常见问题解答](https://github.com/Tencent/vap/wiki/FAQ)
 
 ## License
 
