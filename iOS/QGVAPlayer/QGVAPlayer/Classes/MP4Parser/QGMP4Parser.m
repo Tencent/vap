@@ -227,7 +227,7 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
         if (self.videoSamples.count == 0) {
             return 0;
         }
-        _fps = self.videoSamples.count/self.duration;
+        _fps = lround(self.videoSamples.count/self.duration);
     }
     return _fps;
 }
