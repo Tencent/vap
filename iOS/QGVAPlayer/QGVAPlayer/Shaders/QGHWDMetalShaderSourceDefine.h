@@ -102,7 +102,7 @@ SHADER_STRING(
                   float2 maskTextureCoordinate;
               } VAPAttachmentRasterizerData;
               
-              float3 RGBColorFromYuvTextures(sampler textureSampler, float2 coordinate, texture2d<float> texture_luma, texture2d<float> texture_chroma, matrix_float3x3 rotationMatrix, float2 offset) {
+              static float3 RGBColorFromYuvTextures(sampler textureSampler, float2 coordinate, texture2d<float> texture_luma, texture2d<float> texture_chroma, matrix_float3x3 rotationMatrix, float2 offset) {
                   
                   float3 color;
                   color.x = texture_luma.sample(textureSampler, coordinate).r;
@@ -110,7 +110,7 @@ SHADER_STRING(
                   return float3(rotationMatrix * color);
               }
               
-              float4 RGBAColor(sampler textureSampler, float2 colorCoordinate, float2 alphaCoordinate, texture2d<float> lumaTexture, texture2d<float> chromaTexture, constant ColorParameters *colorParameters) {
+              static float4 RGBAColor(sampler textureSampler, float2 colorCoordinate, float2 alphaCoordinate, texture2d<float> lumaTexture, texture2d<float> chromaTexture, constant ColorParameters *colorParameters) {
                   matrix_float3x3 rotationMatrix = colorParameters[0].matrix;
                   float2 offset = colorParameters[0].offset;
                   float3 color = RGBColorFromYuvTextures(textureSampler, colorCoordinate, lumaTexture, chromaTexture, rotationMatrix, offset);
