@@ -103,6 +103,21 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
         player.pluginManager.onRenderCreate()
     }
 
+    /**
+     * decode过程中视频尺寸变化
+     * 主要是没有16进制对齐的老视频
+     */
+    fun videoSizeChange(newWidth: Int, newHeight: Int) {
+        if (newWidth <= 0 || newHeight <= 0) return
+        val config = player.configManager.config ?: return
+        if (config.videoWidth != newWidth || config.videoHeight != newHeight) {
+            ALog.i(TAG, "videoSizeChange old=(${config.videoWidth},${config.videoHeight}), new=($newWidth,$newHeight)")
+            config.videoWidth = newWidth
+            config.videoHeight = newHeight
+            render?.setAnimConfig(config)
+        }
+    }
+
 
     fun destroyThread() {
         if (player.isDetachedFromWindow) {

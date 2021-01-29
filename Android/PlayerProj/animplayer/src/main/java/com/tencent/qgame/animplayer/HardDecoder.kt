@@ -23,7 +23,6 @@ import android.os.Build
 import android.view.Surface
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.MediaUtil
-import java.lang.RuntimeException
 
 class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameAvailableListener {
 
@@ -132,15 +131,16 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                 start()
                 decodeThread.handler?.post {
                     try {
-                        startDecode(extractor, this, trackIndex)
+                        startDecode(extractor, this)
                     } catch (e: Throwable) {
+                        ALog.e(TAG, "MediaCodec exception e=$e", e)
                         onFailed(Constant.REPORT_ERROR_TYPE_DECODE_EXC, "${Constant.ERROR_MSG_DECODE_EXC} e=$e")
                         release(decoder, extractor)
                     }
                 }
             }
         } catch (e: Throwable) {
-            ALog.e(TAG, "MediaCodec exception e=$e", e)
+            ALog.e(TAG, "MediaCodec configure exception e=$e", e)
             onFailed(Constant.REPORT_ERROR_TYPE_DECODE_EXC, "${Constant.ERROR_MSG_DECODE_EXC} e=$e")
             release(decoder, extractor)
             return
@@ -149,7 +149,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
 
 
 
-    private fun startDecode(extractor: MediaExtractor ,decoder: MediaCodec, trackIndex: Int) {
+    private fun startDecode(extractor: MediaExtractor ,decoder: MediaCodec) {
         val TIMEOUT_USEC = 10000L
         var inputChunk = 0
         var outputDone = false
@@ -191,7 +191,12 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                 when {
                     decoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER -> ALog.d(TAG, "no output from decoder available")
                     decoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> ALog.d(TAG, "decoder output buffers changed")
-                    decoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> ALog.d(TAG, "decoder output format changed: ${decoder.outputFormat}")
+                    decoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
+                        val format = decoder.outputFormat
+                        ALog.d(TAG, "decoder output format changed: $format")
+                        val (w,h) = formatChange(format)
+                        videoSizeChange(w, h)
+                    }
                     decoderStatus < 0 -> {
                         throw RuntimeException("unexpected result from decoder.dequeueOutputBuffer: $decoderStatus")
                     }
@@ -234,6 +239,18 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
         }
 
+    }
+
+    private fun formatChange(format: MediaFormat): Pair<Int, Int> {
+        try {
+            // 实际视频的纹理大小
+            val width = format.getInteger(MediaFormat.KEY_WIDTH)
+            val height = format.getInteger(MediaFormat.KEY_HEIGHT)
+            return Pair(width, height)
+        } catch (t: Throwable) {
+            ALog.e(TAG, "formatChange $t", t)
+        }
+        return Pair(0,0)
     }
 
     private fun release(decoder: MediaCodec?, extractor: MediaExtractor?) {
