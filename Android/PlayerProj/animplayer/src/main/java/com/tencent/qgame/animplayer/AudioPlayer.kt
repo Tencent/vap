@@ -75,6 +75,12 @@ class AudioPlayer(val player: AnimPlayer) {
         extractor.selectTrack(audioIndex)
         val format = extractor.getTrackFormat(audioIndex)
         val mime =format.getString(MediaFormat.KEY_MIME) ?: ""
+        if (!MediaUtil.checkSupportCodec(mime)) {
+            ALog.e(TAG, "mime=$mime not support")
+            release()
+            return
+        }
+
         val decoder = MediaCodec.createDecoderByType(mime).apply {
             configure(format, null, null, 0)
             start()
@@ -91,7 +97,7 @@ class AudioPlayer(val player: AnimPlayer) {
         val bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT)
         val audioTrack = AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM)
         this.audioTrack = audioTrack
-        val state = audioTrack.getState()
+        val state = audioTrack.state
         if (state != AudioTrack.STATE_INITIALIZED) {
             release()
             ALog.e(TAG, "init audio track failure")
