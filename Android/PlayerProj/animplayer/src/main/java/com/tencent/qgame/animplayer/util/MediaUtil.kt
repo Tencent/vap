@@ -20,15 +20,20 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import com.tencent.qgame.animplayer.Constant
 import com.tencent.qgame.animplayer.FileContainer
+import kotlin.collections.HashMap
 
 
 object MediaUtil {
 
     private const val TAG = "${Constant.TAG}.MediaUtil"
 
+    private var isTypeMapInit = false
+    private val supportTypeMap = HashMap<String, Boolean>()
+
     val isDeviceSupportHevc by lazy {
-        checkCodec("video/hevc")
+        checkSupportCodec("video/hevc")
     }
+
 
     fun getExtractor(file: FileContainer): MediaExtractor {
         val extractor = MediaExtractor()
@@ -70,11 +75,19 @@ object MediaUtil {
         return -1
     }
 
-
     /**
      * 检查设备解码支持类型
      */
-    private fun checkCodec(mimeType: String): Boolean {
+    fun checkSupportCodec(mimeType: String): Boolean {
+        if (!isTypeMapInit) {
+            isTypeMapInit = true
+            getSupportType()
+        }
+        return supportTypeMap.containsKey(mimeType.toLowerCase())
+    }
+
+
+    private fun getSupportType() {
         try {
             val numCodecs = MediaCodecList.getCodecCount()
             for (i in 0 until numCodecs) {
@@ -84,16 +97,13 @@ object MediaUtil {
                 }
                 val types = codecInfo.supportedTypes
                 for (j in types.indices) {
-                    if (types[j].equals(mimeType, ignoreCase = true)) {
-                        return true
-                    }
+                    supportTypeMap[types[j].toLowerCase()] = true
                 }
             }
-            return false
+            ALog.i(TAG, "supportType=${supportTypeMap.keys}")
         } catch (t: Throwable) {
-            ALog.e(TAG, "checkCodec $t")
-            return false
+            ALog.e(TAG, "getSupportType $t")
         }
-
     }
+
 }

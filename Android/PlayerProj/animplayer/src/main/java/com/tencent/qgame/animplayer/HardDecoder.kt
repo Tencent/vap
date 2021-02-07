@@ -193,9 +193,9 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                     decoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> ALog.d(TAG, "decoder output buffers changed")
                     decoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
                         val format = decoder.outputFormat
-                        ALog.d(TAG, "decoder output format changed: $format")
-                        val (w,h) = formatChange(format)
-                        videoSizeChange(w, h)
+                        ALog.i(TAG, "decoder output format changed: $format")
+                        // val (w,h) = formatChange(format)
+                        // videoSizeChange(w, h)
                     }
                     decoderStatus < 0 -> {
                         throw RuntimeException("unexpected result from decoder.dequeueOutputBuffer: $decoderStatus")
