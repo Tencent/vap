@@ -152,27 +152,28 @@
     }
     free(rawData);
     
-    CGDataProviderRef rgbProvider = CGDataProviderCreateWithData(NULL, rgbData, width*height*4, NULL);
-    
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault | (CGBitmapInfo)kCGImageAlphaLast;
     CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+    
+    // 生成 RGB 图片
+    CGDataProviderRef rgbProvider = CGDataProviderCreateWithData(NULL, rgbData, width*height*4, NULL);
     CGImageRef rgbImageRef = CGImageCreate(width,  height, 8, 32, 4*width,colorSpace, bitmapInfo, rgbProvider,NULL,NO, renderingIntent);
     NSImage *rgbImage = [[NSImage alloc] initWithCGImage:rgbImageRef size: rect.size];
+    NSString *rgbDir = [self.resourceDirectory stringByAppendingPathComponent:@"rbgImages"];
+    [self saveImage:rgbImage atPath:[rgbDir stringByAppendingPathComponent:name]];
     CGImageRelease(rgbImageRef);
     free(rgbData);
     CGDataProviderRelease(rgbProvider);
-    
+     
+    // 生成 Alpha 图片
     CGDataProviderRef alphaProvider = CGDataProviderCreateWithData(NULL, alphaData, width*height*4, NULL);
     CGImageRef alphaImageRef = CGImageCreate(width,  height, 8, 32, 4*width,colorSpace, bitmapInfo, alphaProvider,NULL,NO, renderingIntent);
     NSImage *alphaImage = [[NSImage alloc] initWithCGImage:alphaImageRef size:rect.size];
+    NSString *alphaDir = [self.resourceDirectory stringByAppendingPathComponent:@"alphaImages"];
+    [self saveImage:alphaImage atPath:[alphaDir stringByAppendingPathComponent:name]];
     CGImageRelease(alphaImageRef);
     free(alphaData);
     CGDataProviderRelease(alphaProvider);
-    
-    NSString *alphaDir = [self.resourceDirectory stringByAppendingPathComponent:@"alphaImages"];
-    NSString *rgbDir = [self.resourceDirectory stringByAppendingPathComponent:@"rbgImages"];
-    [self saveImage:alphaImage atPath:[alphaDir stringByAppendingPathComponent:name]];
-    [self saveImage:rgbImage atPath:[rgbDir stringByAppendingPathComponent:name]];
 }
 
 - (NSRect)alphaRectForPosition:(VapxAlphaPostion)position rgbSize:(NSSize)size alphaScale:(CGFloat)scale {
