@@ -34,6 +34,7 @@ import com.tencent.qgame.animplayer.inter.OnResourceClickListener
 import com.tencent.qgame.animplayer.mix.Resource
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IALog
+import com.tencent.qgame.animplayer.util.ScaleType
 import com.tencent.qgame.playerproj.R
 import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
 import java.io.File
@@ -83,6 +84,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         initTestView()
         // 获取动画view
         animView = playerView
+        // 居中（根据父布局按比例居中并裁剪）
+        animView.setScaleType(ScaleType.CENTER_CROP)
         /**
          * 注册资源获取类
          */
@@ -175,13 +178,6 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
      * @return true 继续播放 false 停止播放
      */
     override fun onVideoConfigReady(config: AnimConfig): Boolean {
-        uiHandler.post {
-            val w = window.decorView.width
-            val lp = animView.layoutParams
-            lp.width = if (w == 0) dp2px(this, 400f).toInt() else w
-            lp.height = (w * config.height * 1f / config.width).toInt()
-            animView.layoutParams = lp
-        }
         return true
     }
 

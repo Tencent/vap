@@ -25,13 +25,15 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.TextureView
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.inter.IFetchResource
 import com.tencent.qgame.animplayer.inter.OnResourceClickListener
 import com.tencent.qgame.animplayer.mask.MaskConfig
 import com.tencent.qgame.animplayer.util.ALog
+import com.tencent.qgame.animplayer.util.IScaleType
+import com.tencent.qgame.animplayer.util.ScaleType
+import com.tencent.qgame.animplayer.util.ScaleTypeUtil
 import java.io.File
 
 open class AnimView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
@@ -47,11 +49,15 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     private var animListener: IAnimListener? = null
     private var innerTextureView: TextureView? = null
     private var lastFile: FileContainer? = null
+    private val scaleTypeUtil = ScaleTypeUtil()
+
     // 代理监听
     private val animProxyListener by lazy {
         object : IAnimListener {
 
             override fun onVideoConfigReady(config: AnimConfig): Boolean {
+                scaleTypeUtil.videoWidth = config.width
+                scaleTypeUtil.videoHeight = config.height
                 return animListener?.onVideoConfigReady(config) ?: super.onVideoConfigReady(config)
             }
 
@@ -94,7 +100,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             innerTextureView = TextureView(context).apply {
                 isOpaque = false
                 surfaceTextureListener = this@AnimView
-                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                layoutParams = scaleTypeUtil.getLayoutParam(this)
             }
             addView(innerTextureView)
         }
@@ -127,6 +133,12 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         ALog.i(TAG, "onSurfaceTextureAvailable")
         this.surface = surface
         player?.onSurfaceTextureAvailable(width, height)
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        scaleTypeUtil.layoutWidth = w
+        scaleTypeUtil.layoutHeight = h
     }
 
     override fun onAttachedToWindow() {
@@ -202,6 +214,14 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     fun setFps(fps: Int) {
         player?.fps = fps
+    }
+
+    fun setScaleType(type : ScaleType) {
+        scaleTypeUtil.currentScaleType = type
+    }
+
+    fun setScaleType(scaleType: IScaleType) {
+        scaleTypeUtil.scaleTypeImpl = scaleType
     }
 
     fun startPlay(file: File) {

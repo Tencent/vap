@@ -52,8 +52,9 @@ class MixAnimPlugin(val player: AnimPlayer): IAnimPlugin {
     override fun onConfigCreate(config: AnimConfig): Int {
         if (!config.isMix) return Constant.OK
         if (resourceRequest == null) {
-            ALog.i(TAG, "IFetchResource is empty")
-            return Constant.REPORT_ERROR_TYPE_CONFIG_PLUGIN_MIX
+            ALog.e(TAG, "IFetchResource is empty")
+            // 没有设置IFetchResource 当成普通视频播放
+            return Constant.OK
         }
         // step 1 parse src
         parseSrc(config)
