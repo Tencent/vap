@@ -28,6 +28,7 @@ import com.tencent.qgame.animplayer.AnimView
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IALog
+import com.tencent.qgame.animplayer.util.ScaleType
 import com.tencent.qgame.playerproj.R
 import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
 import java.io.File
@@ -90,6 +91,8 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
             val file = File(dir + "/" + videoInfo.fileName)
             val md5 = FileUtil.getFileMD5(file)
             if (videoInfo.md5 == md5) {
+                // 居中（根据父布局按比例居中并全部显示s）
+                animView.setScaleType(ScaleType.FIT_CENTER)
                 // 开始播放动画文件
                 animView.startPlay(file)
             } else {
@@ -104,14 +107,6 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
      * @return true 继续播放 false 停止播放
      */
     override fun onVideoConfigReady(config: AnimConfig): Boolean {
-
-        uiHandler.post {
-            val w = dp2px(this,400f).toInt()
-            val lp = animView.layoutParams
-            lp.width = w
-            lp.height = (w * config.height *1f / config.width).toInt()
-            animView.layoutParams = lp
-        }
         return true
     }
 

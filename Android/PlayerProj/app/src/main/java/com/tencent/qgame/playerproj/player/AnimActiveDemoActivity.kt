@@ -18,7 +18,6 @@ package com.tencent.qgame.playerproj.player
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -26,23 +25,19 @@ import android.os.Looper
 import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.tencent.qgame.animplayer.AnimConfig
 import com.tencent.qgame.animplayer.AnimView
 import com.tencent.qgame.animplayer.PointRect
 import com.tencent.qgame.animplayer.RefVec2
 import com.tencent.qgame.animplayer.inter.IAnimListener
-import com.tencent.qgame.animplayer.inter.IFetchResource
-import com.tencent.qgame.animplayer.inter.OnResourceClickListener
 import com.tencent.qgame.animplayer.mask.MaskConfig
-import com.tencent.qgame.animplayer.mix.Resource
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IALog
+import com.tencent.qgame.animplayer.util.ScaleType
 import com.tencent.qgame.playerproj.R
 import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
 import java.io.File
 import java.nio.ByteBuffer
-import java.util.*
 import java.util.zip.Inflater
 import kotlin.experimental.and
 import kotlin.math.sqrt
@@ -127,6 +122,8 @@ class AnimActiveDemoActivity : Activity(), IAnimListener {
             val file = File(dir + "/" + videoInfo.fileName)
             val md5 = FileUtil.getFileMD5(file)
             if (videoInfo.md5 == md5) {
+                // 居中（根据父布局按比例居中并全部显示s）
+                animView.setScaleType(ScaleType.FIT_CENTER)
                 // 开始播放动画文件
                 animView.startPlay(file)
             } else {
@@ -141,13 +138,6 @@ class AnimActiveDemoActivity : Activity(), IAnimListener {
      */
     override fun onVideoConfigReady(config: AnimConfig): Boolean {
         updateTestMask()
-        uiHandler.post {
-            val w = window.decorView.width
-            val lp = animView.layoutParams
-            lp.width = if (w == 0) dp2px(this, 400f).toInt() else w
-            lp.height = (w * config.height * 1f / config.width).toInt()
-            animView.layoutParams = lp
-        }
         return true
     }
 
@@ -245,6 +235,9 @@ class AnimActiveDemoActivity : Activity(), IAnimListener {
         }
     }
 
+    /**
+     * 将Base64的bitmap转换为真正的bitmap
+     */
     private fun handleDepthMaskData(compressedBase64Data: String) : Bitmap? {
         var zipInflater : Inflater?= null
         try {
