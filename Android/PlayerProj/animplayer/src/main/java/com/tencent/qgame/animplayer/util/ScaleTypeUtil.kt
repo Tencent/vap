@@ -23,7 +23,7 @@ interface IScaleType {
     ): FrameLayout.LayoutParams
 }
 
-class ScaleTypeFixXY : IScaleType {
+class ScaleTypeFitXY : IScaleType {
     override fun getLayoutParam(
         layoutWidth: Int,
         layoutHeight: Int,
@@ -37,7 +37,7 @@ class ScaleTypeFixXY : IScaleType {
     }
 }
 
-class ScaleTypeFixCenter : IScaleType {
+class ScaleTypeFitCenter : IScaleType {
     override fun getLayoutParam(
         layoutWidth: Int,
         layoutHeight: Int,
@@ -45,7 +45,7 @@ class ScaleTypeFixCenter : IScaleType {
         videoHeight: Int,
         layoutParams: FrameLayout.LayoutParams
     ): FrameLayout.LayoutParams {
-        val (w, h) = getFixCenterSize(layoutWidth, layoutHeight, videoWidth, videoHeight)
+        val (w, h) = getFitCenterSize(layoutWidth, layoutHeight, videoWidth, videoHeight)
         if (w <= 0 && h <= 0) return layoutParams
         layoutParams.width = w
         layoutParams.height = h
@@ -53,7 +53,7 @@ class ScaleTypeFixCenter : IScaleType {
         return layoutParams
     }
 
-    private fun getFixCenterSize(
+    private fun getFitCenterSize(
         layoutWidth: Int,
         layoutHeight: Int,
         videoWidth: Int,
@@ -124,8 +124,8 @@ class ScaleTypeUtil {
         private const val TAG = "${Constant.TAG}.ScaleTypeUtil"
     }
 
-    private val scaleTypeFitXY by lazy { ScaleTypeFixXY() }
-    private val scaleTypeFitCenter by lazy { ScaleTypeFixCenter() }
+    private val scaleTypeFitXY by lazy { ScaleTypeFitXY() }
+    private val scaleTypeFitCenter by lazy { ScaleTypeFitCenter() }
     private val scaleTypeCenterCrop by lazy { ScaleTypeCenterCrop() }
 
     var currentScaleType = ScaleType.FIT_XY

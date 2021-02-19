@@ -74,6 +74,8 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
         initTestView()
         // 获取动画view
         animView = playerView
+        // 居中（根据父布局按比例居中并全部显示，默认fitXY）
+        animView.setScaleType(ScaleType.FIT_CENTER)
         // 注册动画监听
         animView.setAnimListener(this)
         /**
@@ -91,8 +93,6 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
             val file = File(dir + "/" + videoInfo.fileName)
             val md5 = FileUtil.getFileMD5(file)
             if (videoInfo.md5 == md5) {
-                // 居中（根据父布局按比例居中并全部显示s）
-                animView.setScaleType(ScaleType.FIT_CENTER)
                 // 开始播放动画文件
                 animView.startPlay(file)
             } else {

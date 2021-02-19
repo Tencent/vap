@@ -84,6 +84,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         initTestView()
         // 获取动画view
         animView = playerView
+        // 居中（根据父布局按比例居中并裁剪）
+        animView.setScaleType(ScaleType.CENTER_CROP)
         /**
          * 注册资源获取类
          */
@@ -163,8 +165,6 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
             val file = File(dir + "/" + videoInfo.fileName)
             val md5 = FileUtil.getFileMD5(file)
             if (videoInfo.md5 == md5) {
-                // 居中（根据父布局按比例居中并裁剪）
-                animView.setScaleType(ScaleType.CENTER_CROP)
                 // 开始播放动画文件
                 animView.startPlay(file)
             } else {
