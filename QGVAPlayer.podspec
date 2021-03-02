@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "1.0.4"
+  spec.version      = "1.0.5"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
@@ -85,7 +85,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/Tencent/vap.git", :tag => "#{spec.version}"}
+  spec.source       = { :git => "https://github.com/Tencent/vap.git", :tag => "iOS#{spec.version}"}
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
