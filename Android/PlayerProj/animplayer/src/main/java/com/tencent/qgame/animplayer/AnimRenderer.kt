@@ -15,49 +15,46 @@
  */
 package com.tencent.qgame.animplayer
 
-import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.SurfaceTexture
+import android.opengl.GLES20
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.TextureView
-import android.view.View
-import android.widget.FrameLayout
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.inter.IFetchResource
 import com.tencent.qgame.animplayer.inter.OnResourceClickListener
 import com.tencent.qgame.animplayer.mask.MaskConfig
 import com.tencent.qgame.animplayer.util.ALog
-import com.tencent.qgame.animplayer.util.IScaleType
-import com.tencent.qgame.animplayer.util.ScaleType
-import com.tencent.qgame.animplayer.util.ScaleTypeUtil
 import java.io.File
 
-open class AnimView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
-    FrameLayout(context, attrs, defStyleAttr),
-    TextureView.SurfaceTextureListener {
+/**
+ * GL 渲染实现，操作方法与 AnimView 一致
+ * glInit：gl 初始化
+ * glRelease：gl 释放
+ * glProcess：获取 OES Texture Id
+ */
+open class AnimRenderer {
 
     companion object {
-        private const val TAG = "${Constant.TAG}.AnimView"
+        private const val TAG = "${Constant.TAG}.AnimRenderer"
     }
+
     private val uiHandler by lazy { Handler(Looper.getMainLooper()) }
+    private val textureId = intArrayOf(0)
     private var surface: SurfaceTexture? = null
     private var player: AnimPlayer? = null
     private var animListener: IAnimListener? = null
-    private var innerTextureView: TextureView? = null
     private var lastFile: FileContainer? = null
-    private val scaleTypeUtil = ScaleTypeUtil()
+    private var hasData: Boolean = false
+    private var lastWidth = 0
+    private var lastHeight = 0
 
     // 代理监听
     private val animProxyListener by lazy {
         object : IAnimListener {
 
             override fun onVideoConfigReady(config: AnimConfig): Boolean {
-                scaleTypeUtil.videoWidth = config.width
-                scaleTypeUtil.videoHeight = config.height
                 return animListener?.onVideoConfigReady(config) ?: super.onVideoConfigReady(config)
             }
 
@@ -66,6 +63,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             }
 
             override fun onVideoRender(frameIndex: Int, config: AnimConfig?) {
+                hasData = true
                 animListener?.onVideoRender(frameIndex, config)
             }
 
@@ -88,24 +86,14 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private val surfaceOwner = object: SurfaceOwner {
         override val width: Int
-            get() = this@AnimView.width
+            get() = lastWidth
 
         override val height: Int
-            get() = this@AnimView.height
+            get() = lastHeight
 
-        override fun getSurfaceTexture() = innerTextureView?.surfaceTexture ?: surface
+        override fun getSurfaceTexture() = surface
 
-        override fun prepareTextureView() {
-            uiHandler.post {
-                removeAllViews()
-                innerTextureView = TextureView(context).apply {
-                    isOpaque = false
-                    surfaceTextureListener = this@AnimView
-                    layoutParams = scaleTypeUtil.getLayoutParam(this)
-                }
-                addView(innerTextureView)
-            }
-        }
+        override fun prepareTextureView() = Unit
     }
 
     init {
@@ -114,40 +102,46 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         player?.animListener = animProxyListener
     }
 
-    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-        ALog.i(TAG, "onSurfaceTextureSizeChanged $width x $height")
-        player?.onSurfaceTextureSizeChanged(width, height)
+    fun glInit() {
+        GLES20.glGenTextures(textureId.size, textureId, 0)
+        surface = SurfaceTexture(textureId[0])
     }
 
-    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-    }
-
-    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-        ALog.i(TAG, "onSurfaceTextureDestroyed")
+    fun glRelease() {
+        GLES20.glDeleteTextures(textureId.size, textureId, 0)
+        surface?.release()
         player?.onSurfaceTextureDestroyed()
-        uiHandler.post {
-            innerTextureView?.surfaceTextureListener = null
-            innerTextureView = null
-            removeAllViews()
+    }
+
+    fun glProcess(width: Int, height: Int, texMat: FloatArray): Int {
+        handleSizeChange(width, height)
+
+        if (!hasData) {
+            return -1
         }
-        return !belowKitKat()
+
+        surface?.run {
+            updateTexImage()
+            getTransformMatrix(texMat)
+        }
+        return textureId[0]
     }
 
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        ALog.i(TAG, "onSurfaceTextureAvailable")
-        this.surface = surface
-        player?.onSurfaceTextureAvailable(width, height)
+    private fun handleSizeChange(width: Int, height: Int) {
+        if (lastWidth != width && lastHeight != height) {
+            surface?.setDefaultBufferSize(width, height)
+
+            if (lastWidth == 0 && lastHeight == 0) {
+                player?.onSurfaceTextureAvailable(width, height)
+            }
+            player?.onSurfaceTextureSizeChanged(width, height)
+            lastWidth = width
+            lastHeight = height
+        }
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        scaleTypeUtil.layoutWidth = w
-        scaleTypeUtil.layoutHeight = h
-    }
-
-    override fun onAttachedToWindow() {
-        ALog.i(TAG, "onAttachedToWindow")
-        super.onAttachedToWindow()
+    fun resume() {
+        ALog.i(TAG, "resume")
         player?.isDetachedFromWindow = false
         // 自动恢复播放
         if ((player?.playLoop ?: 0) > 0) {
@@ -157,19 +151,13 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
-    override fun onDetachedFromWindow() {
-        ALog.i(TAG, "onDetachedFromWindow")
-        super.onDetachedFromWindow()
+    fun pause() {
+        ALog.i(TAG, "pause")
         if (belowKitKat()) {
             release()
         }
         player?.isDetachedFromWindow = true
         player?.onSurfaceTextureDestroyed()
-    }
-
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val res = isRunning() && ev != null && player?.pluginManager?.onDispatchTouchEvent(ev) == true
-        return if (!res) super.dispatchTouchEvent(ev) else true
     }
 
     open fun setAnimListener(animListener: IAnimListener?) {
@@ -195,19 +183,13 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         player?.playLoop = playLoop
     }
 
-    fun supportMask(isSupport : Boolean, isEdgeBlur : Boolean) {
+    fun supportMask(isSupport: Boolean, isEdgeBlur: Boolean) {
         player?.supportMaskBoolean = isSupport
         player?.maskEdgeBlurBoolean = isEdgeBlur
     }
 
     fun updateMaskConfig(maskConfig: MaskConfig?) {
         player?.updateMaskConfig(maskConfig)
-    }
-
-
-    @Deprecated("Compatible older version mp4, default false")
-    fun enableVersion1(enable: Boolean) {
-        player?.enableVersion1 = enable
     }
 
     // 兼容老版本视频模式
@@ -220,20 +202,15 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         player?.fps = fps
     }
 
-    fun setScaleType(type : ScaleType) {
-        scaleTypeUtil.currentScaleType = type
-    }
-
-    fun setScaleType(scaleType: IScaleType) {
-        scaleTypeUtil.scaleTypeImpl = scaleType
-    }
-
     fun startPlay(file: File) {
         try {
             val fileContainer = FileContainer(file)
             startPlay(fileContainer)
         } catch (e: Throwable) {
-            animProxyListener.onFailed(Constant.REPORT_ERROR_TYPE_FILE_ERROR, Constant.ERROR_MSG_FILE_ERROR)
+            animProxyListener.onFailed(
+                    Constant.REPORT_ERROR_TYPE_FILE_ERROR,
+                    Constant.ERROR_MSG_FILE_ERROR
+            )
         }
     }
 
@@ -242,17 +219,16 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             val fileContainer = FileContainer(assetManager, assetsPath)
             startPlay(fileContainer)
         } catch (e: Throwable) {
-            animProxyListener.onFailed(Constant.REPORT_ERROR_TYPE_FILE_ERROR, Constant.ERROR_MSG_FILE_ERROR)
+            animProxyListener.onFailed(
+                    Constant.REPORT_ERROR_TYPE_FILE_ERROR,
+                    Constant.ERROR_MSG_FILE_ERROR
+            )
         }
     }
 
 
     fun startPlay(fileContainer: FileContainer) {
         ui {
-            if (visibility != View.VISIBLE) {
-                ALog.e(TAG, "AnimView is GONE, can't play")
-                return@ui
-            }
             if (player?.isRunning() == false) {
                 lastFile = fileContainer
                 player?.startPlay(fileContainer)
@@ -273,12 +249,9 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private fun hide() {
         lastFile?.close()
-        ui {
-            removeAllViews()
-        }
     }
 
-    private fun ui(f:()->Unit) {
+    private fun ui(f: () -> Unit) {
         if (Looper.myLooper() == Looper.getMainLooper()) f() else uiHandler.post { f() }
     }
 
