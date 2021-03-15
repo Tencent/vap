@@ -14,6 +14,7 @@ enum class ScaleType {
 }
 
 interface IScaleType {
+
     fun getLayoutParam(
         layoutWidth: Int,
         layoutHeight: Int,
@@ -21,9 +22,15 @@ interface IScaleType {
         videoHeight: Int,
         layoutParams: FrameLayout.LayoutParams
     ): FrameLayout.LayoutParams
+
+    fun getRealSize(): Pair<Int, Int>
 }
 
 class ScaleTypeFitXY : IScaleType {
+
+    private var realWidth = 0
+    private var realHeight = 0
+
     override fun getLayoutParam(
         layoutWidth: Int,
         layoutHeight: Int,
@@ -33,11 +40,21 @@ class ScaleTypeFitXY : IScaleType {
     ): FrameLayout.LayoutParams {
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        realWidth = layoutWidth
+        realHeight = layoutHeight
         return layoutParams
+    }
+
+    override fun getRealSize(): Pair<Int, Int> {
+        return Pair(realWidth, realHeight)
     }
 }
 
 class ScaleTypeFitCenter : IScaleType {
+
+    private var realWidth = 0
+    private var realHeight = 0
+
     override fun getLayoutParam(
         layoutWidth: Int,
         layoutHeight: Int,
@@ -47,10 +64,16 @@ class ScaleTypeFitCenter : IScaleType {
     ): FrameLayout.LayoutParams {
         val (w, h) = getFitCenterSize(layoutWidth, layoutHeight, videoWidth, videoHeight)
         if (w <= 0 && h <= 0) return layoutParams
+        realWidth = w
+        realHeight = h
         layoutParams.width = w
         layoutParams.height = h
         layoutParams.gravity = Gravity.CENTER
         return layoutParams
+    }
+
+    override fun getRealSize(): Pair<Int, Int> {
+        return Pair(realWidth, realHeight)
     }
 
     private fun getFitCenterSize(
@@ -78,6 +101,10 @@ class ScaleTypeFitCenter : IScaleType {
 }
 
 class ScaleTypeCenterCrop : IScaleType {
+
+    private var realWidth = 0
+    private var realHeight = 0
+
     override fun getLayoutParam(
         layoutWidth: Int,
         layoutHeight: Int,
@@ -87,10 +114,16 @@ class ScaleTypeCenterCrop : IScaleType {
     ): FrameLayout.LayoutParams {
         val (w, h) = getCenterCropSize(layoutWidth, layoutHeight, videoWidth, videoHeight)
         if (w <= 0 && h <= 0) return layoutParams
+        realWidth = w
+        realHeight = h
         layoutParams.width = w
         layoutParams.height = h
         layoutParams.gravity = Gravity.CENTER
         return layoutParams
+    }
+
+    override fun getRealSize(): Pair<Int, Int> {
+        return Pair(realWidth, realHeight)
     }
 
     private fun getCenterCropSize(
@@ -138,6 +171,16 @@ class ScaleTypeUtil {
     var videoHeight = 0
 
 
+    /**
+     * 获取实际视频容器宽高
+     * @return w h
+     */
+    fun getRealSize(): Pair<Int, Int> {
+        val size = getCurrentScaleType().getRealSize()
+        ALog.i(TAG, "get real size (${size.first}, ${size.second})")
+        return size
+    }
+
     fun getLayoutParam(view: View?): FrameLayout.LayoutParams {
         val layoutParams = (view?.layoutParams as? FrameLayout.LayoutParams)
             ?: FrameLayout.LayoutParams(
@@ -152,31 +195,28 @@ class ScaleTypeUtil {
             return layoutParams
         }
 
-        var tmpScaleType = scaleTypeImpl
-        if (tmpScaleType != null) {
-            ALog.i(TAG, "custom scaleType")
-            return tmpScaleType.getLayoutParam(
-                layoutWidth,
-                layoutHeight,
-                videoWidth,
-                videoHeight,
-                layoutParams
-            )
-        }
-        ALog.i(TAG, "scaleType=$currentScaleType")
-        tmpScaleType = when (currentScaleType) {
-            ScaleType.FIT_XY -> scaleTypeFitXY
-            ScaleType.FIT_CENTER -> scaleTypeFitCenter
-            ScaleType.CENTER_CROP -> scaleTypeCenterCrop
-        }
-        tmpScaleType.getLayoutParam(
+        return getCurrentScaleType().getLayoutParam(
             layoutWidth,
             layoutHeight,
             videoWidth,
             videoHeight,
             layoutParams
         )
-        return layoutParams
+    }
+
+    private fun getCurrentScaleType(): IScaleType {
+        val tmpScaleType = scaleTypeImpl
+        return if (tmpScaleType != null) {
+            ALog.i(TAG, "custom scaleType")
+            tmpScaleType
+        } else {
+            ALog.i(TAG, "scaleType=$currentScaleType")
+            when (currentScaleType) {
+                ScaleType.FIT_XY -> scaleTypeFitXY
+                ScaleType.FIT_CENTER -> scaleTypeFitCenter
+                ScaleType.CENTER_CROP -> scaleTypeCenterCrop
+            }
+        }
     }
 
 
