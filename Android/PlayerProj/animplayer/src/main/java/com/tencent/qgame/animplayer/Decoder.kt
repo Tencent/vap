@@ -18,6 +18,7 @@ package com.tencent.qgame.animplayer
 import android.os.Build
 import android.os.HandlerThread
 import android.os.Handler
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.SpeedControlUtil
@@ -70,7 +71,7 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
     var isStopReq = false // 是否需要停止
     val speedControlUtil by lazy { SpeedControlUtil() }
 
-    abstract fun start(fileContainer: FileContainer)
+    abstract fun start(fileContainer: IFileContainer)
 
     fun stop() {
         isStopReq = true

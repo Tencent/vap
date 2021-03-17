@@ -17,6 +17,7 @@ package com.tencent.qgame.animplayer
 
 import android.content.res.AssetManager
 import android.graphics.SurfaceTexture
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.inter.IFetchResource
 import com.tencent.qgame.animplayer.inter.OnResourceClickListener
@@ -53,7 +54,7 @@ interface IAnimView {
 
     fun startPlay(assetManager: AssetManager, assetsPath: String)
 
-    fun startPlay(fileContainer: FileContainer)
+    fun startPlay(fileContainer: IFileContainer)
 
     fun stopPlay()
 

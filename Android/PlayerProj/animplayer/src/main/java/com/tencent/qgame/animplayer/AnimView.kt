@@ -22,10 +22,12 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.TextureView
 import android.view.View
 import android.widget.FrameLayout
+import com.tencent.qgame.animplayer.file.AssetsFileContainer
+import com.tencent.qgame.animplayer.file.FileContainer
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.inter.IFetchResource
 import com.tencent.qgame.animplayer.inter.OnResourceClickListener
@@ -51,7 +53,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     private var surface: SurfaceTexture? = null
     private var animListener: IAnimListener? = null
     private var innerTextureView: InnerTextureView? = null
-    private var lastFile: FileContainer? = null
+    private var lastFile: IFileContainer? = null
     private val scaleTypeUtil = ScaleTypeUtil()
 
     // 代理监听
@@ -235,7 +237,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     override fun startPlay(assetManager: AssetManager, assetsPath: String) {
         try {
-            val fileContainer = FileContainer(assetManager, assetsPath)
+            val fileContainer = AssetsFileContainer(assetManager, assetsPath)
             startPlay(fileContainer)
         } catch (e: Throwable) {
             animProxyListener.onFailed(Constant.REPORT_ERROR_TYPE_FILE_ERROR, Constant.ERROR_MSG_FILE_ERROR)
@@ -243,7 +245,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
 
-    override fun startPlay(fileContainer: FileContainer) {
+    override fun startPlay(fileContainer: IFileContainer) {
         ui {
             if (visibility != View.VISIBLE) {
                 ALog.e(TAG, "AnimView is GONE, can't play")

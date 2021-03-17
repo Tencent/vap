@@ -21,6 +21,7 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.Build
 import android.view.Surface
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.MediaUtil
 
@@ -35,7 +36,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     private val bufferInfo by lazy { MediaCodec.BufferInfo() }
     private var needDestroy = false
 
-    override fun start(fileContainer: FileContainer) {
+    override fun start(fileContainer: IFileContainer) {
         isStopReq = false
         needDestroy = false
         isRunning = true
@@ -62,7 +63,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         }
     }
 
-    private fun startPlay(fileContainer: FileContainer) {
+    private fun startPlay(fileContainer: IFileContainer) {
         try {
             if (!prepareRender()) {
                 throw RuntimeException("render create fail")

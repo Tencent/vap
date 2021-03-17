@@ -16,6 +16,7 @@
 package com.tencent.qgame.animplayer
 
 import android.media.*
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.MediaUtil
 import java.lang.RuntimeException
@@ -41,7 +42,7 @@ class AudioPlayer(val player: AnimPlayer) {
         return Decoder.createThread(decodeThread, "anim_audio_thread")
     }
 
-    fun start(fileContainer: FileContainer) {
+    fun start(fileContainer: IFileContainer) {
         isStopReq = false
         needDestroy = false
         if (!prepareThread()) return
@@ -63,7 +64,7 @@ class AudioPlayer(val player: AnimPlayer) {
         isStopReq = true
     }
 
-    private fun startPlay(fileContainer: FileContainer) {
+    private fun startPlay(fileContainer: IFileContainer) {
         val extractor = MediaUtil.getExtractor(fileContainer)
         this.extractor = extractor
         val audioIndex = MediaUtil.selectAudioTrack(extractor)
