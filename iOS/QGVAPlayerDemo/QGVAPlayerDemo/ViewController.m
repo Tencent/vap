@@ -15,11 +15,15 @@
 
 #import "ViewController.h"
 #import "UIView+VAP.h"
+#import "QGVAPWrapView.h"
 
-@interface ViewController () <HWDMP4PlayDelegate>
+@interface ViewController () <HWDMP4PlayDelegate, VAPWrapViewDelegate>
 
 @property (nonatomic, strong) UIButton *vapButton;
 @property (nonatomic, strong) UIButton *vapxButton;
+@property (nonatomic, strong) UIButton *vapWrapViewButton;
+
+@property (nonatomic, strong) VAPView *vapView;
 
 @end
 
@@ -61,6 +65,13 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     [_vapxButton setTitle:@"融合特效" forState:UIControlStateNormal];
     [_vapxButton addTarget:self action:@selector(playVapx) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_vapxButton];
+    
+    //使用WrapView，支持ContentMode
+    _vapWrapViewButton = [[UIButton alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_vapxButton.frame)+60, CGRectGetWidth(self.view.frame), 90)];
+    _vapWrapViewButton.backgroundColor = [UIColor lightGrayColor];
+    [_vapWrapViewButton setTitle:@"WrapView-ContentMode" forState:UIControlStateNormal];
+    [_vapWrapViewButton addTarget:self action:@selector(playVapWithWrapView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_vapWrapViewButton];
 }
 
 #pragma mark - 各种类型的播放
@@ -74,7 +85,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     mp4View.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
-    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/test.mp4", [[NSBundle mainBundle] resourcePath]];
+    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
     //单纯播放的接口
     //[mp4View playHWDMp4:resPath];
     //指定素材混合模式，重复播放次数，delegate的接口
@@ -83,7 +94,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 //vap动画
 - (void)playVapx {
-    NSString *mp4Path = [NSString stringWithFormat:@"%@/Resource/vap1.mp4", [[NSBundle mainBundle] resourcePath]];
+    NSString *mp4Path = [NSString stringWithFormat:@"%@/Resource/vap.mp4", [[NSBundle mainBundle] resourcePath]];
     VAPView *mp4View = [[VAPView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:mp4View];
     mp4View.center = self.view.center;
@@ -91,6 +102,18 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
     [mp4View playHWDMP4:mp4Path repeatCount:-1 delegate:self];
+}
+
+/// 使用WrapView，支持ContentMode
+- (void)playVapWithWrapView {
+    QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
+    wrapView.center = self.view.center;
+    wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;
+    [self.view addSubview:wrapView];
+    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
+    [wrapView vapWrapView_playHWDMP4:resPath repeatCount:-1 delegate:self];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
+    [wrapView addGestureRecognizer:tap];
 }
 
 #pragma mark -  mp4 hwd delegate
@@ -151,6 +174,17 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 - (void)onImageviewTap:(UIGestureRecognizer *)ges {
     
     [ges.view removeFromSuperview];
+}
+
+#pragma mark - WrapViewDelegate
+
+//provide the content for tags, maybe text or url string ...
+- (NSString *)vapWrapview_contentForVapTag:(NSString *)tag resource:(QGVAPSourceInfo *)info {
+    return nil;
+}
+
+//provide image for url from tag content
+- (void)vapWrapView_loadVapImageWithURL:(NSString *)urlStr context:(NSDictionary *)context completion:(VAPImageCompletionBlock)completionBlock {
 }
 
 @end

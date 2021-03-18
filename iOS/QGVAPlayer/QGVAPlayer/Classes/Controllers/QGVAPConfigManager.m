@@ -45,6 +45,7 @@
     QGMP4Box *vapc = [_fileInfo.mp4Parser.rootBox subBoxOfType:QGMP4BoxType_vapc];
     if (!vapc) {
         self.hasValidConfig = NO;
+        VAP_Error(kQGVAPModuleCommon, @"config can not find vapc box");
         return ;
     }
     self.hasValidConfig = YES;
