@@ -30,6 +30,7 @@ import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.inter.IFetchResource
 import com.tencent.qgame.animplayer.inter.OnResourceClickListener
 import com.tencent.qgame.animplayer.mask.MaskConfig
+import com.tencent.qgame.animplayer.textureview.InnerTextureView
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IScaleType
 import com.tencent.qgame.animplayer.util.ScaleType
@@ -37,17 +38,19 @@ import com.tencent.qgame.animplayer.util.ScaleTypeUtil
 import java.io.File
 
 open class AnimView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
+    IAnimView,
     FrameLayout(context, attrs, defStyleAttr),
     TextureView.SurfaceTextureListener {
 
     companion object {
         private const val TAG = "${Constant.TAG}.AnimView"
     }
+    private val player: AnimPlayer
+
     private val uiHandler by lazy { Handler(Looper.getMainLooper()) }
     private var surface: SurfaceTexture? = null
-    private var player: AnimPlayer? = null
     private var animListener: IAnimListener? = null
-    private var innerTextureView: TextureView? = null
+    private var innerTextureView: InnerTextureView? = null
     private var lastFile: FileContainer? = null
     private val scaleTypeUtil = ScaleTypeUtil()
 
@@ -90,14 +93,15 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     init {
         hide()
         player = AnimPlayer(this)
-        player?.animListener = animProxyListener
+        player.animListener = animProxyListener
     }
 
 
-    fun prepareTextureView() {
+    override fun prepareTextureView() {
         uiHandler.post {
             removeAllViews()
-            innerTextureView = TextureView(context).apply {
+            innerTextureView = InnerTextureView(context).apply {
+                player = this@AnimView.player
                 isOpaque = false
                 surfaceTextureListener = this@AnimView
                 layoutParams = scaleTypeUtil.getLayoutParam(this)
@@ -106,13 +110,13 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
-    fun getSurfaceTexture(): SurfaceTexture? {
+    override fun getSurfaceTexture(): SurfaceTexture? {
         return innerTextureView?.surfaceTexture ?: surface
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
         ALog.i(TAG, "onSurfaceTextureSizeChanged $width x $height")
-        player?.onSurfaceTextureSizeChanged(width, height)
+        player.onSurfaceTextureSizeChanged(width, height)
     }
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
@@ -120,7 +124,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         ALog.i(TAG, "onSurfaceTextureDestroyed")
-        player?.onSurfaceTextureDestroyed()
+        player.onSurfaceTextureDestroyed()
         uiHandler.post {
             innerTextureView?.surfaceTextureListener = null
             innerTextureView = null
@@ -132,7 +136,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
         ALog.i(TAG, "onSurfaceTextureAvailable")
         this.surface = surface
-        player?.onSurfaceTextureAvailable(width, height)
+        player.onSurfaceTextureAvailable(width, height)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -144,9 +148,9 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun onAttachedToWindow() {
         ALog.i(TAG, "onAttachedToWindow")
         super.onAttachedToWindow()
-        player?.isDetachedFromWindow = false
+        player.isDetachedFromWindow = false
         // 自动恢复播放
-        if ((player?.playLoop ?: 0) > 0) {
+        if ((player.playLoop ?: 0) > 0) {
             lastFile?.apply {
                 startPlay(this)
             }
@@ -159,72 +163,68 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         if (belowKitKat()) {
             release()
         }
-        player?.isDetachedFromWindow = true
-        player?.onSurfaceTextureDestroyed()
+        player.isDetachedFromWindow = true
+        player.onSurfaceTextureDestroyed()
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val res = isRunning() && ev != null && player?.pluginManager?.onDispatchTouchEvent(ev) == true
-        return if (!res) super.dispatchTouchEvent(ev) else true
-    }
 
-    open fun setAnimListener(animListener: IAnimListener?) {
+    override fun setAnimListener(animListener: IAnimListener?) {
         this.animListener = animListener
     }
 
-    open fun setFetchResource(fetchResource: IFetchResource?) {
-        player?.pluginManager?.getMixAnimPlugin()?.resourceRequest = fetchResource
+    override fun setFetchResource(fetchResource: IFetchResource?) {
+        player.pluginManager.getMixAnimPlugin()?.resourceRequest = fetchResource
     }
 
-    open fun setOnResourceClickListener(resourceClickListener: OnResourceClickListener?) {
-        player?.pluginManager?.getMixAnimPlugin()?.resourceClickListener = resourceClickListener
+    override fun setOnResourceClickListener(resourceClickListener: OnResourceClickListener?) {
+        player.pluginManager.getMixAnimPlugin()?.resourceClickListener = resourceClickListener
     }
 
     /**
      * 兼容方案，优先保证表情显示
      */
     open fun enableAutoTxtColorFill(enable: Boolean) {
-        player?.pluginManager?.getMixAnimPlugin()?.autoTxtColorFill = enable
+        player.pluginManager.getMixAnimPlugin()?.autoTxtColorFill = enable
     }
 
-    fun setLoop(playLoop: Int) {
-        player?.playLoop = playLoop
+    override fun setLoop(playLoop: Int) {
+        player.playLoop = playLoop
     }
 
-    fun supportMask(isSupport : Boolean, isEdgeBlur : Boolean) {
-        player?.supportMaskBoolean = isSupport
-        player?.maskEdgeBlurBoolean = isEdgeBlur
+    override fun supportMask(isSupport : Boolean, isEdgeBlur : Boolean) {
+        player.supportMaskBoolean = isSupport
+        player.maskEdgeBlurBoolean = isEdgeBlur
     }
 
-    fun updateMaskConfig(maskConfig: MaskConfig?) {
-        player?.updateMaskConfig(maskConfig)
+    override fun updateMaskConfig(maskConfig: MaskConfig?) {
+        player.updateMaskConfig(maskConfig)
     }
 
 
     @Deprecated("Compatible older version mp4, default false")
     fun enableVersion1(enable: Boolean) {
-        player?.enableVersion1 = enable
+        player.enableVersion1 = enable
     }
 
     // 兼容老版本视频模式
     @Deprecated("Compatible older version mp4")
     fun setVideoMode(mode: Int) {
-        player?.videoMode = mode
+        player.videoMode = mode
     }
 
-    fun setFps(fps: Int) {
-        player?.fps = fps
+    override fun setFps(fps: Int) {
+        player.fps = fps
     }
 
-    fun setScaleType(type : ScaleType) {
+    override fun setScaleType(type : ScaleType) {
         scaleTypeUtil.currentScaleType = type
     }
 
-    fun setScaleType(scaleType: IScaleType) {
+    override fun setScaleType(scaleType: IScaleType) {
         scaleTypeUtil.scaleTypeImpl = scaleType
     }
 
-    fun startPlay(file: File) {
+    override fun startPlay(file: File) {
         try {
             val fileContainer = FileContainer(file)
             startPlay(fileContainer)
@@ -233,7 +233,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
-    fun startPlay(assetManager: AssetManager, assetsPath: String) {
+    override fun startPlay(assetManager: AssetManager, assetsPath: String) {
         try {
             val fileContainer = FileContainer(assetManager, assetsPath)
             startPlay(fileContainer)
@@ -243,15 +243,15 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
 
-    fun startPlay(fileContainer: FileContainer) {
+    override fun startPlay(fileContainer: FileContainer) {
         ui {
             if (visibility != View.VISIBLE) {
                 ALog.e(TAG, "AnimView is GONE, can't play")
                 return@ui
             }
-            if (player?.isRunning() == false) {
+            if (!player.isRunning()) {
                 lastFile = fileContainer
-                player?.startPlay(fileContainer)
+                player.startPlay(fileContainer)
             } else {
                 ALog.i(TAG, "is running can not start")
             }
@@ -259,12 +259,16 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
 
-    fun stopPlay() {
-        player?.stopPlay()
+    override fun stopPlay() {
+        player.stopPlay()
     }
 
-    fun isRunning(): Boolean {
-        return player?.isRunning() ?: false
+    override fun isRunning(): Boolean {
+        return player.isRunning()
+    }
+
+    override fun getRealSize(): Pair<Int, Int> {
+        return scaleTypeUtil.getRealSize()
     }
 
     private fun hide() {
