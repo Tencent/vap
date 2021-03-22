@@ -106,7 +106,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.egame.vap:animplayer:2.0.14"
+    implementation "com.egame.vap:animplayer:2.0.15"
 }
 ```
 

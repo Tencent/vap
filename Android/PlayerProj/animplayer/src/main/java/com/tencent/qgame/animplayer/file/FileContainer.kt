@@ -37,7 +37,6 @@ class FileContainer(private val file: File) : IFileContainer {
 
     override fun setDataSource(extractor: MediaExtractor) {
         extractor.setDataSource(file.toString())
-
     }
 
     override fun startRandomRead() {
