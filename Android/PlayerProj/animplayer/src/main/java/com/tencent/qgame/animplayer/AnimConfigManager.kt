@@ -16,6 +16,7 @@
 package com.tencent.qgame.animplayer
 
 import android.os.SystemClock
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.util.ALog
 import org.json.JSONObject
 import java.nio.charset.Charset
@@ -36,7 +37,7 @@ class AnimConfigManager(val player: AnimPlayer) {
      * 解析配置
      * @return true 解析成功 false 解析失败
      */
-    fun parseConfig(fileContainer: FileContainer, enableVersion1: Boolean, defaultVideoMode: Int, defaultFps: Int): Int {
+    fun parseConfig(fileContainer: IFileContainer, enableVersion1: Boolean, defaultVideoMode: Int, defaultFps: Int): Int {
         try {
             isParsingConfig = true
             // 解析vapc
@@ -87,7 +88,7 @@ class AnimConfigManager(val player: AnimPlayer) {
     }
 
 
-    private fun parse(fileContainer: FileContainer, defaultVideoMode: Int, defaultFps: Int): Boolean {
+    private fun parse(fileContainer: IFileContainer, defaultVideoMode: Int, defaultFps: Int): Boolean {
 
         val config = AnimConfig()
         this.config = config

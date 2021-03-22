@@ -19,7 +19,7 @@ import android.media.MediaCodecList
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import com.tencent.qgame.animplayer.Constant
-import com.tencent.qgame.animplayer.FileContainer
+import com.tencent.qgame.animplayer.file.IFileContainer
 import kotlin.collections.HashMap
 
 
@@ -35,7 +35,7 @@ object MediaUtil {
     }
 
 
-    fun getExtractor(file: FileContainer): MediaExtractor {
+    fun getExtractor(file: IFileContainer): MediaExtractor {
         val extractor = MediaExtractor()
         file.setDataSource(extractor)
         return extractor
