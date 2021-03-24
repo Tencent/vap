@@ -27,7 +27,6 @@
 @implementation QGVAPWrapView
 
 - (instancetype)init {
-
     if (self = [super init]) {
         [self commonInit];
     }
@@ -35,7 +34,6 @@
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
-
     if (self = [super initWithFrame:frame]) {
         [self commonInit];
     }
@@ -69,13 +67,11 @@
     CGFloat videoRatio = config.info.size.width / config.info.size.height;
     
     switch (self.contentMode) {
-        case QGVAPWrapViewContentModeScaleToFill:
-        {
+        case QGVAPWrapViewContentModeScaleToFill: {
 
         }
             break;
-        case QGVAPWrapViewContentModeAspectFit:
-        {
+        case QGVAPWrapViewContentModeAspectFit: {
             if (layoutRatio < videoRatio) {
                 realWidth = layoutWidth;
                 realHeight = realWidth / videoRatio;
@@ -88,8 +84,7 @@
             self.vapView.center = self.center;
         }
             break;;
-        case QGVAPWrapViewContentModeAspectFill:
-        {
+        case QGVAPWrapViewContentModeAspectFill: {
             if (layoutRatio > videoRatio) {
                 realWidth = layoutWidth;
                 realHeight = realWidth / videoRatio;
