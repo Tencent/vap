@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43BAD32225F2153500D17934 /* QGVAPWrapView.h in Headers */ = {isa = PBXBuildFile; fileRef = 43BAD32025F2153500D17934 /* QGVAPWrapView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		43BAD32325F2153500D17934 /* QGVAPWrapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43BAD32125F2153500D17934 /* QGVAPWrapView.m */; };
 		630723B122F0409200B15629 /* QGVAPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630723A722F0409200B15629 /* QGVAPlayer.framework */; };
 		630723B622F0409200B15629 /* QGVAPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 630723B522F0409200B15629 /* QGVAPlayerTests.m */; };
 		630723B822F0409200B15629 /* QGVAPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 630723AA22F0409200B15629 /* QGVAPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -100,6 +102,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		43BAD32025F2153500D17934 /* QGVAPWrapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QGVAPWrapView.h; sourceTree = "<group>"; };
+		43BAD32125F2153500D17934 /* QGVAPWrapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QGVAPWrapView.m; sourceTree = "<group>"; };
 		630723A722F0409200B15629 /* QGVAPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QGVAPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		630723AA22F0409200B15629 /* QGVAPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QGVAPlayer.h; sourceTree = "<group>"; };
 		630723AB22F0409200B15629 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -249,6 +253,8 @@
 				6307240222F0410600B15629 /* VAPMacros.h */,
 				630723C722F0410600B15629 /* UIView+VAP.h */,
 				630723F522F0410600B15629 /* UIView+VAP.m */,
+				43BAD32025F2153500D17934 /* QGVAPWrapView.h */,
+				43BAD32125F2153500D17934 /* QGVAPWrapView.m */,
 				630723D722F0410600B15629 /* Models */,
 				630723F622F0410600B15629 /* Views */,
 				630723E522F0410600B15629 /* Controllers */,
@@ -430,6 +436,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43BAD32225F2153500D17934 /* QGVAPWrapView.h in Headers */,
 				6307240B22F0410600B15629 /* UIView+VAP.h in Headers */,
 				630723B822F0409200B15629 /* QGVAPlayer.h in Headers */,
 				63AEB3A02316AF8A0069CEBB /* NSDictionary+VAPUtil.h in Headers */,
@@ -574,6 +581,7 @@
 				63AFC6B8231E3D4A00E127F9 /* QGVAPMetalShaderFunctionLoader.m in Sources */,
 				6307243A22F0410600B15629 /* QGHWDMP4OpenGLView.m in Sources */,
 				6307243322F0410600B15629 /* QGHWDMetalView.m in Sources */,
+				43BAD32325F2153500D17934 /* QGVAPWrapView.m in Sources */,
 				63AEB3A62317CD940069CEBB /* NSArray+VAPUtil.m in Sources */,
 				6307240C22F0410600B15629 /* QGVAPWeakProxy.m in Sources */,
 				6307240922F0410600B15629 /* QGMP4Parser.m in Sources */,
