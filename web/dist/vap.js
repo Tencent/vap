@@ -1655,8 +1655,8 @@
 
         if (!gl) {
           this.instance.gl = gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-          gl.enable(gl.BLEND);
-          gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+          gl.disable(gl.BLEND);
+          gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
           gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         } // 清除界面，解决同类型type切换MP4时，第一帧是上一个mp4最后一帧的问题
 
