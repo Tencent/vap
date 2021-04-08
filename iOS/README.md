@@ -74,3 +74,11 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
         NSLog(@"long press");
     }];
 ```
+
+```
+    4) contentMode 支持
+//note: 导入 QGVAPWrapView.h 头文件。通过创建 `QGVAPWrapView` 作为播放特效的 View。可以设置其`contentMode`属性。
+QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
+wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;
+[self.view addSubview:wrapView];
+```
