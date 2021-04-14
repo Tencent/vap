@@ -62,6 +62,35 @@
     [self.vapView playHWDMP4:filePath repeatCount:repeatCount delegate:self];
 }
 
+- (void)vapWrapView_addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler {
+    [self initVAPViewIfNeed];
+    [self.vapView addVapGesture:gestureRecognizer callback:handler];
+}
+
+- (void)vapWrapView_addVapTapGesture:(VAPGestureEventBlock)handler {
+    [self initVAPViewIfNeed];
+    [self.vapView addVapTapGesture:handler];
+}
+
+#pragma mark - UIView
+// 自身不响应，仅子视图响应。
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha < 0.01) {
+        return nil;
+    }
+    if ([self pointInside:point withEvent:event]) {
+        for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
+            CGPoint convertedPoint = [self convertPoint:point toView:subview];
+            UIView *hitView = [subview hitTest:convertedPoint withEvent:event];
+            if (hitView) {
+                return hitView;
+            }
+        }
+        return nil;
+    }
+    return nil;
+}
+
 #pragma mark - Private
 
 - (void)p_setupContentModeWithConfig:(QGVAPConfigModel *)config {
