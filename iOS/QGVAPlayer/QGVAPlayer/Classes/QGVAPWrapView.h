@@ -63,6 +63,12 @@ typedef NS_ENUM(NSUInteger, QGVAPWrapViewContentMode) {
 //手势识别通用接口, 如果开启了autoDestoryAfterFinish，那么手势将在播放完毕后失效
 - (void)vapWrapView_addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler;
 
+
+/*
+ QGVAPWrapView本身不响应手势，只有子视图响应手势，请使用vapWrapView_addVapTapGesture / vapWrapView_addVapGesture添加
+ */
+- (void)addGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer NS_UNAVAILABLE;
+
 @end
 
 NS_ASSUME_NONNULL_END
