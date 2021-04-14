@@ -41,8 +41,15 @@
 }
 
 - (void)commonInit {
-    self.vapView = [[VAPView alloc] initWithFrame:self.bounds];
-    [self addSubview:self.vapView];
+    _autoDestoryAfterFinish = YES;
+}
+
+// 因为播放停止后可能移除VAPView，这里需要加回来
+- (void)initVAPViewIfNeed {
+    if (!_vapView) {
+        _vapView = [[VAPView alloc] initWithFrame:self.bounds];
+        [self addSubview:_vapView];
+    }
 }
 
 - (void)vapWrapView_playHWDMP4:(NSString *)filePath
@@ -51,7 +58,37 @@
     
     self.delegate = delegate;
     
+    [self initVAPViewIfNeed];
     [self.vapView playHWDMP4:filePath repeatCount:repeatCount delegate:self];
+}
+
+- (void)vapWrapView_addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler {
+    [self initVAPViewIfNeed];
+    [self.vapView addVapGesture:gestureRecognizer callback:handler];
+}
+
+- (void)vapWrapView_addVapTapGesture:(VAPGestureEventBlock)handler {
+    [self initVAPViewIfNeed];
+    [self.vapView addVapTapGesture:handler];
+}
+
+#pragma mark - UIView
+// 自身不响应，仅子视图响应。
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha < 0.01) {
+        return nil;
+    }
+    if ([self pointInside:point withEvent:event]) {
+        for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
+            CGPoint convertedPoint = [self convertPoint:point toView:subview];
+            UIView *hitView = [subview hitTest:convertedPoint withEvent:event];
+            if (hitView) {
+                return hitView;
+            }
+        }
+        return nil;
+    }
+    return nil;
 }
 
 #pragma mark - Private
@@ -130,6 +167,13 @@
     if ([self.delegate respondsToSelector:@selector(vapWrap_viewDidStopPlayMP4:view:)]) {
         [self.delegate vapWrap_viewDidStopPlayMP4:lastFrameIndex view:container];
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.autoDestoryAfterFinish) {
+            [self.vapView removeFromSuperview];
+            self.vapView = nil;
+        }
+    });
 }
 
 - (BOOL)shouldStartPlayMP4:(VAPView *)container config:(QGVAPConfigModel *)config {
