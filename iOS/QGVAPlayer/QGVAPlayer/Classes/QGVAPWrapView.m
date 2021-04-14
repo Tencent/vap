@@ -41,8 +41,15 @@
 }
 
 - (void)commonInit {
-    self.vapView = [[VAPView alloc] initWithFrame:self.bounds];
-    [self addSubview:self.vapView];
+    _autoDestoryAfterFinish = YES;
+}
+
+// 因为播放停止后可能移除VAPView，这里需要加回来
+- (void)initVAPViewIfNeed {
+    if (!_vapView) {
+        _vapView = [[VAPView alloc] initWithFrame:self.bounds];
+        [self addSubview:_vapView];
+    }
 }
 
 - (void)vapWrapView_playHWDMP4:(NSString *)filePath
@@ -51,6 +58,7 @@
     
     self.delegate = delegate;
     
+    [self initVAPViewIfNeed];
     [self.vapView playHWDMP4:filePath repeatCount:repeatCount delegate:self];
 }
 
@@ -130,6 +138,13 @@
     if ([self.delegate respondsToSelector:@selector(vapWrap_viewDidStopPlayMP4:view:)]) {
         [self.delegate vapWrap_viewDidStopPlayMP4:lastFrameIndex view:container];
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.autoDestoryAfterFinish) {
+            [self.vapView removeFromSuperview];
+            self.vapView = nil;
+        }
+    });
 }
 
 - (BOOL)shouldStartPlayMP4:(VAPView *)container config:(QGVAPConfigModel *)config {
