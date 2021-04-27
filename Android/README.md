@@ -102,13 +102,15 @@ maven方式引入
 
 ```gradle
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    implementation "com.egame.vap:animplayer:2.0.15"
+    implementation "io.github.tencent:vap:2.0.15"
 }
 ```
+
+通知：由于jcenter将于2022年停止服务，VAP迁移到mavenCentral（从2.0.15版本开始）。如果需要低版本（低于2.0.15版本）需要自行切换到对应版本的release tag，打aar包的方式进行集成。
 
 aar引入
 
