@@ -84,7 +84,7 @@ ps：普通动画不需要此设置
 
 * (2) source type: 表示属性类型，目前支持两种 image(图片), text(文字);
 
-* (3) fit type: 图片显示时的方式，目前支持两种 fitXY(图片平铺 default), centerCrop(比例缩放)，这几个概念与Android里图片对其方式概念相同;
+* (3) fit type: 图片显示时的方式，目前支持两种 fitXY(图片平铺 default), centerCrop(比例缩放)，这几个概念与Android里图片对齐方式概念相同;
 
 * (4) mask path: 遮罩图片路径;
 
