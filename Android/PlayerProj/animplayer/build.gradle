@@ -34,4 +34,4 @@ dependencies {
 
 // maven central
 // 上传指令./gradlew uploadArchives
-apply from: "../publish-mavencentral.gradle"
+// apply from: "../publish-mavencentral.gradle"
