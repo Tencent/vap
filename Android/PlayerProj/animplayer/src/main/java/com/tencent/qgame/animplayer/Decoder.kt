@@ -56,7 +56,7 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
         }
     }
 
-    var render: Render? = null
+    var render: IRenderListener? = null
     val renderThread = HandlerHolder(null, null)
     val decodeThread = HandlerHolder(null, null)
     private var surfaceWidth = 0
@@ -83,16 +83,19 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
         return createThread(renderThread, "anim_render_thread") && createThread(decodeThread, "anim_decode_thread")
     }
 
-    fun prepareRender(): Boolean {
+    fun prepareRender(needAlign: Boolean): Boolean {
         if (render == null) {
             ALog.i(TAG, "prepareRender")
             player.animView.getSurfaceTexture()?.apply {
-                render = Render(this).apply {
-                    updateViewPort(surfaceWidth, surfaceHeight)
+                if (needAlign) {
+                    render = YUVRender(this)
+                } else {
+                    render = Render(this).apply {
+                        updateViewPort(surfaceWidth, surfaceHeight)
+                    }
                 }
             }
         }
-        render?.createTexture()
         return render != null
     }
 
