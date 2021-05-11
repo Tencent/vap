@@ -45,8 +45,8 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     private var alignWidth = 0
     private var alignHeight = 0
 
-    // 动画是否被对齐标志位
-    private var needAlign = false
+    // 动画是否需要走YUV渲染逻辑的标志位
+    private var needYUV = false
 
     override fun start(fileContainer: IFileContainer) {
         isStopReq = false
@@ -114,11 +114,13 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             videoHeight = format.getInteger(MediaFormat.KEY_HEIGHT)
             ALog.i(TAG, "Video size is $videoWidth x $videoHeight")
 
-            // 判断是否需要对齐，这样直接判断有风险，后期想办法改
-            needAlign = !(videoWidth % 16 == 0)
+            // 由于使用mediacodec解码老版本素材时对宽度1500尺寸的视频进行数据对齐，解码后的宽度变成1504，导致采样点出现偏差播放异常
+            // 所以当开启兼容老版本视频模式并且老版本视频的宽度不能被16整除时要走YUV渲染逻辑
+            // 但是这样直接判断有风险，后期想办法改
+            needYUV = !(videoWidth % 16 == 0) && player.enableVersion1
 
             try {
-                if (!prepareRender(needAlign)) {
+                if (!prepareRender(needYUV)) {
                     throw RuntimeException("render create fail")
                 }
             } catch (t: Throwable) {
@@ -149,7 +151,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             ALog.i(TAG, "Video MIME is $mime")
             decoder = MediaCodec.createDecoderByType(mime).apply {
-                if (needAlign) {
+                if (needYUV) {
                     format.setInteger(
                             MediaFormat.KEY_COLOR_FORMAT,
                             MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar
@@ -249,12 +251,12 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                             speedControlUtil.preRender(bufferInfo.presentationTimeUs)
                         }
 
-                        if (needAlign) {
+                        if (needYUV) {
                             yuvProcess(decoder, decoderStatus)
                         }
 
                         // release & render
-                        decoder.releaseOutputBuffer(decoderStatus, doRender && !needAlign)
+                        decoder.releaseOutputBuffer(decoderStatus, doRender && !needYUV)
 
                         if (frameIndex == 0) {
                             onVideoStart()
@@ -282,6 +284,9 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
 
     }
 
+    /**
+     * 获取到解码后每一帧的YUV数据，裁剪出正确的尺寸
+     */
     private fun yuvProcess(decoder: MediaCodec, outputIndex: Int) {
         val outputBuffer = decoder.outputBuffers[outputIndex]
         outputBuffer?.let {
