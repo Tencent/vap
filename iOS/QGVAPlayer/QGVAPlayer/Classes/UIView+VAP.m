@@ -349,8 +349,12 @@ NSInteger const VapMaxCompatibleVersion = 2;
         //不能将self.hwd_onPause判断加到while语句中！会导致releasepool不断上涨
         while (YES) {
             @autoreleasepool {
-                if (self.hwd_onPause || self.hwd_isFinish) {
+                if (self.hwd_isFinish) {
                     break ;
+                }
+                if (self.hwd_onPause) {
+                    lastRenderingInterval = NSDate.timeIntervalSinceReferenceDate;
+                    continue;
                 }
                 __block QGMP4AnimatedImageFrame *nextFrame = nil;
                 dispatch_sync(dispatch_get_main_queue(), ^{
