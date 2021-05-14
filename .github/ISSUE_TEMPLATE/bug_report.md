@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-#issue 模版
+# issue 模版
 
 1. 问题描述（重现路径）
 2. 运行环境（手机型号，Android/iOS版本等）
