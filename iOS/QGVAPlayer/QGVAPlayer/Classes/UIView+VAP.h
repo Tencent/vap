@@ -50,6 +50,8 @@
 - (void)playHWDMP4:(NSString *)filePath repeatCount:(NSInteger)repeatCount delegate:(id<HWDMP4PlayDelegate>)delegate;
 
 - (void)stopHWDMP4;
+
+/// 注意，一旦退后台就会强制stop，退回前台后再resume无效
 - (void)pauseHWDMP4;
 - (void)resumeHWDMP4;
 
