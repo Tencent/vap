@@ -239,6 +239,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         });
         
         if (status == kVTInvalidSessionErr) {
+            CFRelease(sampleBuffer);
+            
             // 防止陷入死循环
             if (_invalidRetryCount >= 3) {
                 return;
@@ -258,6 +260,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         _status = VTDecompressionSessionDecodeFrame(_mDecodeSession, sampleBuffer, flags, &outputPixelBuffer, &flagOut);
         
         if (_status == kVTInvalidSessionErr) {
+            CFRelease(sampleBuffer);
             // 防止陷入死循环
             if (_invalidRetryCount >= 3) {
                 return;
