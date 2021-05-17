@@ -49,6 +49,7 @@
 @property (nonatomic, strong) NSData *spsData;          //sps
 @property (nonatomic, strong) NSData *ppsData;          //pps
 @property (nonatomic, strong) NSArray *videoSamples;    //所有帧数据，包含了位置和大小等信息
+@property (nonatomic, strong) NSArray *videoSyncSampleIndexes;  // 所有关键帧的index
 @property (nonatomic, strong) QGMP4Box *rootBox;        //mp4文件根box
 @property (nonatomic, strong) QGMP4TrackBox *videoTrackBox;     //视频track
 @property (nonatomic, strong) QGMP4TrackBox *audioTrackBox;     //音频track

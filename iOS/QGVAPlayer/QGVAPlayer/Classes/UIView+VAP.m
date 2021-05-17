@@ -65,13 +65,11 @@ NSInteger const VapMaxCompatibleVersion = 2;
 - (void)hwd_registerNotification {
     
     [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillEnterForegroundNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillEnterForegroundNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void)hwd_didReceiveEnterBackgroundNotification:(NSNotification *)notification {
-    [self hwd_stopHWDMP4];
+    [self pauseHWDMP4];
 }
 
 //结束播放
