@@ -53,5 +53,6 @@
 - (QGBaseAnimatedImageFrame *)consumeDecodedFrame:(NSInteger)frameIndex;
 
 - (void)tryToStartAudioPlay;
+- (BOOL)containsThisDeocder:(id)decoder;
 
 @end

@@ -174,4 +174,13 @@
 
 }
 
+- (BOOL)containsThisDeocder:(id)decoder {
+    for (id d in _decoders) {
+        if (d == decoder) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 @end
