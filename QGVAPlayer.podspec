@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "1.0.9"
+  spec.version      = "1.0.10"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
