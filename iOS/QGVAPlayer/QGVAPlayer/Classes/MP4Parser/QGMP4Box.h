@@ -168,6 +168,12 @@ The table is compactly coded. Each entry gives the index of the first chunk of a
 
 @end
 
+@interface QGMP4StssBox : QGMP4Box
+
+@property(nonatomic, strong) NSMutableArray<NSNumber *> *syncSamples;
+
+@end
+
 /**
  * ctts
  */

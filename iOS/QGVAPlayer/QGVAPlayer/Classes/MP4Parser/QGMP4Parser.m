@@ -320,6 +320,11 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
     return _videoSamples;
 }
 
+- (NSArray *)videoSyncSampleIndexes {
+    QGMP4StssBox *stssBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stss];
+    return stssBox.syncSamples;
+}
+
 /**
  调用该方法才会解析mp4文件并得到必要信息。
  */
