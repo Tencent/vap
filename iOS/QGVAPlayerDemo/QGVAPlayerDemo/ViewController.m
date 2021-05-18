@@ -114,7 +114,9 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
     [wrapView vapWrapView_playHWDMP4:resPath repeatCount:-1 delegate:self];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
-    [wrapView addGestureRecognizer:tap];
+    [wrapView vapWrapView_addVapGesture:tap callback:^(UIGestureRecognizer *gestureRecognizer, BOOL insideSource, QGVAPSourceDisplayItem *source) {
+        
+    }];
 }
 
 #pragma mark -  mp4 hwd delegate

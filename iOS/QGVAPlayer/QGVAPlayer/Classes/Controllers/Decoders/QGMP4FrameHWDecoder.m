@@ -96,6 +96,8 @@
 /** Video Parameter Set */
 @property (nonatomic, strong) NSData *vpsData;
 
+@property (atomic, assign) NSInteger lastDecodeFrame;
+
 @end
 
 NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
@@ -136,6 +138,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     
     if (self = [super initWith:fileInfo error:error]) {
         _decodeQueue = dispatch_queue_create("com.qgame.vap.decode", DISPATCH_QUEUE_SERIAL);
+        _lastDecodeFrame = -1;
         _mp4Parser = fileInfo.mp4Parser;
         BOOL isOpenSuccess = [self onInputStart];
         if (!isOpenSuccess) {
@@ -166,6 +169,10 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     self.currentDecodeFrame = frameIndex;
     _buffers = buffers;
     dispatch_async(self.decodeQueue, ^{
+        if (frameIndex != self.lastDecodeFrame + 1) {
+            // 必须是依次增大，否则解出来的画面会异常
+            return;
+        }
         [self _decodeFrame:frameIndex drop:NO];
     });
 }
@@ -293,6 +300,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
                       startDate:(NSDate *)startDate
                          status:(OSStatus)status
                        needDrop:(BOOL)dropFlag {
+    
+    self.lastDecodeFrame = frameIndex;
     
     CFRelease(sampleBuffer);
     
@@ -489,6 +498,9 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
 }
 
 - (void)findKeyFrameAndDecodeToCurrent:(NSInteger)frameIndex {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kQGVAPDecoderSeekStart object:self];
+    
     NSArray<NSNumber *> *keyframeIndexes = [_mp4Parser videoSyncSampleIndexes];
     NSInteger index = [[keyframeIndexes firstObject] integerValue];
     for(NSNumber *number in keyframeIndexes) {
@@ -506,6 +518,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         index++;
     }
     [self _decodeFrame:frameIndex drop:NO];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kQGVAPDecoderSeekFinish object:self];
 }
 
 - (void)_onInputEnd  {

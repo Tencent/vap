@@ -16,6 +16,9 @@
 #import "QGBaseDecoder.h"
 #import "QGAnimatedImageDecodeThreadPool.h"
 
+NSString* kQGVAPDecoderSeekStart = @"kQGVAPDecoderSeekStart";
+NSString* kQGVAPDecoderSeekFinish = @"kQGVAPDecoderSeekFinish";
+
 @interface QGBaseDecoder() {
 
     QGBaseDFileInfo *_fileInfo;
