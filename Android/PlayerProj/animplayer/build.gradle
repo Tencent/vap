@@ -34,4 +34,6 @@ dependencies {
 
 // maven central
 // 上传指令./gradlew uploadArchives
+// https://s01.oss.sonatype.org/
+// Staging Repositories -> close -> release
 // apply from: "../publish-mavencentral.gradle"
