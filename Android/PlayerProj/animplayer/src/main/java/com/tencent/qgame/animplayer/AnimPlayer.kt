@@ -76,16 +76,18 @@ class AnimPlayer(val animView: IAnimView) {
         isStartRunning = true
         prepareDecoder()
         if (decoder?.prepareThread() == false) {
-            decoder?.onFailed(Constant.REPORT_ERROR_TYPE_CREATE_THREAD, Constant.ERROR_MSG_CREATE_THREAD)
             isStartRunning = false
+            decoder?.onFailed(Constant.REPORT_ERROR_TYPE_CREATE_THREAD, Constant.ERROR_MSG_CREATE_THREAD)
+            decoder?.onVideoComplete()
             return
         }
         // 在线程中解析配置
         decoder?.renderThread?.handler?.post {
             val result = configManager.parseConfig(fileContainer, enableVersion1, videoMode, fps)
             if (result != Constant.OK) {
-                decoder?.onFailed(result, Constant.getErrorMsg(result))
                 isStartRunning = false
+                decoder?.onFailed(result, Constant.getErrorMsg(result))
+                decoder?.onVideoComplete()
                 return@post
             }
             ALog.i(TAG, "parse ${configManager.config}")

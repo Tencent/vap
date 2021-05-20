@@ -232,6 +232,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             startPlay(fileContainer)
         } catch (e: Throwable) {
             animProxyListener.onFailed(Constant.REPORT_ERROR_TYPE_FILE_ERROR, Constant.ERROR_MSG_FILE_ERROR)
+            animProxyListener.onVideoComplete()
         }
     }
 
@@ -241,6 +242,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             startPlay(fileContainer)
         } catch (e: Throwable) {
             animProxyListener.onFailed(Constant.REPORT_ERROR_TYPE_FILE_ERROR, Constant.ERROR_MSG_FILE_ERROR)
+            animProxyListener.onVideoComplete()
         }
     }
 
