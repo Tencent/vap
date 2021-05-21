@@ -1327,6 +1327,7 @@
         config: ''
       }, options);
       this.fps = 20;
+      this.setBegin = true;
       this.requestAnim = this.requestAnimFunc();
       this.container = this.options.container;
 
@@ -1421,7 +1422,7 @@
 
 
         this.events = {};
-        ['playing', 'pause', 'ended', 'error'].forEach(function (item) {
+        ['playing', 'pause', 'ended', 'error', 'canplay'].forEach(function (item) {
           _this.on(item, _this['on' + item].bind(_this));
         });
       }
@@ -1453,6 +1454,18 @@
               });
             });
           });
+        }
+      }
+    }, {
+      key: "pause",
+      value: function pause() {
+        this.video && this.video.pause();
+      }
+    }, {
+      key: "setTime",
+      value: function setTime(t) {
+        if (this.video) {
+          this.video.currentTime = t;
         }
       }
     }, {
@@ -1527,6 +1540,16 @@
       key: "onended",
       value: function onended() {
         this.destroy();
+      }
+    }, {
+      key: "oncanplay",
+      value: function oncanplay() {
+        var begin = this.options.beginPoint;
+
+        if (begin && this.setBegin) {
+          this.setBegin = false;
+          this.video.currentTime = begin;
+        }
       }
     }, {
       key: "onerror",

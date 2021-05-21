@@ -42,6 +42,7 @@ export default class VapVideo {
       options
     );
     this.fps = 20;
+    this.setBegin = true;
     this.requestAnim = this.requestAnimFunc();
     this.container = this.options.container;
     if (!this.options.src || !this.options.config || !this.options.container) {
@@ -61,6 +62,7 @@ export default class VapVideo {
   private _drawFrame: Function;
   private animId: number;
   private firstPlaying: boolean;
+  private setBegin: boolean;
 
   precacheSource(source): Promise<string> {
     const URL = (window as any).webkitURL || window.URL;
@@ -133,7 +135,7 @@ export default class VapVideo {
     }
     // 绑定事件
     this.events = {}
-    ;['playing', 'pause', 'ended', 'error'].forEach(item => {
+    ;['playing', 'pause', 'ended', 'error', 'canplay'].forEach(item => {
       this.on(item, this['on' + item].bind(this));
     })
   }
@@ -158,6 +160,16 @@ export default class VapVideo {
           })
         })
       })
+    }
+  }
+
+  pause() {
+    this.video && this.video.pause();
+  }
+
+  setTime(t) {
+    if (this.video) {
+      this.video.currentTime = t
     }
   }
 
@@ -219,6 +231,14 @@ export default class VapVideo {
 
   onended() {
     this.destroy();
+  }
+
+  oncanplay() {
+    const begin = this.options.beginPoint
+    if (begin && this.setBegin) {
+      this.setBegin = false
+      this.video.currentTime = begin
+    }
   }
 
   onerror(err) {

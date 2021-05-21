@@ -3,18 +3,22 @@
     <div ref="anim" class="anim-container"></div>
     <button :class="[!access && 'disable']" @click.stop="play(0)">play(无融合)</button>
     <button :class="[!access && 'disable']" @click.stop="play(1)">play(有融合)</button>
+    <button v-if="vap" @click.stop="playContinue()">continue</button>
+    <button v-if="vap" @click.stop="pause()">pause</button>
   </div>
 </template>
 
 <script>
 import Vap from '../../../dist/vap.js'
 import config from './demo.json'
+
 export default {
   name: 'vap',
   data () {
     return {
       access: true,
-      url: require('./demo.mp4')
+      url: require('./demo.mp4'),
+      vap: null
     }
   },
   methods: {
@@ -23,7 +27,7 @@ export default {
         return
       }
       const that = this
-      const vap = new Vap(Object.assign({}, {
+      this.vap = new Vap(Object.assign({}, {
         container: this.$refs.anim,
         // 素材视频链接
         src: this.url,
@@ -32,7 +36,11 @@ export default {
         width: 900,
         height: 600,
         // 同素材生成工具中配置的保持一致
-        fps: 20
+        fps: 20,
+        // 是否循环
+        loop: false,
+        beginPoint: 8
+        // 播放起始时间点(秒)
       }, flag ? {
         // 融合信息（图片/文字）,同素材生成工具生成的配置文件中的srcTag所对应，比如[imgUser] => imgUser
         imgUser: '//shp.qlogo.cn/pghead/Q3auHgzwzM6TmnCKHzBcyxVPEJ5t4Ria7H18tYJyM40c/0',
@@ -47,9 +55,16 @@ export default {
         })
         .on('ended', () => {
           that.access = true
+          this.vap = null
           console.log('play ended')
         })
-      console.log(vap)
+      window.vap = this.vap
+    },
+    pause () {
+      this.vap.pause()
+    },
+    playContinue () {
+      this.vap.play()
     }
   }
 }

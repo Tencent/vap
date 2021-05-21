@@ -11,10 +11,13 @@ export default class VapVideo {
     private _drawFrame;
     private animId;
     private firstPlaying;
+    private setBegin;
     precacheSource(source: any): Promise<string>;
     initVideo(): void;
     drawFrame(): void;
     play(): void;
+    pause(): void;
+    setTime(t: any): void;
     requestAnimFunc(): ((cb: any) => number) | ((cb: any) => NodeJS.Timeout);
     cancelRequestAnimation(): void;
     destroy(): void;
@@ -23,5 +26,6 @@ export default class VapVideo {
     onplaying(): void;
     onpause(): void;
     onended(): void;
+    oncanplay(): void;
     onerror(err: any): void;
 }
