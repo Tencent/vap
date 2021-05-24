@@ -25,6 +25,9 @@ let vap = new Vap(options)
 # 实例方法
 1、on(): 绑定h5 video事件  如on('playering', function() {// do some thing})
 2、destroy()：销毁实例，清除video、canvas等
+3、pause()：暂停播放
+4、play()：继续播放
+5、setTime(s)：设置播放时间点(单位秒)
 ```
 
 4、实例参数
@@ -40,6 +43,7 @@ fps | 动画帧数（生成素材时在工具中填写的fps值）
 mute | 是否对视频静音
 loop | 是否循环播放
 type | 组件基于type字段做了实例化缓存，不同的VAP实例应该使用不同的type值（如0、1、2等）
+beginPoint | 起始播放时间点(单位秒),在一些浏览器中可能无效
 precache | 是否预加载视频资源（默认关闭，即边下边播）
 onDestory | 组件销毁时回调
 onLoadError | 加载失败回调
