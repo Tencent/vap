@@ -13,6 +13,7 @@ Mac|[VapTool\_Java\_Mac\_without\_jre.zip](https://github.com/Tencent/vap/releas
 
 download jar: [animtool_tool2.0.2.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/animtool_tool2.0.2.zip)
 
+测试素材下载：[test_demo.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/test_demo.zip)
 
 ## Windows
 
