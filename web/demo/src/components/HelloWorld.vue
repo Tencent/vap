@@ -39,7 +39,10 @@ export default {
         fps: 20,
         // 是否循环
         loop: false,
-        beginPoint: 8
+        // 起始播放时间点
+        beginPoint: 0,
+        // 精准模式
+        accurate: true,
         // 播放起始时间点(秒)
       }, flag ? {
         // 融合信息（图片/文字）,同素材生成工具生成的配置文件中的srcTag所对应，比如[imgUser] => imgUser

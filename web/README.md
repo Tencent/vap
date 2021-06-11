@@ -32,22 +32,23 @@ let vap = new Vap(options)
 
 4、实例参数
 
-参数名 | 含义
----- | --- 
-container | dom容器
-src |  mp4视频地址
-config | 配置json对象（详情见下文）
-width | 宽度
-height | 高度
-fps | 动画帧数（生成素材时在工具中填写的fps值）
-mute | 是否对视频静音
-loop | 是否循环播放
-type | 组件基于type字段做了实例化缓存，不同的VAP实例应该使用不同的type值（如0、1、2等）
-beginPoint | 起始播放时间点(单位秒),在一些浏览器中可能无效
-precache | 是否预加载视频资源（默认关闭，即边下边播）
-onDestory | 组件销毁时回调
-onLoadError | 加载失败回调
-ext（无固定名） | 融合参数（和json配置文件中保持一致）
+参数名 | 含义 | 默认值
+---- | ---  | ---
+container | dom容器 | null
+src |  mp4视频地址 | ''
+config | 配置json对象（详情见下文）| ''
+width | 宽度 | 375
+height | 高度 | 375
+fps | 动画帧数（生成素材时在工具中填写的fps值） | 20
+mute | 是否对视频静音 | false
+loop | 是否循环播放 | false
+type | 组件基于type字段做了实例化缓存，不同的VAP实例应该使用不同的type值（如0、1、2等）| undefined
+beginPoint | 起始播放时间点(单位秒),在一些浏览器中可能无效 | 0
+accurate | 是否启用精准模式（使用requestVideoFrameCallback提示融合效果，浏览器不兼容时自动降级） | false
+precache | 是否预加载视频资源（默认关闭，即边下边播） | false
+onDestory | 组件销毁时回调 | undefined
+onLoadError | 加载失败回调 | undefined
+ext（无固定名） | 融合参数（和json配置文件中保持一致）| ''
 
 ### 二、素材
 内容格式固定，使用VAP素材生成工具生成
