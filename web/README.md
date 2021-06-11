@@ -44,7 +44,7 @@ mute | 是否对视频静音 | false
 loop | 是否循环播放 | false
 type | 组件基于type字段做了实例化缓存，不同的VAP实例应该使用不同的type值（如0、1、2等）| undefined
 beginPoint | 起始播放时间点(单位秒),在一些浏览器中可能无效 | 0
-accurate | 是否启用精准模式（使用requestVideoFrameCallback提示融合效果，浏览器不兼容时自动降级） | false
+accurate | 是否启用精准模式（使用requestVideoFrameCallback提升融合效果，浏览器不兼容时自动降级） | false
 precache | 是否预加载视频资源（默认关闭，即边下边播） | false
 onDestory | 组件销毁时回调 | undefined
 onLoadError | 加载失败回调 | undefined
