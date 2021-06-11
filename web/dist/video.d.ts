@@ -10,11 +10,12 @@ export default class VapVideo {
     private events;
     private _drawFrame;
     private animId;
+    private useFrameCallback;
     private firstPlaying;
     private setBegin;
     precacheSource(source: any): Promise<string>;
     initVideo(): void;
-    drawFrame(): void;
+    drawFrame(_: any, info: any): void;
     play(): void;
     pause(): void;
     setTime(t: any): void;

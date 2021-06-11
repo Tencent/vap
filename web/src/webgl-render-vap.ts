@@ -279,15 +279,16 @@ export default class WebglRenderVap extends VapVideo {
     gl.vertexAttribPointer(this.aAlphaTexCoord, 2, gl.FLOAT, false, size * 6, size * 4); // rgb像素位置
   }
 
-  drawFrame() {
+  drawFrame(_, info) {
     const gl = this.instance.gl;
     if (!gl) {
-      super.drawFrame();
+      super.drawFrame(_, info);
       return
     }
     gl.clear(gl.COLOR_BUFFER_BIT);
     if (this.vapFrameParser) {
-      const frame = Math.floor(this.video.currentTime * this.options.fps);
+      const timePoint = (info && info.mediaTime >= 0) ? info.mediaTime : this.video.currentTime
+      const frame = Math.floor(timePoint * this.options.fps);
       const frameData = this.vapFrameParser.getFrame(frame);
       let posArr = [];
 
@@ -312,7 +313,7 @@ export default class WebglRenderVap extends VapVideo {
     }
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.video); // 指定二维纹理方式
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    super.drawFrame();
+    super.drawFrame(_, info);
   }
 
   destroy() {

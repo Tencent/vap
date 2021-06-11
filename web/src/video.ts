@@ -37,12 +37,14 @@ export default class VapVideo {
         precache: false,
         // 是否静音播放
         mute: false,
-        config: ''
+        config: '',
+        accurate: false
       },
       options
     );
     this.fps = 20;
     this.setBegin = true;
+    this.useFrameCallback = false;
     this.requestAnim = this.requestAnimFunc();
     this.container = this.options.container;
     if (!this.options.src || !this.options.config || !this.options.container) {
@@ -61,6 +63,7 @@ export default class VapVideo {
   private events;
   private _drawFrame: Function;
   private animId: number;
+  private useFrameCallback: boolean;
   private firstPlaying: boolean;
   private setBegin: boolean;
 
@@ -133,15 +136,23 @@ export default class VapVideo {
       document.body.appendChild(this.video);
       video.load();
     }
+    if ( 'requestVideoFrameCallback' in this.video ) {
+      this.useFrameCallback = !!this.options.accurate;
+    }
     // 绑定事件
     this.events = {}
     ;['playing', 'pause', 'ended', 'error', 'canplay'].forEach(item => {
       this.on(item, this['on' + item].bind(this));
     })
   }
-  drawFrame() {
-    this._drawFrame = this._drawFrame || this.drawFrame.bind(this);
-    this.animId = this.requestAnim(this._drawFrame);
+  drawFrame(_, info) {
+    this._drawFrame = this._drawFrame || this.drawFrame.bind(this, _, info);
+    if ( this.useFrameCallback ) {
+      // @ts-ignore
+      this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
+    } else {
+      this.animId = this.requestAnim(this._drawFrame);
+    }
   }
 
   play() {
@@ -193,18 +204,24 @@ export default class VapVideo {
   }
 
   cancelRequestAnimation() {
-    if (window.cancelAnimationFrame) {
+    if (this.useFrameCallback) {
+      try {
+        // @ts-ignore
+        this.video.cancelVideoFrameCallback(this.animId);
+      } catch (e) {}
+    }else if (window.cancelAnimationFrame) {
       cancelAnimationFrame(this.animId);
+    } else {
+      clearTimeout(this.animId);
     }
-    clearTimeout(this.animId);
   }
 
   destroy() {
+    this.cancelRequestAnimation();
     if (this.video) {
       this.video.parentNode && this.video.parentNode.removeChild(this.video);
       this.video = null
     }
-    this.cancelRequestAnimation();
     this.options.onDestory && this.options.onDestory();
   }
 
@@ -223,7 +240,12 @@ export default class VapVideo {
   onplaying() {
     if (!this.firstPlaying) {
       this.firstPlaying = true;
-      this.drawFrame()
+      if ( this.useFrameCallback ) {
+        // @ts-ignore
+        this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
+      } else {
+        this.drawFrame(null, null)
+      }
     }
   }
 

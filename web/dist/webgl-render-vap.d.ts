@@ -28,7 +28,7 @@ export default class WebglRenderVap extends VapVideo {
     initFragmentShader(): any;
     initTexture(): void;
     initVideoTexture(): void;
-    drawFrame(): void;
+    drawFrame(_: any, info: any): void;
     destroy(): void;
     clearMemoryCache(): void;
 }

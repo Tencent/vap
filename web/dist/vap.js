@@ -1324,10 +1324,12 @@
         precache: false,
         // 是否静音播放
         mute: false,
-        config: ''
+        config: '',
+        accurate: false
       }, options);
       this.fps = 20;
       this.setBegin = true;
+      this.useFrameCallback = false;
       this.requestAnim = this.requestAnimFunc();
       this.container = this.options.container;
 
@@ -1418,6 +1420,10 @@
 
           document.body.appendChild(this.video);
           video.load();
+        }
+
+        if ('requestVideoFrameCallback' in this.video) {
+          this.useFrameCallback = !!this.options.accurate;
         } // 绑定事件
 
 
@@ -1428,9 +1434,15 @@
       }
     }, {
       key: "drawFrame",
-      value: function drawFrame() {
-        this._drawFrame = this._drawFrame || this.drawFrame.bind(this);
-        this.animId = this.requestAnim(this._drawFrame);
+      value: function drawFrame(_, info) {
+        this._drawFrame = this._drawFrame || this.drawFrame.bind(this, _, info);
+
+        if (this.useFrameCallback) {
+          // @ts-ignore
+          this.animId = this.video.requestVideoFrameCallback(this.drawFrame.bind(this));
+        } else {
+          this.animId = this.requestAnim(this._drawFrame);
+        }
       }
     }, {
       key: "play",
@@ -1494,21 +1506,27 @@
     }, {
       key: "cancelRequestAnimation",
       value: function cancelRequestAnimation() {
-        if (window.cancelAnimationFrame) {
+        if (this.useFrameCallback) {
+          try {
+            // @ts-ignore
+            this.video.cancelVideoFrameCallback(this.animId);
+          } catch (e) {}
+        } else if (window.cancelAnimationFrame) {
           cancelAnimationFrame(this.animId);
+        } else {
+          clearTimeout(this.animId);
         }
-
-        clearTimeout(this.animId);
       }
     }, {
       key: "destroy",
       value: function destroy() {
+        this.cancelRequestAnimation();
+
         if (this.video) {
           this.video.parentNode && this.video.parentNode.removeChild(this.video);
           this.video = null;
         }
 
-        this.cancelRequestAnimation();
         this.options.onDestory && this.options.onDestory();
       }
     }, {
@@ -1530,7 +1548,13 @@
       value: function onplaying() {
         if (!this.firstPlaying) {
           this.firstPlaying = true;
-          this.drawFrame();
+
+          if (this.useFrameCallback) {
+            // @ts-ignore
+            this.animId = this.video.requestVideoFrameCallback(this.drawFrame.bind(this));
+          } else {
+            this.drawFrame(null, null);
+          }
         }
       }
     }, {
@@ -1830,13 +1854,13 @@
       }
     }, {
       key: "drawFrame",
-      value: function drawFrame() {
+      value: function drawFrame(_, info) {
         var _this2 = this;
 
         var gl = this.instance.gl;
 
         if (!gl) {
-          get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this);
+          get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
 
           return;
         }
@@ -1844,7 +1868,8 @@
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         if (this.vapFrameParser) {
-          var frame = Math.floor(this.video.currentTime * this.options.fps);
+          var timePoint = info && info.mediaTime >= 0 ? info.mediaTime : this.video.currentTime;
+          var frame = Math.floor(timePoint * this.options.fps);
           var frameData = this.vapFrameParser.getFrame(frame);
           var posArr = [];
 
@@ -1884,7 +1909,7 @@
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this);
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
       }
     }, {
       key: "destroy",
