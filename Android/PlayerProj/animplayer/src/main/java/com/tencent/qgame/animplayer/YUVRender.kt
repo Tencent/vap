@@ -22,8 +22,13 @@ import com.tencent.qgame.animplayer.util.ShaderUtil.createProgram
 import com.tencent.qgame.animplayer.util.TexCoordsUtil
 import com.tencent.qgame.animplayer.util.VertexUtil
 import java.nio.ByteBuffer
+import java.nio.FloatBuffer
 
 class YUVRender (surfaceTexture: SurfaceTexture): IRenderListener {
+
+    companion object {
+        private const val TAG = "${Constant.TAG}.YUVRender"
+    }
 
     private val vertexArray = GlFloatArray()
     private val alphaArray = GlFloatArray()
@@ -42,16 +47,35 @@ class YUVRender (surfaceTexture: SurfaceTexture): IRenderListener {
 
     //shader  yuv变量
     private var samplerY = 0
-    private var samplerUV = 0
-    private var textureId = IntArray(2)
+    private var samplerU = 0
+    private var samplerV = 0
+    private var textureId = IntArray(3)
+    private var convertMatrixUniform = 0
+    private var convertOffsetUniform = 0
 
     //YUV数据
     private var widthYUV = 0
     private var heightYUV = 0
     private var y: ByteBuffer? = null
-    private var uv: ByteBuffer? = null
+    private var u: ByteBuffer? = null
+    private var v: ByteBuffer? = null
 
     private val eglUtil: EGLUtil = EGLUtil()
+
+    // 像素数据向GPU传输时默认以4字节对齐
+    private var unpackAlign = 4
+
+    // YUV offset
+    private val YUV_OFFSET = floatArrayOf(
+            0f, -0.501960814f, -0.501960814f
+    )
+
+    // RGB coefficients
+    private val YUV_MATRIX = floatArrayOf(
+            1f, 1f, 1f,
+            0f, -0.3441f, 1.772f,
+            1.402f, -0.7141f, 0f
+    )
 
     init {
         eglUtil.start(surfaceTexture)
@@ -68,8 +92,11 @@ class YUVRender (surfaceTexture: SurfaceTexture): IRenderListener {
 
         //获取yuv字段
         samplerY = GLES20.glGetUniformLocation(shaderProgram, "sampler_y")
-        samplerUV = GLES20.glGetUniformLocation(shaderProgram, "sampler_uv")
-        //创建2个纹理
+        samplerU = GLES20.glGetUniformLocation(shaderProgram, "sampler_u")
+        samplerV = GLES20.glGetUniformLocation(shaderProgram, "sampler_v")
+        convertMatrixUniform = GLES20.glGetUniformLocation(shaderProgram, "convertMatrix")
+        convertOffsetUniform = GLES20.glGetUniformLocation(shaderProgram, "offset")
+        //创建3个纹理
         GLES20.glGenTextures(textureId.size, textureId, 0)
 
         //绑定纹理
@@ -119,40 +146,59 @@ class YUVRender (surfaceTexture: SurfaceTexture): IRenderListener {
         eglUtil.swapBuffers()
     }
 
-    override fun setYUVData(width: Int, height: Int, y: ByteArray?, uv: ByteArray?) {
+    override fun setYUVData(width: Int, height: Int, y: ByteArray?, u: ByteArray?, v: ByteArray?) {
         widthYUV = width
         heightYUV = height
         this.y = ByteBuffer.wrap(y)
-        this.uv = ByteBuffer.wrap(uv)
+        this.u = ByteBuffer.wrap(u)
+        this.v = ByteBuffer.wrap(v)
+
+        // 当视频帧的u或者v分量的宽度不能被4整除时，用默认的4字节对齐会导致存取最后一行时越界，所以在向GPU传输数据前指定对齐方式
+        if ((widthYUV / 2) % 4 != 0) {
+            this.unpackAlign = if ((widthYUV / 2) % 2 == 0) 2 else 1
+        }
     }
 
     private fun draw() {
-        if (widthYUV > 0 && heightYUV > 0 && y != null && uv != null) {
+        if (widthYUV > 0 && heightYUV > 0 && y != null && u != null && v != null) {
             GLES20.glUseProgram(shaderProgram)
             vertexArray.setVertexAttribPointer(avPosition)
             alphaArray.setVertexAttribPointer(alphaPosition)
             rgbArray.setVertexAttribPointer(rgbPosition)
+
+            GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, unpackAlign)
 
             //激活纹理0来绑定y数据
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[0])
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, widthYUV, heightYUV, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, y)
 
-            //激活纹理1来绑定uv数据
+            //激活纹理1来绑定u数据
             GLES20.glActiveTexture(GLES20.GL_TEXTURE1)
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[1])
-            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE_ALPHA, widthYUV / 2, heightYUV / 2, 0, GLES20.GL_LUMINANCE_ALPHA, GLES20.GL_UNSIGNED_BYTE, uv)
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, widthYUV / 2, heightYUV / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, u)
+
+            //激活纹理2来绑定v数据
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE2)
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId[2])
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, widthYUV / 2, heightYUV / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, v)
 
             //给fragment_shader里面yuv变量设置值   0 1 标识纹理x
             GLES20.glUniform1i(samplerY, 0)
-            GLES20.glUniform1i(samplerUV, 1)
+            GLES20.glUniform1i(samplerU, 1)
+            GLES20.glUniform1i(samplerV, 2)
+
+            GLES20.glUniform3fv(convertOffsetUniform, 1, FloatBuffer.wrap(YUV_OFFSET))
+            GLES20.glUniformMatrix3fv(convertMatrixUniform, 1, false, YUV_MATRIX, 0)
 
             //绘制
             GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
             y?.clear()
-            uv?.clear()
+            u?.clear()
+            v?.clear()
             y = null
-            uv = null
+            u = null
+            v = null
             GLES20.glDisableVertexAttribArray(avPosition)
             GLES20.glDisableVertexAttribArray(rgbPosition)
             GLES20.glDisableVertexAttribArray(alphaPosition)

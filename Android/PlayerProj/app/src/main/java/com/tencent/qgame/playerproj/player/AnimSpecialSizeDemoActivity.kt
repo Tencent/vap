@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
 import java.io.File
 
 /**
- * 播放宽高不是2的倍数的特殊尺寸的动画demo，这里以special_size_1500.mp4为例，size = 1500 x 1624
+ * 播放宽高不是16的倍数的特殊尺寸的动画demo，这里以special_size_750.mp4为例，size = 750 x 814
  */
 class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
 
@@ -52,7 +52,7 @@ class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
     data class VideoInfo(val fileName: String,val md5:String)
 
     // ps：每次修改mp4文件，但文件名不变，记得先卸载app，因为assets同名文件不会进行替换
-    private val videoInfo = VideoInfo("special_size_1500.mp4", "b05acc8b8ede12495d170b74e0d82867")
+    private val videoInfo = VideoInfo("special_size_750.mp4", "2acde1639ad74b8bd843083246902e23")
 
     // 动画View
     private lateinit var animView: AnimView

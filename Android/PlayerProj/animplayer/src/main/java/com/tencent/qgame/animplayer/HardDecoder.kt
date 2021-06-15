@@ -47,6 +47,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
 
     // 动画是否需要走YUV渲染逻辑的标志位
     private var needYUV = false
+    private var outputFormat: MediaFormat? = null
 
     override fun start(fileContainer: IFileContainer) {
         isStopReq = false
@@ -112,6 +113,9 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
 
             videoWidth = format.getInteger(MediaFormat.KEY_WIDTH)
             videoHeight = format.getInteger(MediaFormat.KEY_HEIGHT)
+            // 防止没有INFO_OUTPUT_FORMAT_CHANGED时导致alignWidth和alignHeight不会被赋值一直是0
+            alignWidth = videoWidth
+            alignHeight = videoHeight
             ALog.i(TAG, "Video size is $videoWidth x $videoHeight")
 
             // 由于使用mediacodec解码老版本素材时对宽度1500尺寸的视频进行数据对齐，解码后的宽度变成1504，导致采样点出现偏差播放异常
@@ -154,7 +158,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                 if (needYUV) {
                     format.setInteger(
                             MediaFormat.KEY_COLOR_FORMAT,
-                            MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar
+                            MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar
                     )
                     configure(format, null, null, 0)
                 } else {
@@ -225,14 +229,16 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                     decoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER -> ALog.d(TAG, "no output from decoder available")
                     decoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> ALog.d(TAG, "decoder output buffers changed")
                     decoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
-                        val format = decoder.outputFormat
+                        outputFormat = decoder.outputFormat
                         try {
-                            alignWidth = format.getInteger(MediaFormat.KEY_STRIDE)
-                            alignHeight = format.getInteger(MediaFormat.KEY_SLICE_HEIGHT)
+                            if (outputFormat!!.getInteger(MediaFormat.KEY_STRIDE) > 0 && outputFormat!!.getInteger(MediaFormat.KEY_SLICE_HEIGHT) > 0) {
+                                alignWidth = outputFormat!!.getInteger(MediaFormat.KEY_STRIDE)
+                                alignHeight = outputFormat!!.getInteger(MediaFormat.KEY_SLICE_HEIGHT)
+                            }
                         } catch (t: Throwable) {
                             ALog.e(TAG, "formatChange $t", t)
                         }
-                        ALog.i(TAG, "decoder output format changed: $format")
+                        ALog.i(TAG, "decoder output format changed: $outputFormat")
                         // val (w,h) = formatChange(format)
                         // videoSizeChange(w, h)
                     }
@@ -251,7 +257,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                             speedControlUtil.preRender(bufferInfo.presentationTimeUs)
                         }
 
-                        if (needYUV) {
+                        if (needYUV && doRender) {
                             yuvProcess(decoder, decoderStatus)
                         }
 
@@ -294,16 +300,41 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             it.limit(bufferInfo.offset + bufferInfo.size)
             var yuvData = ByteArray(outputBuffer.remaining())
             outputBuffer.get(yuvData)
+
             if (yuvData.isNotEmpty()) {
                 var yData = ByteArray(videoWidth * videoHeight)
-                var uvData = ByteArray(videoWidth * videoHeight / 2)
+                var uData = ByteArray(videoWidth * videoHeight / 4)
+                var vData = ByteArray(videoWidth * videoHeight / 4)
+
+                if (outputFormat?.getInteger(MediaFormat.KEY_COLOR_FORMAT) == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) {
+                    yuvData = yuv420spTop(yuvData)
+                }
+
                 yuvCopy(yuvData, 0, alignWidth, alignHeight, yData, videoWidth, videoHeight)
-                yuvCopy(yuvData, alignWidth * alignHeight, alignWidth, alignHeight / 2, uvData, videoWidth, videoHeight / 2)
-                render?.setYUVData(videoWidth, videoHeight, yData, uvData)
+                yuvCopy(yuvData, alignWidth * alignHeight, alignWidth / 2, alignHeight / 2, uData, videoWidth / 2, videoHeight / 2)
+                yuvCopy(yuvData, alignWidth * alignHeight * 5 / 4, alignWidth / 2, alignHeight / 2, vData, videoWidth / 2, videoHeight / 2)
+
+                render?.setYUVData(videoWidth, videoHeight, yData, uData, vData)
                 renderData()
             }
         }
     }
+
+    private fun yuv420spTop(yuv420sp: ByteArray): ByteArray {
+        val yuv420p = ByteArray(yuv420sp.size)
+        val ySize = alignWidth * alignHeight
+        System.arraycopy(yuv420sp, 0, yuv420p, 0, alignWidth * alignHeight)
+        var i = ySize
+        var j = ySize
+        while (i < ySize * 3 / 2) {
+            yuv420p[j] = yuv420sp[i]
+            yuv420p[j + ySize / 4] = yuv420sp[i + 1]
+            i += 2
+            j++
+        }
+        return yuv420p
+    }
+
 
     private fun yuvCopy(src: ByteArray, srcOffset: Int, inWidth: Int, inHeight: Int, dest: ByteArray, outWidth: Int, outHeight: Int) {
         for (h in 0 until inHeight) {
