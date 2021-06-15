@@ -58,7 +58,6 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         }
     }
 
-
     override fun onFrameAvailable(surfaceTexture: SurfaceTexture?) {
         if (isStopReq) return
         ALog.d(TAG, "onFrameAvailable")
@@ -150,7 +149,6 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             return
         }
 
-
         try {
             val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
             ALog.i(TAG, "Video MIME is $mime")
@@ -183,8 +181,6 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             return
         }
     }
-
-
 
     private fun startDecode(extractor: MediaExtractor ,decoder: MediaCodec) {
         val TIMEOUT_USEC = 10000L
@@ -230,17 +226,13 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                     decoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> ALog.d(TAG, "decoder output buffers changed")
                     decoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
                         outputFormat = decoder.outputFormat
-                        try {
-                            if (outputFormat!!.getInteger(MediaFormat.KEY_STRIDE) > 0 && outputFormat!!.getInteger(MediaFormat.KEY_SLICE_HEIGHT) > 0) {
-                                alignWidth = outputFormat!!.getInteger(MediaFormat.KEY_STRIDE)
-                                alignHeight = outputFormat!!.getInteger(MediaFormat.KEY_SLICE_HEIGHT)
+                        outputFormat?.apply {
+                            if (this.getInteger(MediaFormat.KEY_STRIDE) > 0 && this.getInteger(MediaFormat.KEY_SLICE_HEIGHT) > 0) {
+                                alignWidth = this.getInteger(MediaFormat.KEY_STRIDE)
+                                alignHeight = this.getInteger(MediaFormat.KEY_SLICE_HEIGHT)
                             }
-                        } catch (t: Throwable) {
-                            ALog.e(TAG, "formatChange $t", t)
                         }
                         ALog.i(TAG, "decoder output format changed: $outputFormat")
-                        // val (w,h) = formatChange(format)
-                        // videoSizeChange(w, h)
                     }
                     decoderStatus < 0 -> {
                         throw RuntimeException("unexpected result from decoder.dequeueOutputBuffer: $decoderStatus")
@@ -335,25 +327,12 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         return yuv420p
     }
 
-
     private fun yuvCopy(src: ByteArray, srcOffset: Int, inWidth: Int, inHeight: Int, dest: ByteArray, outWidth: Int, outHeight: Int) {
         for (h in 0 until inHeight) {
             if (h < outHeight) {
                 System.arraycopy(src, srcOffset + h * inWidth, dest, h * outWidth, outWidth)
             }
         }
-    }
-
-    private fun formatChange(format: MediaFormat): Pair<Int, Int> {
-        try {
-            // 实际视频的纹理大小
-            val width = format.getInteger(MediaFormat.KEY_WIDTH)
-            val height = format.getInteger(MediaFormat.KEY_HEIGHT)
-            return Pair(width, height)
-        } catch (t: Throwable) {
-            ALog.e(TAG, "formatChange $t", t)
-        }
-        return Pair(0,0)
     }
 
     private fun release(decoder: MediaCodec?, extractor: MediaExtractor?) {
@@ -381,7 +360,6 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
         }
     }
-
 
     override fun destroy() {
         needDestroy = true
