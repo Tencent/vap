@@ -5,7 +5,8 @@
   "main": "dist/vap.js",
   "scripts": {
     "build": "npm run dist && rollup --config rollup.config.dist.js",
-    "dist": "rollup --config rollup.config.js"
+    "dist": "rollup --config rollup.config.js",
+    "dev": "rollup --config rollup.config.js --watch"
   },
   "keywords": [
     "webgl",
