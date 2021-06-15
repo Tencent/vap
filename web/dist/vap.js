@@ -1878,7 +1878,11 @@
               posArr[posArr.length] = +_this2.vapFrameParser.textureMap[frame.srcId];
               var info = _this2.vapFrameParser.config.info;
               var vW = info.videoW,
-                  vH = info.videoH;
+                  vH = info.videoH; // frame坐标是最终展示坐标，这里glsl中计算使用视频坐标
+
+              var _info$rgbFrame2 = slicedToArray(info.rgbFrame, 2),
+                  rgbX = _info$rgbFrame2[0],
+                  rgbY = _info$rgbFrame2[1];
 
               var _frame$frame = slicedToArray(frame.frame, 4),
                   x = _frame$frame[0],
@@ -1892,7 +1896,7 @@
                   mW = _frame$mFrame[2],
                   mH = _frame$mFrame[3];
 
-              var coord = computeCoord(x, y, w, h, vW, vH);
+              var coord = computeCoord(x + rgbX, y + rgbY, w, h, vW, vH);
               var mCoord = computeCoord(mX, mY, mW, mH, vW, vH);
               posArr = posArr.concat(coord).concat(mCoord);
             });

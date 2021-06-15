@@ -298,9 +298,11 @@ export default class WebglRenderVap extends VapVideo {
 
           const info = this.vapFrameParser.config.info;
           const { videoW: vW, videoH: vH } = info;
+          // frame坐标是最终展示坐标，这里glsl中计算使用视频坐标
+          const [rgbX, rgbY] = info.rgbFrame;
           const [x, y, w, h] = frame.frame;
           const [mX, mY, mW, mH] = frame.mFrame;
-          const coord = computeCoord(x, y, w, h, vW, vH);
+          const coord = computeCoord(x + rgbX, y + rgbY, w, h, vW, vH);
           const mCoord = computeCoord(mX, mY, mW, mH, vW, vH);
           posArr = posArr.concat(coord).concat(mCoord);
         })
