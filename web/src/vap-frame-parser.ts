@@ -75,6 +75,9 @@ export default class FrameParser {
           console.warn(`vap: 融合信息没有传入：${item.srcTag}`);
         } else {
           if (item.srcType === 'txt') {
+            if (this.headData['fontStyle'] && !item['fontStyle']) {
+              item['fontStyle'] = this.headData['fontStyle']
+            }
             item.textStr = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
               return this.headData[$1];
             });
@@ -121,19 +124,35 @@ export default class FrameParser {
    * 文字转换图片
    * @param {*} param0
    */
-  makeTextImg({ textStr, w, h, color, style }) {
+  makeTextImg(item) {
+    const { textStr, w, h, color, style, fontStyle } = item
     const ctx = this.ctx;
     ctx.canvas.width = w;
     ctx.canvas.height = h;
-    const fontSize = Math.min(w / textStr.length, h - 8); // 需留一定间隙
-    const font = [`${fontSize}px`, 'Arial'];
-    if (style === 'b') {
-      font.unshift('bold');
-    }
-    ctx.font = font.join(' ');
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
-    ctx.fillStyle = color;
+    const getFontStyle = function() {
+      const fontSize = Math.min(w / textStr.length, h - 8); // 需留一定间隙
+      const font = [`${fontSize}px`, 'Arial'];
+      if (style === 'b') {
+        font.unshift('bold');
+      }
+      return font.join(' ');
+    }
+    if (!fontStyle) {
+      ctx.font = getFontStyle();
+      ctx.fillStyle = color;
+    } else if (typeof fontStyle == 'string') {
+      ctx.font = fontStyle;
+      ctx.fillStyle = color;
+    } else if (typeof fontStyle == 'object') {
+      ctx.font = fontStyle['font'] || getFontStyle();
+      ctx.fillStyle = fontStyle['color'] || color;
+    } else if (typeof fontStyle == 'function') {
+      ctx.font = getFontStyle();
+      ctx.fillStyle = color;
+      fontStyle.call(null, ctx, item);
+    }
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillText(textStr, w / 2, h / 2);
     // console.log('frame : ' + textStr, ctx.canvas.toDataURL('image/png'))
