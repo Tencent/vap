@@ -19,14 +19,8 @@ export default class FrameParser {
     getConfigBySrc(jsonUrl: string): Promise<unknown>;
     /**
      * 文字转换图片
-     * @param {*} param0
+     * @param item
      */
-    makeTextImg({ textStr, w, h, color, style }: {
-        textStr: any;
-        w: any;
-        h: any;
-        color: any;
-        style: any;
-    }): ImageData;
+    makeTextImg(item: any): ImageData;
     getFrame(frame: any): any;
 }

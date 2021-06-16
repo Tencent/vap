@@ -122,7 +122,7 @@ export default class FrameParser {
 
   /**
    * 文字转换图片
-   * @param {*} param0
+   * @param item
    */
   makeTextImg(item) {
     const { textStr, w, h, color, style, fontStyle } = item

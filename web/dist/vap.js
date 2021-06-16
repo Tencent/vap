@@ -1008,6 +1008,26 @@
       });
   }
 
+  var _typeof_1$1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
+
   /*
    * Tencent is pleased to support the open source community by making vap available.
    *
@@ -1124,55 +1144,59 @@
                     }
 
                     console.warn("vap: \u878D\u5408\u4FE1\u606F\u6CA1\u6709\u4F20\u5165\uFF1A".concat(item.srcTag));
-                    _context2.next = 21;
+                    _context2.next = 22;
                     break;
 
                   case 5:
                     if (!(item.srcType === 'txt')) {
-                      _context2.next = 10;
+                      _context2.next = 11;
                       break;
+                    }
+
+                    if (this.headData['fontStyle'] && !item['fontStyle']) {
+                      item['fontStyle'] = this.headData['fontStyle'];
                     }
 
                     item.textStr = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
                       return _this2.headData[$1];
                     });
                     item.img = this.makeTextImg(item);
-                    _context2.next = 20;
+                    _context2.next = 21;
                     break;
 
-                  case 10:
+                  case 11:
                     if (!(item.srcType === 'img')) {
-                      _context2.next = 20;
+                      _context2.next = 21;
                       break;
                     }
 
                     item.imgUrl = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
                       return _this2.headData[$1];
                     });
-                    _context2.prev = 12;
-                    _context2.next = 15;
+                    _context2.prev = 13;
+                    _context2.next = 16;
                     return this.loadImg(item.imgUrl + '?t=' + Date.now());
 
-                  case 15:
+                  case 16:
                     item.img = _context2.sent;
-                    _context2.next = 20;
+                    _context2.next = 21;
                     break;
 
-                  case 18:
-                    _context2.prev = 18;
-                    _context2.t0 = _context2["catch"](12);
+                  case 19:
+                    _context2.prev = 19;
+                    _context2.t0 = _context2["catch"](13);
 
-                  case 20:
+                  case 21:
                     if (item.img) {
                       src[item.srcId] = item;
                     }
 
-                  case 21:
+                  case 22:
                   case "end":
                     return _context2.stop();
                 }
               }
-            }, _callee2, this, [[12, 18]]);
+            }, _callee2, this, [[13, 19]]);
           }));
         }));
       }
@@ -1204,32 +1228,51 @@
       }
       /**
        * 文字转换图片
-       * @param {*} param0
+       * @param item
        */
 
     }, {
       key: "makeTextImg",
-      value: function makeTextImg(_ref) {
-        var textStr = _ref.textStr,
-            w = _ref.w,
-            h = _ref.h,
-            color = _ref.color,
-            style = _ref.style;
+      value: function makeTextImg(item) {
+        var textStr = item.textStr,
+            w = item.w,
+            h = item.h,
+            color = item.color,
+            style = item.style,
+            fontStyle = item.fontStyle;
         var ctx = this.ctx;
         ctx.canvas.width = w;
         ctx.canvas.height = h;
-        var fontSize = Math.min(w / textStr.length, h - 8); // 需留一定间隙
-
-        var font = ["".concat(fontSize, "px"), 'Arial'];
-
-        if (style === 'b') {
-          font.unshift('bold');
-        }
-
-        ctx.font = font.join(' ');
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
-        ctx.fillStyle = color;
+
+        var getFontStyle = function getFontStyle() {
+          var fontSize = Math.min(w / textStr.length, h - 8); // 需留一定间隙
+
+          var font = ["".concat(fontSize, "px"), 'Arial'];
+
+          if (style === 'b') {
+            font.unshift('bold');
+          }
+
+          return font.join(' ');
+        };
+
+        if (!fontStyle) {
+          ctx.font = getFontStyle();
+          ctx.fillStyle = color;
+        } else if (typeof fontStyle == 'string') {
+          ctx.font = fontStyle;
+          ctx.fillStyle = color;
+        } else if (_typeof_1$1(fontStyle) == 'object') {
+          ctx.font = fontStyle['font'] || getFontStyle();
+          ctx.fillStyle = fontStyle['color'] || color;
+        } else if (typeof fontStyle == 'function') {
+          ctx.font = getFontStyle();
+          ctx.fillStyle = color;
+          fontStyle.call(null, ctx, item);
+        }
+
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillText(textStr, w / 2, h / 2); // console.log('frame : ' + textStr, ctx.canvas.toDataURL('image/png'))
 
