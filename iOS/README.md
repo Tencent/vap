@@ -26,13 +26,13 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 
 ### 二）组件使用
     - 组件对外的接口是基于UIView的category实现的，因此理论上任意view可以播放特效 
-    
+
 ```
     1)通用接口(具体参考demo中 - (void)playMP4;的实现)
 
     NSString *resPath = @"xxx";//mp4文件路径
     [mp4View playHWDMp4:resPath];//在view上播放该特效，按该view的大小进行渲染
-``` 
+```
 
 ```
     2)代理回调
@@ -65,7 +65,33 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 ```
 
 ```
-    3)手势识别
+3)融合动画：delegate中实现下面两个接口，替换tag内容和下载图片
+
+
+//provide the content for tags, maybe text or url string ...
+- (NSString *)contentForVapTag:(NSString *)tag resource:(QGVAPSourceInfo *)info {
+    
+    NSDictionary *extraInfo = @{@"[sImg1]" : @"http://shp.qlogo.cn/pghead/Q3auHgzwzM6GuU0Y6q6sKHzq3MjY1aGibIzR4xrJc1VY/60",
+                                @"[textAnchor]" : @"我是主播名",
+                                @"[textUser]" : @"我是用户名😂😂",};
+    return extraInfo[tag];
+}
+
+//provide image for url from tag content
+- (void)loadVapImageWithURL:(NSString *)urlStr context:(NSDictionary *)context completion:(VAPImageCompletionBlock)completionBlock {
+    
+    //call completionBlock as you get the image, both sync or asyn are ok.
+    //usually we'd like to make a net request
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"%@/Resource/qq.png", [[NSBundle mainBundle] resourcePath]]];
+        //let's say we've got result here
+        completionBlock(image, nil, urlStr);
+    });
+}    
+```
+
+```
+    4)手势识别
 
     [mp4View addVapTapGesture:^(UIGestureRecognizer *gestureRecognizer, BOOL insideSource, QGVAPSourceDisplayItem *source) {
         NSLog(@"click");
@@ -76,7 +102,7 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 ```
 
 ```
-    4) contentMode 支持
+    5) contentMode 支持
 //note: 导入 QGVAPWrapView.h 头文件。通过创建 `QGVAPWrapView` 作为播放特效的 View。可以设置其`contentMode`属性。
 QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
 wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;
