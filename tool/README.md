@@ -35,7 +35,7 @@ java -version
 
 // 检查mac文件夹下 ffmpeg 与 mp4edit 工具是否有执行权限，没有权限请赋予运行权限
 ./ffmpeg -version
-./md4edit -v
+./mp4edit -v
 
 // 赋予脚本可执行权限（只需要执行一次）
 chmod +x mac_start.sh
