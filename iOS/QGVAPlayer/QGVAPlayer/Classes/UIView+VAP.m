@@ -73,7 +73,28 @@ NSInteger const VapMaxCompatibleVersion = 2;
 }
 
 - (void)hwd_didReceiveEnterBackgroundNotification:(NSNotification *)notification {
-    [self pauseHWDMP4];
+    switch (self.hwd_enterBackgroundOP) {
+        case HWDMP4EBOperationTypePauseAndResume:
+            [self pauseHWDMP4];
+            break;
+        case HWDMP4EBOperationTypeDoNothing:
+            break;
+            
+        default:
+            [self stopHWDMP4];
+    }
+}
+
+- (void)hwd_didReceiveWillEnterForegroundNotification:(NSNotification *)notification {
+    switch (self.hwd_enterBackgroundOP) {
+        case HWDMP4EBOperationTypePauseAndResume:
+            [self resumeHWDMP4];
+            break;
+            
+        default:
+            break;
+    }
+    
 }
 
 - (void)hwd_didReceiveSeekStartNotification:(NSNotification *)notification {
@@ -148,10 +169,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
         return ;
     }
     [self hwd_stopHWDMP4];
-}
-
-- (void)hwd_didReceiveWillEnterForegroundNotification:(NSNotification *)notification {
-    [self resumeHWDMP4];
 }
 
 - (void)hwd_loadMetalViewIfNeed:(QGHWDTextureBlendMode)mode {
@@ -560,6 +577,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
 //category methods
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_onPause, setHwd_onPause, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_onSeek, setHwd_onSeek, BOOL)
+HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_enterBackgroundOP, setHwd_enterBackgroundOP, HWDMP4EBOperationType)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_renderByOpenGL, setHwd_renderByOpenGL, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_isFinish, setHwd_isFinish, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_fps, setHwd_fps, NSInteger)

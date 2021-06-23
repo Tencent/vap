@@ -52,7 +52,7 @@
     }
 }
 
-- (void)vapWrapView_playHWDMP4:(NSString *)filePath
+- (void)playHWDMP4:(NSString *)filePath
                    repeatCount:(NSInteger)repeatCount
                       delegate:(id<VAPWrapViewDelegate>)delegate {
     
@@ -62,12 +62,24 @@
     [self.vapView playHWDMP4:filePath repeatCount:repeatCount delegate:self];
 }
 
-- (void)vapWrapView_addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler {
+- (void)stopHWDMP4 {
+    [self.vapView stopHWDMP4];
+}
+
+- (void)pauseHWDMP4 {
+    [self.vapView pauseHWDMP4];
+}
+
+- (void)resumeHWDMP4 {
+    [self.vapView resumeHWDMP4];
+}
+
+- (void)addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler {
     [self initVAPViewIfNeed];
     [self.vapView addVapGesture:gestureRecognizer callback:handler];
 }
 
-- (void)vapWrapView_addVapTapGesture:(VAPGestureEventBlock)handler {
+- (void)addVapTapGesture:(VAPGestureEventBlock)handler {
     [self initVAPViewIfNeed];
     [self.vapView addVapTapGesture:handler];
 }
