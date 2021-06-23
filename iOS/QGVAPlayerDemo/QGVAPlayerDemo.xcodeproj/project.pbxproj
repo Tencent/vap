@@ -19,6 +19,9 @@
 		63BAD43422F09D2800EAD4C4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BAD43322F09D2700EAD4C4 /* libz.tbd */; };
 		63BAD44322F0A02C00EAD4C4 /* QGVAPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BAD43B22F09D6800EAD4C4 /* QGVAPlayer.framework */; };
 		63BAD44422F0A02C00EAD4C4 /* QGVAPlayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BAD43B22F09D6800EAD4C4 /* QGVAPlayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BA964B5F268315E6003265F2 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = BA964B5D268315E6003265F2 /* CHANGELOG.md */; };
+		BA964B6326831AF1003265F2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BA964B6126831AF1003265F2 /* README.md */; };
+		BA964B6526831BB6003265F2 /* QGVAPlayer.podspec in Resources */ = {isa = PBXBuildFile; fileRef = BA964B6426831BB6003265F2 /* QGVAPlayer.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +103,9 @@
 		63BAD3B822F09BAF00EAD4C4 /* Resource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resource; sourceTree = "<group>"; };
 		63BAD43322F09D2700EAD4C4 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		63BAD43522F09D6800EAD4C4 /* QGVAPlayer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QGVAPlayer.xcodeproj; path = ../../QGVAPlayer/QGVAPlayer.xcodeproj; sourceTree = "<group>"; };
+		BA964B5D268315E6003265F2 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		BA964B6126831AF1003265F2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		BA964B6426831BB6003265F2 /* QGVAPlayer.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QGVAPlayer.podspec; path = ../../QGVAPlayer.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +138,9 @@
 		63BAD37A22F09B1200EAD4C4 = {
 			isa = PBXGroup;
 			children = (
+				BA964B6426831BB6003265F2 /* QGVAPlayer.podspec */,
+				BA964B6126831AF1003265F2 /* README.md */,
+				BA964B5D268315E6003265F2 /* CHANGELOG.md */,
 				63BAD3B822F09BAF00EAD4C4 /* Resource */,
 				63BAD38522F09B1200EAD4C4 /* QGVAPlayerDemo */,
 				63BAD39E22F09B1500EAD4C4 /* QGVAPlayerDemoTests */,
@@ -332,7 +341,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA964B6526831BB6003265F2 /* QGVAPlayer.podspec in Resources */,
+				BA964B6326831AF1003265F2 /* README.md in Resources */,
 				63BAD3B922F09BAF00EAD4C4 /* Resource in Resources */,
+				BA964B5F268315E6003265F2 /* CHANGELOG.md in Resources */,
 				63BAD39322F09B1500EAD4C4 /* LaunchScreen.storyboard in Resources */,
 				63BAD39022F09B1500EAD4C4 /* Assets.xcassets in Resources */,
 				63BAD38E22F09B1200EAD4C4 /* Main.storyboard in Resources */,

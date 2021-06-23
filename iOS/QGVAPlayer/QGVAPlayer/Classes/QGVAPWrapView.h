@@ -54,14 +54,19 @@ typedef NS_ENUM(NSUInteger, QGVAPWrapViewContentMode) {
 // 是否在播放完成后自动移除内部VAPView, 如果外部用法会复用当前View，可以不移除
 @property (nonatomic, assign) BOOL autoDestoryAfterFinish;
 
-- (void)vapWrapView_playHWDMP4:(NSString *)filePath
-                   repeatCount:(NSInteger)repeatCount
-                      delegate:(id<VAPWrapViewDelegate>)delegate;
+- (void)playHWDMP4:(NSString *)filePath
+       repeatCount:(NSInteger)repeatCount
+          delegate:(id<VAPWrapViewDelegate>)delegate;
+
+- (void)stopHWDMP4;
+
+- (void)pauseHWDMP4;
+- (void)resumeHWDMP4;
 
 //增加点击的手势识别, 如果开启了autoDestoryAfterFinish，那么手势将在播放完毕后失效
-- (void)vapWrapView_addVapTapGesture:(VAPGestureEventBlock)handler;
+- (void)addVapTapGesture:(VAPGestureEventBlock)handler;
 //手势识别通用接口, 如果开启了autoDestoryAfterFinish，那么手势将在播放完毕后失效
-- (void)vapWrapView_addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler;
+- (void)addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler;
 
 
 /*

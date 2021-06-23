@@ -34,8 +34,15 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
     [mp4View playHWDMp4:resPath];//在view上播放该特效，按该view的大小进行渲染
 ```
 
+
 ```
-    2)代理回调
+2) 退后台时的行为
+mp4View.hwd_enterBackgroundOP = HWDMP4EBOperationTypeStop; // 默认为该项，退后台时结束播放
+mp4View.hwd_enterBackgroundOP = HWDMP4EBOperationTypePauseAndResume; // ⚠️ 建议设置该选项时对机型进行判断，屏蔽低端机
+```
+
+```
+    3)代理回调
 
     - (void)viewDidStartPlayMP4:(VAPView *)container {
     }
@@ -65,7 +72,7 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 ```
 
 ```
-3)融合动画：delegate中实现下面两个接口，替换tag内容和下载图片
+4)融合动画：delegate中实现下面两个接口，替换tag内容和下载图片
 
 
 //provide the content for tags, maybe text or url string ...
@@ -91,7 +98,7 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 ```
 
 ```
-    4)手势识别
+    5)手势识别
 
     [mp4View addVapTapGesture:^(UIGestureRecognizer *gestureRecognizer, BOOL insideSource, QGVAPSourceDisplayItem *source) {
         NSLog(@"click");
@@ -102,7 +109,7 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 ```
 
 ```
-    5) contentMode 支持
+    6) contentMode 支持
 //note: 导入 QGVAPWrapView.h 头文件。通过创建 `QGVAPWrapView` 作为播放特效的 View。可以设置其`contentMode`属性。
 QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
 wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;

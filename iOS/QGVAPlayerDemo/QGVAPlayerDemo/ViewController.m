@@ -55,14 +55,14 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     //vap-经典效果
     _vapButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 100, CGRectGetWidth(self.view.frame), 90)];
     _vapButton.backgroundColor = [UIColor lightGrayColor];
-    [_vapButton setTitle:@"电竞方案" forState:UIControlStateNormal];
+    [_vapButton setTitle:@"电竞方案（退后台结束）" forState:UIControlStateNormal];
     [_vapButton addTarget:self action:@selector(playVap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_vapButton];
     
     //vapx-融合效果
     _vapxButton = [[UIButton alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_vapButton.frame)+60, CGRectGetWidth(self.view.frame), 90)];
     _vapxButton.backgroundColor = [UIColor lightGrayColor];
-    [_vapxButton setTitle:@"融合特效" forState:UIControlStateNormal];
+    [_vapxButton setTitle:@"融合特效（退后台暂停/恢复）" forState:UIControlStateNormal];
     [_vapxButton addTarget:self action:@selector(playVapx) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_vapxButton];
     
@@ -83,6 +83,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     mp4View.center = self.view.center;
     [self.view addSubview:mp4View];
     mp4View.userInteractionEnabled = YES;
+    mp4View.hwd_enterBackgroundOP = HWDMP4EBOperationTypeStop;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
     NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
@@ -99,6 +100,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     [self.view addSubview:mp4View];
     mp4View.center = self.view.center;
     mp4View.userInteractionEnabled = YES;
+    mp4View.hwd_enterBackgroundOP = HWDMP4EBOperationTypePauseAndResume; // ⚠️ 建议设置该选项时对机型进行判断，屏蔽低端机
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
     [mp4View playHWDMP4:mp4Path repeatCount:-1 delegate:self];
@@ -106,16 +108,23 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 /// 使用WrapView，支持ContentMode
 - (void)playVapWithWrapView {
+    static BOOL pause = NO;
     QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
     wrapView.center = self.view.center;
     wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;
     wrapView.autoDestoryAfterFinish = YES;
     [self.view addSubview:wrapView];
     NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
-    [wrapView vapWrapView_playHWDMP4:resPath repeatCount:-1 delegate:self];
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
-    [wrapView vapWrapView_addVapGesture:tap callback:^(UIGestureRecognizer *gestureRecognizer, BOOL insideSource, QGVAPSourceDisplayItem *source) {
-        
+    [wrapView playHWDMP4:resPath repeatCount:-1 delegate:self];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doNothingonImageviewTap:)];
+    
+    __weak __typeof(wrapView) weakWrapView = wrapView;
+    [wrapView addVapGesture:tap callback:^(UIGestureRecognizer *gestureRecognizer, BOOL insideSource, QGVAPSourceDisplayItem *source) {
+        if ((pause = !pause)) {
+            [weakWrapView pauseHWDMP4];
+        } else {
+            [weakWrapView resumeHWDMP4];
+        }
     }];
 }
 
@@ -177,6 +186,10 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 - (void)onImageviewTap:(UIGestureRecognizer *)ges {
     
     [ges.view removeFromSuperview];
+}
+
+- (void)doNothingonImageviewTap:(UIGestureRecognizer *)ges {
+    
 }
 
 #pragma mark - WrapViewDelegate
