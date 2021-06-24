@@ -385,6 +385,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
                 }
                 if (self.hwd_onPause || self.hwd_onSeek) {
                     lastRenderingInterval = NSDate.timeIntervalSinceReferenceDate;
+                    [NSThread sleepForTimeInterval:durationForWaitingFrame];
                     continue;
                 }
                 __block QGMP4AnimatedImageFrame *nextFrame = nil;

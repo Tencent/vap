@@ -104,6 +104,13 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
     [mp4View playHWDMP4:mp4Path repeatCount:-1 delegate:self];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [mp4View pauseHWDMP4];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [mp4View resumeHWDMP4];
+        });
+    });
 }
 
 /// 使用WrapView，支持ContentMode
