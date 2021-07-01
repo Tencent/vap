@@ -1368,7 +1368,9 @@
         // 是否静音播放
         mute: false,
         config: '',
-        accurate: false
+        accurate: false,
+        // 帧偏移, 一般没用, 预留支持问题素材
+        offset: 0
       }, options);
       this.fps = 20;
       this.setBegin = true;
@@ -1912,7 +1914,7 @@
 
         if (this.vapFrameParser) {
           var timePoint = info && info.mediaTime >= 0 ? info.mediaTime : this.video.currentTime;
-          var frame = Math.floor(timePoint * this.options.fps);
+          var frame = Math.round(timePoint * this.options.fps) + this.options.offset;
           var frameData = this.vapFrameParser.getFrame(frame);
           var posArr = [];
 

@@ -38,7 +38,9 @@ export default class VapVideo {
         // 是否静音播放
         mute: false,
         config: '',
-        accurate: false
+        accurate: false,
+        // 帧偏移, 一般没用, 预留支持问题素材
+        offset: 0,
       },
       options
     );

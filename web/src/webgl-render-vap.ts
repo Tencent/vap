@@ -288,7 +288,7 @@ export default class WebglRenderVap extends VapVideo {
     gl.clear(gl.COLOR_BUFFER_BIT);
     if (this.vapFrameParser) {
       const timePoint = (info && info.mediaTime >= 0) ? info.mediaTime : this.video.currentTime
-      const frame = Math.floor(timePoint * this.options.fps);
+      const frame = Math.round(timePoint * this.options.fps) + this.options.offset;
       const frameData = this.vapFrameParser.getFrame(frame);
       let posArr = [];
 
