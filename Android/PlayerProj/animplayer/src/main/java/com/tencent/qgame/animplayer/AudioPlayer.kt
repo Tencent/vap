@@ -127,7 +127,7 @@ class AudioPlayer(val player: AnimPlayer) {
             if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                 decodeOutputBuffers = decoder.outputBuffers
             }
-            if (outputIndex > 0) {
+            if (outputIndex >= 0) {
                 val outputBuffer = decodeOutputBuffers[outputIndex]
                 val chunkPCM = ByteArray(bufferInfo.size)
                 outputBuffer.get(chunkPCM)
