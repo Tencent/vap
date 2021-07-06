@@ -48,6 +48,7 @@ Platform：[Android](./Android), [iOS](./iOS), [web](./web).
 
 Generation tool：[VapTool](./tool)
 
+Preview tool：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview0.1.0/vap-player-0.1.0.dmg), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview0.1.0/vap-player_0.1.0.exe)
 
 
 ## Issue
