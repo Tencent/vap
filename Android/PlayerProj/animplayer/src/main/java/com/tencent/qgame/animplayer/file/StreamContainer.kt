@@ -8,7 +8,7 @@ import java.io.ByteArrayInputStream
 @RequiresApi(Build.VERSION_CODES.M)
 class StreamContainer(val bytes: ByteArray) : IFileContainer {
 
-    private var stream: ByteArrayInputStream? = ByteArrayInputStream(bytes)
+    private var stream: ByteArrayInputStream = ByteArrayInputStream(bytes)
 
     override fun setDataSource(extractor: MediaExtractor) {
         val dataSource = StreamMediaDataSource(bytes)
@@ -19,19 +19,17 @@ class StreamContainer(val bytes: ByteArray) : IFileContainer {
     }
 
     override fun read(b: ByteArray, off: Int, len: Int): Int {
-        return stream?.read(b, off, len) ?: 0
+        return stream.read(b, off, len)
     }
 
     override fun skip(pos: Long) {
-        stream?.skip(pos)
+        stream.skip(pos)
     }
 
     override fun closeRandomRead() {
-        stream?.close()
     }
 
     override fun close() {
-        stream?.close()
-        stream = null
+        stream.close()
     }
 }
