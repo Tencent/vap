@@ -5,7 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 
 @RequiresApi(Build.VERSION_CODES.M)
-class StreamMediaDataSource(var bytes: ByteArray) : MediaDataSource() {
+class StreamMediaDataSource(val bytes: ByteArray) : MediaDataSource() {
 
     override fun close() {
     }
