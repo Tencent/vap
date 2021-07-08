@@ -12,7 +12,7 @@ class StreamMediaDataSource(val bytes: ByteArray) : MediaDataSource() {
 
     override fun readAt(position: Long, buffer: ByteArray, offset: Int, size: Int): Int {
         var newSize = size
-        synchronized(bytes) {
+        synchronized(StreamMediaDataSource::class) {
             val length = bytes.size
             if (position >= length) {
                 return -1
@@ -27,7 +27,7 @@ class StreamMediaDataSource(val bytes: ByteArray) : MediaDataSource() {
     }
 
     override fun getSize(): Long {
-        synchronized(bytes) {
+        synchronized(StreamMediaDataSource::class) {
             return bytes.size.toLong()
         }
     }
