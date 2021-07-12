@@ -25,9 +25,13 @@ object Constant {
 
     // 视频对齐方式 (兼容老版本视频模式)
     @Deprecated("Compatible older version mp4")
-    const val VIDEO_MODE_SPLIT_HORIZONTAL = 1 // 视频左右对齐
+    const val VIDEO_MODE_SPLIT_HORIZONTAL = 1 // 视频左右对齐（alpha左\rgb右）
     @Deprecated("Compatible older version mp4")
-    const val VIDEO_MODE_SPLIT_VERTICAL = 2 // 视频上下对齐
+    const val VIDEO_MODE_SPLIT_VERTICAL = 2 // 视频上下对齐（alpha上\rgb下）
+    @Deprecated("Compatible older version mp4")
+    const val VIDEO_MODE_SPLIT_HORIZONTAL_REVERSE = 3 // 视频左右对齐（rgb左\alpha右）
+    @Deprecated("Compatible older version mp4")
+    const val VIDEO_MODE_SPLIT_VERTICAL_REVERSE = 4 // 视频上下对齐（rgb上\alpha下）
 
 
     const val OK = 0 // 成功

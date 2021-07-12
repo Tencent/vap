@@ -26,7 +26,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.ShortBuffer
 
-class Render(surfaceTexture: SurfaceTexture) {
+class Render(surfaceTexture: SurfaceTexture): IRenderListener {
 
     companion object {
         private const val TAG = "${Constant.TAG}.Render"
@@ -48,11 +48,7 @@ class Render(surfaceTexture: SurfaceTexture) {
 
     init {
         eglUtil.start(surfaceTexture)
-        initGL()
-    }
-
-    private fun initGL() {
-        compileShader()
+        initRender()
     }
 
     private fun setVertexBuf(config: AnimConfig) {
@@ -66,7 +62,13 @@ class Render(surfaceTexture: SurfaceTexture) {
         rgbArray.setArray(rgb)
     }
 
-    fun createTexture() {
+    override fun initRender() {
+        shaderProgram = ShaderUtil.createProgram(RenderConstant.VERTEX_SHADER, RenderConstant.FRAGMENT_SHADER)
+        uTextureLocation = GLES20.glGetUniformLocation(shaderProgram, "texture")
+        aPositionLocation = GLES20.glGetAttribLocation(shaderProgram, "vPosition")
+        aTextureAlphaLocation = GLES20.glGetAttribLocation(shaderProgram, "vTexCoordinateAlpha")
+        aTextureRgbLocation = GLES20.glGetAttribLocation(shaderProgram, "vTexCoordinateRgb")
+
         GLES20.glGenTextures(genTexture.size, genTexture, 0)
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, genTexture[0])
         GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
@@ -75,39 +77,7 @@ class Render(surfaceTexture: SurfaceTexture) {
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
     }
 
-    private fun compileShader() {
-        shaderProgram = ShaderUtil.createProgram(RenderConstant.VERTEX_SHADER, RenderConstant.FRAGMENT_SHADER)
-        uTextureLocation = GLES20.glGetUniformLocation(shaderProgram, "texture")
-        aPositionLocation = GLES20.glGetAttribLocation(shaderProgram, "vPosition")
-        aTextureAlphaLocation = GLES20.glGetAttribLocation(shaderProgram, "vTexCoordinateAlpha")
-        aTextureRgbLocation = GLES20.glGetAttribLocation(shaderProgram, "vTexCoordinateRgb")
-    }
-
-    /**
-     * 设置视频配置
-     */
-    fun setAnimConfig(config: AnimConfig) {
-        setVertexBuf(config)
-        setTexCoords(config)
-    }
-
-    /**
-     * 显示区域大小变化
-     */
-    fun updateViewPort(width: Int, height: Int) {
-        if (width <=0 || height <=0) return
-        surfaceSizeChanged = true
-        surfaceWidth = width
-        surfaceHeight = height
-    }
-
-    fun clearFrame() {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        eglUtil.swapBuffers()
-    }
-
-    fun renderFrame(config: AnimConfig?) {
+    override fun renderFrame() {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         if (surfaceSizeChanged && surfaceWidth>0 && surfaceHeight>0) {
@@ -117,24 +87,47 @@ class Render(surfaceTexture: SurfaceTexture) {
         draw()
     }
 
-    fun swapBuffers() {
+    override fun clearFrame() {
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         eglUtil.swapBuffers()
     }
 
-
-    fun destroy() {
+    override fun destroyRender() {
         releaseTexture()
         eglUtil.release()
     }
 
-    fun releaseTexture() {
+    override fun releaseTexture() {
         GLES20.glDeleteTextures(genTexture.size, genTexture, 0)
+    }
+
+    /**
+     * 设置视频配置
+     */
+    override fun setAnimConfig(config: AnimConfig) {
+        setVertexBuf(config)
+        setTexCoords(config)
+    }
+
+    /**
+     * 显示区域大小变化
+     */
+    override fun updateViewPort(width: Int, height: Int) {
+        if (width <=0 || height <=0) return
+        surfaceSizeChanged = true
+        surfaceWidth = width
+        surfaceHeight = height
+    }
+
+    override fun swapBuffers() {
+        eglUtil.swapBuffers()
     }
 
     /**
      * mediaCodec渲染使用的
      */
-    fun getExternalTexture(): Int {
+    override fun getExternalTexture(): Int {
         return genTexture[0]
     }
 

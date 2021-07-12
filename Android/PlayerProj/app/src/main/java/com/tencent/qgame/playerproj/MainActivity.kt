@@ -20,6 +20,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tencent.qgame.playerproj.player.AnimActiveDemoActivity
 import com.tencent.qgame.playerproj.player.AnimSimpleDemoActivity
+import com.tencent.qgame.playerproj.player.AnimSpecialSizeDemoActivity
 import com.tencent.qgame.playerproj.player.AnimVapxDemoActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -37,6 +38,9 @@ class MainActivity : Activity(){
         }
         btn3.setOnClickListener {
             startActivity(Intent(this, AnimActiveDemoActivity::class.java))
+        }
+        btn4.setOnClickListener {
+            startActivity(Intent(this, AnimSpecialSizeDemoActivity::class.java))
         }
     }
 
