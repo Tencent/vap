@@ -247,72 +247,68 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
     }
     NSMutableArray *videoSamples = [NSMutableArray new];
     
-    uint64_t start_play_time = 0;
     uint64_t tmp = 0;
-    uint32_t sampIdx = 0;
     QGMP4SttsBox *sttsBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stts];
     QGMP4StszBox *stszBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stsz];
     QGMP4StscBox *stscBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stsc];
     QGMP4StcoBox *stcoBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stco];
     QGMP4CttsBox *cttsBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_ctts];
-    for (int i = 0; i < sttsBox.entries.count; ++i) {
-        QGSttsEntry *entry = sttsBox.entries[i];
-        for (int j = 0; j < entry.sampleCount; ++j) {
-            QGMP4Sample *sample = [QGMP4Sample new];
-            sample.sampleDelta = entry.sampleDelta;
-            sample.codecType = QGMP4CodecTypeVideo;
-            sample.sampleIndex = sampIdx;
-            sample.pts = tmp + [cttsBox.compositionOffsets[j] unsignedLongLongValue];
-            if (sampIdx < stszBox.sampleSizes.count) {
-                sample.sampleSize = (int32_t)[stszBox.sampleSizes[sampIdx] integerValue];
-            }
-            [videoSamples addObject:sample];
-            start_play_time += entry.sampleDelta;
-            sampIdx++;
-            tmp += entry.sampleDelta;
+
+    uint32_t stscEntryIndex = 0;
+    uint32_t stscEntrySampleIndex = 0;
+    uint32_t stscEntrySampleOffset = 0;
+    uint32_t sttsEntryIndex = 0;
+    uint32_t sttsEntrySampleIndex = 0;
+    uint32_t stcoChunkLogicIndex = 0;
+    for (int i = 0; i < stszBox.sampleCount; ++i) {
+        if (stscEntryIndex >= stscBox.entries.count ||
+            sttsEntryIndex >= sttsBox.entries.count ||
+            stcoChunkLogicIndex >= stcoBox.chunkOffsets.count) {
+            break;
         }
-        
-        NSMutableArray<QGChunkOffsetEntry *> *chunkOffsets = [NSMutableArray new];
-        uint32_t chunkIndex = 0;
-        uint32_t totalSample = 0;
-        for (int j = 0; j < stscBox.entries.count; ++j) {
-            QGStscEntry *entry = stscBox.entries[j];
-            if (j < stscBox.entries.count - 1) {
-                QGStscEntry *nextEntry = stscBox.entries[j+1];
-                for (int k = 0; k < nextEntry.firstChunk - entry.firstChunk; ++k) {
-                    QGChunkOffsetEntry *offsetEntry = [QGChunkOffsetEntry new];
-                    offsetEntry.samplesPerChunk = entry.samplesPerChunk;
-                    totalSample += entry.samplesPerChunk;
-                    if (chunkIndex < stcoBox.chunkOffsets.count) {
-                        offsetEntry.offset = (uint32_t)[stcoBox.chunkOffsets[chunkIndex] integerValue];
-                    }
-                    chunkIndex++;
-                    [chunkOffsets addObject:offsetEntry];
-                }
-            } else {
-                //只有一个或最后一个
-                while (chunkIndex < stcoBox.chunkOffsets.count) {
-                    QGChunkOffsetEntry *offsetEntry = [QGChunkOffsetEntry new];
-                    offsetEntry.samplesPerChunk = entry.samplesPerChunk;
-                    offsetEntry.offset = (uint32_t)[stcoBox.chunkOffsets[chunkIndex] integerValue];
-                    totalSample += entry.samplesPerChunk;
-                    chunkIndex++;
-                    [chunkOffsets addObject:offsetEntry];
-                }
+
+        QGStscEntry *stscEntry = stscBox.entries[stscEntryIndex];
+        QGSttsEntry *sttsEntry = sttsBox.entries[sttsEntryIndex];
+        uint32_t sampleOffset = [stcoBox.chunkOffsets[stcoChunkLogicIndex] unsignedIntValue] + stscEntrySampleOffset;
+        uint32_t ctts = 0;
+        if (i < cttsBox.compositionOffsets.count) {
+            ctts = [cttsBox.compositionOffsets[i] unsignedIntValue];
+        }
+
+        QGMP4Sample *sample = [QGMP4Sample new];
+        sample.codecType = QGMP4CodecTypeVideo;
+        sample.sampleIndex = i;
+        sample.chunkIndex = stcoChunkLogicIndex;
+        sample.sampleDelta = sttsEntry.sampleDelta;
+        sample.sampleSize = [stszBox.sampleSizes[i] unsignedIntValue];
+        sample.pts = tmp + ctts;
+        sample.streamOffset = sampleOffset;
+        [videoSamples addObject:sample];
+
+        stscEntrySampleOffset += sample.sampleSize;
+        tmp += sample.sampleDelta;
+
+        stscEntrySampleIndex++;
+        if (stscEntrySampleIndex >= stscEntry.samplesPerChunk) {
+            if (stcoChunkLogicIndex + 1 < stcoBox.chunkOffsets.count) {
+                stcoChunkLogicIndex++;
+            }
+
+            stscEntrySampleIndex = 0;
+            stscEntrySampleOffset = 0;
+        }
+
+        sttsEntrySampleIndex++;
+        if (sttsEntrySampleIndex >= sttsEntry.sampleCount) {
+            sttsEntrySampleIndex = 0;
+            if (sttsEntryIndex + 1 < sttsBox.entries.count) {
+                sttsEntryIndex++;
             }
         }
-        sampIdx = 0;
-        for (int i = 0; i < chunkOffsets.count; ++i) {
-            QGChunkOffsetEntry *offsetEntry = chunkOffsets[i];
-            uint32_t offsetChunk = 0;
-            for (int j = 0; j < offsetEntry.samplesPerChunk; ++j) {
-                if (sampIdx < videoSamples.count) {
-                    QGMP4Sample *videoSample = videoSamples[sampIdx];
-                    videoSample.chunkIndex = i;
-                    videoSample.streamOffset = offsetEntry.offset + offsetChunk;
-                    offsetChunk += videoSample.sampleSize;
-                    sampIdx++;
-                }
+
+        if (stscEntryIndex + 1 < stscBox.entries.count) {
+            if (stcoChunkLogicIndex >= stscBox.entries[stscEntryIndex + 1].firstChunk - 1) {
+                stscEntryIndex++;
             }
         }
     }
