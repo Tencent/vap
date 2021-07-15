@@ -95,6 +95,9 @@ interface OnResourceClickListener {
 }
 ```
 
+### 老版本兼容
+
+老版本动画播放可以参考: AnimSpecialSizeDemoActivity
 
 ### 引入方式
 
@@ -106,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    implementation "io.github.tencent:vap:2.0.16"
+    implementation "io.github.tencent:vap:2.0.17"
 }
 ```
 
