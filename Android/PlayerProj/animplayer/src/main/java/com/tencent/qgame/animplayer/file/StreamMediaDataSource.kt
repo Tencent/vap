@@ -1,10 +1,10 @@
 package com.tencent.qgame.animplayer.file
 
+import android.annotation.TargetApi
 import android.media.MediaDataSource
 import android.os.Build
-import androidx.annotation.RequiresApi
 
-@RequiresApi(Build.VERSION_CODES.M)
+@TargetApi(Build.VERSION_CODES.M)
 class StreamMediaDataSource(val bytes: ByteArray) : MediaDataSource() {
 
     override fun close() {

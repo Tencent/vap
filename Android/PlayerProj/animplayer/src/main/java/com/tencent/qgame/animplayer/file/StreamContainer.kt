@@ -1,12 +1,12 @@
 package com.tencent.qgame.animplayer.file
 
+import android.annotation.TargetApi
 import android.media.MediaExtractor
 import android.os.Build
-import androidx.annotation.RequiresApi
 import java.io.ByteArrayInputStream
 
-@RequiresApi(Build.VERSION_CODES.M)
-class StreamContainer(val bytes: ByteArray) : IFileContainer {
+@TargetApi(Build.VERSION_CODES.M)
+class StreamContainer(private val bytes: ByteArray) : IFileContainer {
 
     private var stream: ByteArrayInputStream = ByteArrayInputStream(bytes)
 
