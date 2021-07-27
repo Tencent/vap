@@ -188,6 +188,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         var outputDone = false
         var inputDone = false
         var frameIndex = 0
+        var isLoop = false
 
         val decoderInputBuffers = decoder.inputBuffers
 
@@ -256,7 +257,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                         // release & render
                         decoder.releaseOutputBuffer(decoderStatus, doRender && !needYUV)
 
-                        if (frameIndex == 0) {
+                        if (frameIndex == 0 && !isLoop) {
                             onVideoStart()
                         }
                         player.pluginManager.onDecoding(frameIndex)
@@ -266,11 +267,13 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                         ALog.d(TAG, "decode frameIndex=$frameIndex")
                         if (loop > 0) {
                             ALog.d(TAG, "Reached EOD, looping")
+                            player.pluginManager.onLoopStart()
                             extractor.seekTo(0, MediaExtractor.SEEK_TO_CLOSEST_SYNC)
                             inputDone = false
                             decoder.flush()
                             speedControlUtil.reset()
-                            frameIndex = 1
+                            frameIndex = 0
+                            isLoop = true
                         }
                         if (outputDone) {
                             release(decoder, extractor)
