@@ -40,6 +40,13 @@
     return self;
 }
 
+- (void)dealloc{
+    /// 页面销毁需要停止播放
+    if(_vapView){
+        [_vapView stopHWDMP4];
+    }
+}
+
 - (void)commonInit {
     _autoDestoryAfterFinish = YES;
 }
