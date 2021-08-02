@@ -120,7 +120,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             // 由于使用mediacodec解码老版本素材时对宽度1500尺寸的视频进行数据对齐，解码后的宽度变成1504，导致采样点出现偏差播放异常
             // 所以当开启兼容老版本视频模式并且老版本视频的宽度不能被16整除时要走YUV渲染逻辑
             // 但是这样直接判断有风险，后期想办法改
-            needYUV = !(videoWidth % 16 == 0) && player.enableVersion1
+            needYUV = videoWidth % 16 != 0 && player.enableVersion1
 
             try {
                 if (!prepareRender(needYUV)) {
@@ -228,9 +228,16 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                     decoderStatus == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
                         outputFormat = decoder.outputFormat
                         outputFormat?.apply {
-                            if (this.getInteger(MediaFormat.KEY_STRIDE) > 0 && this.getInteger(MediaFormat.KEY_SLICE_HEIGHT) > 0) {
-                                alignWidth = this.getInteger(MediaFormat.KEY_STRIDE)
-                                alignHeight = this.getInteger(MediaFormat.KEY_SLICE_HEIGHT)
+                            try {
+                                // 有可能取到空值，做一层保护
+                                val stride = getInteger("stride")
+                                val sliceHeight = getInteger("slice-height")
+                                if (stride > 0 && sliceHeight > 0) {
+                                    alignWidth = stride
+                                    alignHeight = sliceHeight
+                                }
+                            } catch (t: Throwable) {
+                                ALog.e(TAG, "$t", t)
                             }
                         }
                         ALog.i(TAG, "decoder output format changed: $outputFormat")
