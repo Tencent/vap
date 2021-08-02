@@ -106,6 +106,20 @@
     [_audioPlayer stop];
 }
 
+- (void)tryToPauseAudioPlay {
+    if (!_audioPlayer) {
+        return;
+    }
+    [_audioPlayer pause];
+}
+
+- (void)tryToResumeAudioPlay {
+    if (!_audioPlayer) {
+        return;
+    }
+    [_audioPlayer play];
+}
+
 #pragma mark - private methods
 
 - (BOOL)checkIfDecodeFinish:(NSInteger)frameIndex {

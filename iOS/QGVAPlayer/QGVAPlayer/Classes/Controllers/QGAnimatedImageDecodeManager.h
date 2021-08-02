@@ -54,6 +54,8 @@
 
 - (void)tryToStartAudioPlay;
 - (void)tryToStopAudioPlay;
+- (void)tryToPauseAudioPlay;
+- (void)tryToResumeAudioPlay;
 - (BOOL)containsThisDeocder:(id)decoder;
 
 @end
