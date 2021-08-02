@@ -109,7 +109,7 @@ repositories {
 }
 
 dependencies {
-    implementation "io.github.tencent:vap:2.0.18"
+    implementation "io.github.tencent:vap:2.0.19"
 }
 ```
 
