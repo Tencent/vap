@@ -1,3 +1,16 @@
+## iOS 1.0.13
+
+**feature**
+
+- 暂停时音频播放跟随暂停
+
+**bugfix**
+
+- 修复AVAudioPlayer被释放后可能导致野指针crash的问题
+
+
+
+
 ## iOS 1.0.12
 
 **bugfix**
