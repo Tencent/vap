@@ -134,6 +134,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
     if (self.vap_metalView) {
         [self.vap_metalView dispose];
     }
+    [self.hwd_decodeManager tryToStopAudioPlay];
     [self.hwd_callbackQueue addOperationWithBlock:^{
         //此处必须延迟释放，避免野指针
         if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
@@ -461,6 +462,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
     
     VAP_Info(kQGVAPModuleCommon, @"pauseHWDMP4");
     self.hwd_onPause = YES;
+    [self.hwd_decodeManager tryToPauseAudioPlay];
 // pause回调stop会导致一般使用场景将view移除，无法resume，因此暂时去掉该回调触发
 //    [self.hwd_callbackQueue addOperationWithBlock:^{
 //        //此处必须延迟释放，避免野指针
@@ -475,6 +477,8 @@ NSInteger const VapMaxCompatibleVersion = 2;
     VAP_Info(kQGVAPModuleCommon, @"resumeHWDMP4");
     self.hwd_onPause = NO;
     self.hwd_openGLView.pause = NO;
+    // 目前音频和视频没有同步逻辑，多次暂停恢复会使音视频差距越来越大
+    [self.hwd_decodeManager tryToResumeAudioPlay];
 }
 
 + (void)registerHWDLog:(QGVAPLoggerFunc)logger {

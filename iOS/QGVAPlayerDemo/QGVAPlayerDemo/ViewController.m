@@ -17,6 +17,8 @@
 #import "UIView+VAP.h"
 #import "QGVAPWrapView.h"
 
+#import <AVFoundation/AVFoundation.h>
+
 @interface ViewController () <HWDMP4PlayDelegate, VAPWrapViewDelegate>
 
 @property (nonatomic, strong) UIButton *vapButton;
@@ -48,6 +50,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupAudioSession];
     
     //日志
     [UIView registerHWDLog:qg_VAP_Logger_handler];
@@ -72,6 +75,18 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     [_vapWrapViewButton setTitle:@"WrapView-ContentMode" forState:UIControlStateNormal];
     [_vapWrapViewButton addTarget:self action:@selector(playVapWithWrapView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_vapWrapViewButton];
+}
+
+- (void)setupAudioSession {
+    AVAudioSession* avsession = [AVAudioSession sharedInstance];
+    NSError *error = nil;
+    if (![avsession setCategory:AVAudioSessionCategoryPlayback withOptions:0 error:&error]) {
+        if (error) NSLog(@"AVAudioSession setCategory failed : %ld, %s", (long)error.code, [error.localizedDescription UTF8String]);
+        return;
+    }
+    if (![avsession setActive:YES error:&error]) {
+        if (error) NSLog(@"AVAudioSession setActive failed : %ld, %s", (long)error.code, [error.localizedDescription UTF8String]);
+    }
 }
 
 #pragma mark - 各种类型的播放
@@ -203,11 +218,18 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 //provide the content for tags, maybe text or url string ...
 - (NSString *)vapWrapview_contentForVapTag:(NSString *)tag resource:(QGVAPSourceInfo *)info {
-    return nil;
+    NSDictionary *extraInfo = @{@"[sImg1]" : @"http://shp.qlogo.cn/pghead/Q3auHgzwzM6GuU0Y6q6sKHzq3MjY1aGibIzR4xrJc1VY/60",
+                                @"[textAnchor]" : @"我是主播名",
+                                @"[textUser]" : @"我是用户名😂😂",};
+    return extraInfo[tag];
 }
 
 //provide image for url from tag content
 - (void)vapWrapView_loadVapImageWithURL:(NSString *)urlStr context:(NSDictionary *)context completion:(VAPImageCompletionBlock)completionBlock {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"%@/Resource/qq.png", [[NSBundle mainBundle] resourcePath]]];
+        completionBlock(image, nil, urlStr);
+    });
 }
 
 @end
