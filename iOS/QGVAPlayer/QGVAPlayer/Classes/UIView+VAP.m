@@ -134,6 +134,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
     if (self.vap_metalView) {
         [self.vap_metalView dispose];
     }
+    [self.hwd_decodeManager tryToStopAudioPlay];
     [self.hwd_callbackQueue addOperationWithBlock:^{
         //此处必须延迟释放，避免野指针
         if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {

@@ -97,6 +97,15 @@
     [_audioPlayer play];
 }
 
+- (void)tryToStopAudioPlay {
+    if (!_audioPlayer) {
+        return;
+    }
+    // CoreAudio（AVAudioPlaeyrCpp）回调audioPlayerDidFinishPlaying:successfully:时在子线程，恰巧此时释放将可能导致野指针问题
+    // 如果只是stop不能解决，可以考虑产生循环持有并延迟释放_audioPlayer
+    [_audioPlayer stop];
+}
+
 #pragma mark - private methods
 
 - (BOOL)checkIfDecodeFinish:(NSInteger)frameIndex {
