@@ -14,7 +14,6 @@
 // limitations under the License.
 
 #import <UIKit/UIKit.h>
-#import "UIView+VAP.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
