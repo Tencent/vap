@@ -22,7 +22,7 @@ VAP是企鹅电竞实现大礼物特效的高性能组件，基于H.264硬解码
 
 4. pods集成
     1）podfile中添加：pod 'QGVAPlayer', :git => '远程库地址', :tag => '1.0.4'
-    2）在工程中合适的位置add file，将Shaders下的metal文件添加进去，⚠️⚠️注意不要拷贝（如果不添加引用的话会导致metal着色器不被编译进default.mtllib）！
+    2）在工程中合适的位置add file，引用pods/QGVAPlayer 中Shaders下的metal文件，⚠️⚠️注意不要拷贝（如果不添加引用的话会导致metal着色器不被编译进default.mtllib）！
 
 ### 二）组件使用
     - 组件对外的接口是基于UIView的category实现的，因此理论上任意view可以播放特效 
