@@ -96,7 +96,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files = 'iOS/QGVAPlayer/QGVAPlayer/**/*.{h,m}'
+  spec.source_files = 'iOS/QGVAPlayer/QGVAPlayer/**/*.{h,m,metal}'
 
   # spec.subspec 'Shaders' do |ss|
   #   ss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Shaders/**/*.{h,m}'
