@@ -181,7 +181,7 @@ unsigned long long dataConvertToUInt64(NSData *data) {
     }
     const char *bytes = data.bytes;
     for (int i = 0; i < 8; i++) {
-        largeSize += bytes[i] << (8 - i - 1) * 8;
+        largeSize += ((bytes[i]&0xff) << (8 - i - 1) * 8);
     }
     return largeSize;
 }
