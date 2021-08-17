@@ -2,6 +2,7 @@
 
 **bugfix**
 
+- 修改vap 取默认帧率的逻辑，添加从vapc box获取帧率操作，若vapc box取到帧率为0，则继续沿用旧有的逻辑，即利用帧数与时长计算帧率
 - 修复MP4Parser解析box长度逻辑不完成导致解析box异常，无法播放素材问题[#issue133](https://github.com/Tencent/vap/issues/133)
 - UIView(VAP) 增加enableOldVersion接口，若素材非vap工具制作（不包含vapc box），则必须在播放前调用此接口设置enable，才可播放
 
