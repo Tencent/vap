@@ -1,3 +1,12 @@
+## iOS 1.0.14
+
+**bugfix**
+
+- 修复MP4Parser解析box长度逻辑不完成导致解析box异常，无法播放素材问题[#issue133](https://github.com/Tencent/vap/issues/133)
+- UIView(VAP) 增加enableOldVersion接口，若素材非vap工具制作（不包含vapc box），则必须在播放前调用此接口设置enable，才可播放
+
+
+
 ## iOS 1.0.13
 
 **feature**

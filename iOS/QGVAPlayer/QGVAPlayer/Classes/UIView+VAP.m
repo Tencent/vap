@@ -54,9 +54,9 @@ NSInteger const VapMaxCompatibleVersion = 2;
 @property (nonatomic, strong) QGVAPMetalView                *vap_metalView;             //vap格式mp4渲染图层
 @property (nonatomic, assign) BOOL                          hwd_isFinish;               //标记是否结束
 @property (nonatomic, assign) NSInteger                     hwd_repeatCount;            //播放次数；-1 表示无限循环
-@property (nonatomic, strong) QGVAPConfigManager            *hwd_configManager;             //额外的配置信息
-@property (nonatomic, strong) dispatch_queue_t              vap_renderQueue;                //播放队列
-
+@property (nonatomic, strong) QGVAPConfigManager            *hwd_configManager;         //额外的配置信息
+@property (nonatomic, strong) dispatch_queue_t              vap_renderQueue;            //播放队列
+@property (nonatomic, assign) BOOL                          vap_enableOldVersion;       //标记是否兼容不含vapc box的素材播放
 @end
 
 @implementation UIView (VAP)
@@ -339,6 +339,11 @@ NSInteger const VapMaxCompatibleVersion = 2;
         return ;
     }
     
+    if (!configManager.hasValidConfig && !self.vap_enableOldVersion) {
+        VAP_Error(kQGVAPModuleCommon, @"playHWDMP4 error! don't has vapc box and enableOldVersion is false!");
+        [self stopHWDMP4];
+        return ;
+    }
     //reset
     self.hwd_currentFrameInstance = nil;
     self.hwd_decodeManager = nil;
@@ -485,6 +490,9 @@ NSInteger const VapMaxCompatibleVersion = 2;
     [QGVAPLogger registerExternalLog:logger];
 }
 
+- (void)enableOldVersion:(BOOL)enable {
+    self.vap_enableOldVersion = enable;
+}
 #pragma mark - delegate
 
 #pragma clang diagnostic push
@@ -600,7 +608,7 @@ HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(vap_metalView, setVap_metalView, OBJC_ASSOCIATI
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(hwd_attachmentsModel, setHwd_attachmentsModel, OBJC_ASSOCIATION_RETAIN)
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(hwd_configManager, setHwd_configManager, OBJC_ASSOCIATION_RETAIN)
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(vap_renderQueue, setVap_renderQueue, OBJC_ASSOCIATION_RETAIN)
-
+HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(vap_enableOldVersion, setVap_enableOldVersion, BOOL)
 @end
 
 

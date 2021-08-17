@@ -18,6 +18,8 @@
 
 NSInteger const kQGBoxSizeLengthInBytes = 4;
 NSInteger const kQGBoxTypeLengthInBytes = 4;
+NSInteger const kQGBoxLargeSizeLengthInBytes = 8;
+NSInteger const kQGBoxLargeSizeFlagLengthInBytes = 1;
 
 #pragma mark - boxes
 #pragma mark -- base box
