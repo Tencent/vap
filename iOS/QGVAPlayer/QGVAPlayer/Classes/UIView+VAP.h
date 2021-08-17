@@ -64,6 +64,8 @@ typedef NS_ENUM(NSUInteger, HWDMP4EBOperationType) {
 
 + (void)registerHWDLog:(QGVAPLoggerFunc)logger;
 
+//当素材不包含vapc box时，只有在播放素材前调用此接口设置enable才可播放素材，否则素材无法播放
+- (void)enableOldVersion:(BOOL)enable;
 @end
 
 @interface UIView (VAPGesture)

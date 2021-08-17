@@ -20,6 +20,8 @@
 
 extern NSInteger const kQGBoxSizeLengthInBytes;
 extern NSInteger const kQGBoxTypeLengthInBytes;
+extern NSInteger const kQGBoxLargeSizeLengthInBytes;
+extern NSInteger const kQGBoxLargeSizeFlagLengthInBytes;
 
 @class QGMP4Box;
 typedef NSData* (^QGMp4BoxDataFetcher)(QGMP4Box *box);

@@ -173,6 +173,19 @@
     }
 }
 
+unsigned long long dataConvertToUInt64(NSData *data) {
+    
+    unsigned long long largeSize = 0;
+    if (data.length < 8) {
+        return largeSize;
+    }
+    const char *bytes = data.bytes;
+    for (int i = 0; i < 8; i++) {
+        largeSize += bytes[i] << (8 - i - 1) * 8;
+    }
+    return largeSize;
+}
+
 void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, QGMP4BoxType *type, unsigned long long *length) {
     
     [fileHandle seekToFileOffset:offset];
@@ -180,6 +193,11 @@ void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, Q
     const char *bytes = data.bytes;
     *length = ((bytes[0]&0xff)<<24)+((bytes[1]&0xff)<<16)+((bytes[2]&0xff)<<8)+(bytes[3]&0xff);
     *type = ((bytes[4]&0xff)<<24)+((bytes[5]&0xff)<<16)+((bytes[6]&0xff)<<8)+(bytes[7]&0xff);
+    if (*length == kQGBoxLargeSizeFlagLengthInBytes) {
+        [fileHandle seekToFileOffset:offset + kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes];
+        NSData *largeSizeData = [fileHandle readDataOfLength:kQGBoxLargeSizeLengthInBytes];
+        *length = dataConvertToUInt64(largeSizeData);
+    }
 }
 
 @end
