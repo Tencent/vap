@@ -68,6 +68,10 @@ export default class WebglRenderVap extends VapVideo {
     }
     this.resources = this.resources || {};
     this.initWebGL();
+    if ( this.useFrameCallback ) {
+      // @ts-ignore
+      this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
+    }
     this.play();
   }
   setCanvas() {
@@ -284,7 +288,7 @@ export default class WebglRenderVap extends VapVideo {
     const frame = Math.round(timePoint * this.options.fps) + this.options.offset;
     const frameCbs = this.events['frame']
     frameCbs.forEach(cb => {
-      cb(frame, timePoint)
+      cb(frame + 1, timePoint)
     })
     const gl = this.instance.gl;
     if (!gl) {

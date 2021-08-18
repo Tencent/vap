@@ -61,6 +61,13 @@ export default {
           this.vap = null
           console.log('play ended')
         })
+        .on('frame', (frame, timestamp) => {
+          // frame: 当前帧(从0开始)  timestamp: (播放时间戳)
+          if (frame === 50) {
+            // do something
+          }
+          console.log(frame, '-------', timestamp)
+        })
       window.vap = this.vap
     },
     pause () {

@@ -64,8 +64,8 @@ export default class VapVideo {
   public video:HTMLVideoElement;
   protected events;
   private _drawFrame: Function;
-  private animId: number;
-  private useFrameCallback: boolean;
+  protected animId: number;
+  protected useFrameCallback: boolean;
   private firstPlaying: boolean;
   private setBegin: boolean;
   private customEvent: Array<string> = ['frame', 'percentage']
@@ -245,10 +245,7 @@ export default class VapVideo {
   onplaying() {
     if (!this.firstPlaying) {
       this.firstPlaying = true;
-      if ( this.useFrameCallback ) {
-        // @ts-ignore
-        this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
-      } else {
+      if ( !this.useFrameCallback ) {
         this.drawFrame(null, null)
       }
     }
