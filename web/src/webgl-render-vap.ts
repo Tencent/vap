@@ -30,6 +30,10 @@ function computeCoord(x:number, y:number, w:number, h:number, vw:number, vh:numb
 export default class WebglRenderVap extends VapVideo {
   constructor(options:VapConfig) {
     super(options);
+    if ( this.useFrameCallback ) {
+      // @ts-ignore
+      this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
+    }
     this.insType = this.options.type;
     if (instances[this.insType]) {
       this.instance = instances[this.insType]
@@ -68,10 +72,6 @@ export default class WebglRenderVap extends VapVideo {
     }
     this.resources = this.resources || {};
     this.initWebGL();
-    if ( this.useFrameCallback ) {
-      // @ts-ignore
-      this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
-    }
     this.play();
   }
   setCanvas() {

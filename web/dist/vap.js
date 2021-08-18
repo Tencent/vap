@@ -856,6 +856,16 @@
 
   var createClass = _createClass;
 
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return self;
+  }
+
+  var assertThisInitialized = _assertThisInitialized;
+
   var getPrototypeOf = createCommonjsModule(function (module) {
   function _getPrototypeOf(o) {
     module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
@@ -952,7 +962,7 @@
   module.exports = _typeof;
   });
 
-  function _assertThisInitialized(self) {
+  function _assertThisInitialized$1(self) {
     if (self === void 0) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     }
@@ -960,14 +970,14 @@
     return self;
   }
 
-  var assertThisInitialized = _assertThisInitialized;
+  var assertThisInitialized$1 = _assertThisInitialized$1;
 
   function _possibleConstructorReturn(self, call) {
     if (call && (_typeof_1(call) === "object" || typeof call === "function")) {
       return call;
     }
 
-    return assertThisInitialized(self);
+    return assertThisInitialized$1(self);
   }
 
   var possibleConstructorReturn = _possibleConstructorReturn;
@@ -1347,6 +1357,8 @@
     function VapVideo(options) {
       classCallCheck(this, VapVideo);
 
+      this.customEvent = ['frame', 'percentage'];
+
       if (!options.container || !options.src) {
         console.warn('[Alpha video]: options container and src cannot be empty!');
       }
@@ -1585,7 +1597,11 @@
         var cbs = this.events[event] || [];
         cbs.push(callback);
         this.events[event] = cbs;
-        this.video.addEventListener(event, callback);
+
+        if (this.customEvent.indexOf(event) === -1) {
+          this.video.addEventListener(event, callback);
+        }
+
         return this;
       }
     }, {
@@ -1594,10 +1610,7 @@
         if (!this.firstPlaying) {
           this.firstPlaying = true;
 
-          if (this.useFrameCallback) {
-            // @ts-ignore
-            this.animId = this.video.requestVideoFrameCallback(this.drawFrame.bind(this));
-          } else {
+          if (!this.useFrameCallback) {
             this.drawFrame(null, null);
           }
         }
@@ -1655,6 +1668,12 @@
       classCallCheck(this, WebglRenderVap);
 
       _this = _super.call(this, options);
+
+      if (_this.useFrameCallback) {
+        // @ts-ignore
+        _this.animId = _this.video.requestVideoFrameCallback(_this.drawFrame.bind(assertThisInitialized(_this)));
+      }
+
       _this.insType = _this.options.type;
 
       if (instances[_this.insType]) {
@@ -1902,6 +1921,12 @@
       value: function drawFrame(_, info) {
         var _this2 = this;
 
+        var timePoint = info && info.mediaTime >= 0 ? info.mediaTime : this.video.currentTime;
+        var frame = Math.round(timePoint * this.options.fps) + this.options.offset;
+        var frameCbs = this.events['frame'];
+        frameCbs.forEach(function (cb) {
+          cb(frame + 1, timePoint);
+        });
         var gl = this.instance.gl;
 
         if (!gl) {
@@ -1913,8 +1938,6 @@
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         if (this.vapFrameParser) {
-          var timePoint = info && info.mediaTime >= 0 ? info.mediaTime : this.video.currentTime;
-          var frame = Math.round(timePoint * this.options.fps) + this.options.offset;
           var frameData = this.vapFrameParser.getFrame(frame);
           var posArr = [];
 

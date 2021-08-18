@@ -6,7 +6,7 @@
 ## 简介
 VAP是企鹅电竞实现融合礼物特效的组件，将图片/文字与原始mp4视频融合在一起，支持透明度，项目详细介绍请参考 [VAP](https://github.com/Tencent/vap)
 
-### 一、使用 🔧
+### 一、使用(参考demo) 🔧
 
 1、安装
 ``` bash
@@ -23,7 +23,7 @@ let vap = new Vap(options)
 3、实例方法
 ``` bash
 # 实例方法
-1、on(): 绑定h5 video事件  如on('playering', function() {// do some thing})
+1、on(): 绑定h5 video事件或者自定义事件(frame： 接收当前帧和播放时间戳)  如on('playering', function() {// do some thing})
 2、destroy()：销毁实例，清除video、canvas等
 3、pause()：暂停播放
 4、play()：继续播放

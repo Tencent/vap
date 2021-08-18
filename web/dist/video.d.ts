@@ -7,12 +7,13 @@ export default class VapVideo {
     requestAnim: Function;
     container: HTMLElement;
     video: HTMLVideoElement;
-    private events;
+    protected events: any;
     private _drawFrame;
-    private animId;
-    private useFrameCallback;
+    protected animId: number;
+    protected useFrameCallback: boolean;
     private firstPlaying;
     private setBegin;
+    private customEvent;
     precacheSource(source: any): Promise<string>;
     initVideo(): void;
     drawFrame(_: any, info: any): void;
@@ -23,7 +24,7 @@ export default class VapVideo {
     cancelRequestAnimation(): void;
     destroy(): void;
     clear(): void;
-    on(event: any, callback: EventListenerObject): this;
+    on(event: any, callback: any): this;
     onplaying(): void;
     onpause(): void;
     onended(): void;
