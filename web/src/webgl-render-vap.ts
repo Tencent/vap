@@ -280,6 +280,12 @@ export default class WebglRenderVap extends VapVideo {
   }
 
   drawFrame(_, info) {
+    const timePoint = (info && info.mediaTime >= 0) ? info.mediaTime : this.video.currentTime
+    const frame = Math.round(timePoint * this.options.fps) + this.options.offset;
+    const frameCbs = this.events['frame']
+    frameCbs.forEach(cb => {
+      cb(frame, timePoint)
+    })
     const gl = this.instance.gl;
     if (!gl) {
       super.drawFrame(_, info);
@@ -287,8 +293,6 @@ export default class WebglRenderVap extends VapVideo {
     }
     gl.clear(gl.COLOR_BUFFER_BIT);
     if (this.vapFrameParser) {
-      const timePoint = (info && info.mediaTime >= 0) ? info.mediaTime : this.video.currentTime
-      const frame = Math.round(timePoint * this.options.fps) + this.options.offset;
       const frameData = this.vapFrameParser.getFrame(frame);
       let posArr = [];
 

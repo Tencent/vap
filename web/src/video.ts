@@ -62,12 +62,13 @@ export default class VapVideo {
   public requestAnim:Function;
   public container:HTMLElement;
   public video:HTMLVideoElement;
-  private events;
+  protected events;
   private _drawFrame: Function;
   private animId: number;
   private useFrameCallback: boolean;
   private firstPlaying: boolean;
   private setBegin: boolean;
+  private customEvent: Array<string> = ['frame', 'percentage']
 
   precacheSource(source): Promise<string> {
     const URL = (window as any).webkitURL || window.URL;
@@ -231,11 +232,13 @@ export default class VapVideo {
     this.destroy();
   }
 
-  on(event, callback:EventListenerObject) {
+  on(event, callback:any) {
     const cbs = this.events[event] || [];
     cbs.push(callback);
     this.events[event] = cbs;
-    this.video.addEventListener(event, callback);
+    if (this.customEvent.indexOf(event) === -1) {
+      this.video.addEventListener(event, callback);
+    }
     return this
   }
 
