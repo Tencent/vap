@@ -60,8 +60,8 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "mlzhangyu" => "mlzhangyu@gmail.com" }
-  # Or just: spec.author    = "mlzhangyu"
+  spec.author             = { "tencent" => "tencent@gmail.com" }
+  # Or just: spec.author    = "tencent"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
