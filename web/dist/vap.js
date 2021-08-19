@@ -1923,7 +1923,7 @@
 
         var timePoint = info && info.mediaTime >= 0 ? info.mediaTime : this.video.currentTime;
         var frame = Math.round(timePoint * this.options.fps) + this.options.offset;
-        var frameCbs = this.events['frame'];
+        var frameCbs = this.events['frame'] || [];
         frameCbs.forEach(function (cb) {
           cb(frame + 1, timePoint);
         });

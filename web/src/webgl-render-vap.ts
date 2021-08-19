@@ -286,7 +286,7 @@ export default class WebglRenderVap extends VapVideo {
   drawFrame(_, info) {
     const timePoint = (info && info.mediaTime >= 0) ? info.mediaTime : this.video.currentTime
     const frame = Math.round(timePoint * this.options.fps) + this.options.offset;
-    const frameCbs = this.events['frame']
+    const frameCbs = this.events['frame'] || []
     frameCbs.forEach(cb => {
       cb(frame + 1, timePoint)
     })
