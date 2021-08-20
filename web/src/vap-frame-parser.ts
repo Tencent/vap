@@ -87,7 +87,7 @@ export default class FrameParser {
               return this.headData[$1]
             });
             try {
-              item.img = await this.loadImg(item.imgUrl + '?t=' + Date.now());
+              item.img = await this.loadImg(item.imgUrl);
             } catch (e) {}
           }
           if (item.img) {

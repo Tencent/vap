@@ -1185,7 +1185,7 @@
                     });
                     _context2.prev = 13;
                     _context2.next = 16;
-                    return this.loadImg(item.imgUrl + '?t=' + Date.now());
+                    return this.loadImg(item.imgUrl);
 
                   case 16:
                     item.img = _context2.sent;
