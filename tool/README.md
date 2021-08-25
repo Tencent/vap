@@ -47,6 +47,18 @@ chmod +x mac_start.sh
 ./mac_start.sh
 ```
 
+### Mac App版
+
+如果不会使用命令行运行，可以下载Mac App版本：[VapToolMac_2.0.2_alpha.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/VapToolMac_2.0.2_alpha.zip)
+
+使用方法：
+1. 解压后双击VapToolMac运行
+2. 首次运行需要授权（会弹框提示无法打开）-> 系统偏好设置 -> 安全与隐私 -> 通用tab -> 点击"仍要打开"
+
+建议使用命令行方式，Mac App版有些问题没解决，比如参数保存问题。
+
+
+
 ## 工具说明
 
 ![](images/vaptool_java_01.png)
