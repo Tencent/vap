@@ -46,7 +46,7 @@ public class ToolUI {
     private static final String TAG = "ToolUI";
     private static final String PROPERTIES_FILE = "setting.properties";
     public static final int WIDTH = 900;
-    public static final int HEIGHT = 700;
+    public static final int HEIGHT = 750;
 
     private final JFrame frame = new JFrame("VAP tool");
     private final ButtonGroup group = new ButtonGroup();
