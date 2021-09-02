@@ -48,7 +48,7 @@ public class ToolUI {
     public static final int WIDTH = 900;
     public static final int HEIGHT = 750;
 
-    private final JFrame frame = new JFrame("VAP tool");
+    private final JFrame frame = new JFrame("VAP tool 2.0.3");
     private final ButtonGroup group = new ButtonGroup();
     private final JRadioButton btnH264 = new JRadioButton("h264");
     private final JRadioButton btnH265 = new JRadioButton("h265");
