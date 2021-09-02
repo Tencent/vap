@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -58,7 +60,15 @@ public class ToolUI {
     private final JTextArea txtAreaLog = new JTextArea();
     private final JTextField textAudioPath = new JTextField();
     private final JPanel panelAudioPath = new JPanel();
+
+    private final JPanel panelBitrate = new JPanel();
     private final JTextField textBitrate = new JTextField();
+    private final JPanel panelCrf = new JPanel();
+    private final JTextField textCrf = new JTextField();
+
+    private final ButtonGroup groupQuality = new ButtonGroup();
+    private final JRadioButton btnBitrate = new JRadioButton("bitrate");
+    private final JRadioButton btnCrf = new JRadioButton("crf");
 
     private final JLabel labelOutInfo = new JLabel();
     private final Dimension labelSize = new Dimension(100, 20);
@@ -66,6 +76,19 @@ public class ToolUI {
     private final VapxUI vapxUI = new VapxUI(this);
 
     private boolean needAudio = false;
+
+    private final ItemListener qualityGroupListener = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent itemEvent) {
+            if (itemEvent.getSource() == btnBitrate) {
+                panelBitrate.setVisible(true);
+                panelCrf.setVisible(false);
+            } else if (itemEvent.getSource() == btnCrf) {
+                panelBitrate.setVisible(false);
+                panelCrf.setVisible(true);
+            }
+        }
+    };
 
     public ToolUI() {
         TLog.logger = new TLog.ITLog() {
@@ -105,8 +128,18 @@ public class ToolUI {
             textInputPath.setText(commonArg.inputPath);
             textAudioPath.setText(commonArg.audioPath);
             textBitrate.setText(String.valueOf(commonArg.bitrate));
+            textCrf.setText(String.valueOf(commonArg.crf));
+            groupQuality.setSelected(commonArg.enableCrf ? btnCrf.getModel() : btnBitrate.getModel(), true);
+            if (commonArg.enableCrf) {
+                panelBitrate.setVisible(false);
+                panelCrf.setVisible(true);
+            } else {
+                panelBitrate.setVisible(true);
+                panelCrf.setVisible(false);
+            }
+
             float scale = commonArg.scale;
-            for (int i=0; i<scaleArray.length ; i++) {
+            for (int i = 0; i < scaleArray.length ; i++) {
                 if (scaleArray[i] == scale) {
                     boxScale.setSelectedIndex(i);
                     break;
@@ -165,7 +198,9 @@ public class ToolUI {
             }
         }
         try {
+            commonArg.enableCrf = groupQuality.isSelected(btnCrf.getModel());
             commonArg.bitrate = Integer.parseInt(textBitrate.getText());
+            commonArg.crf = Integer.parseInt(textCrf.getText());
         } catch (NumberFormatException e) {
             TLog.e(TAG, "bitrate format error " + textBitrate.getText() + e.getMessage());
         }
@@ -231,8 +266,12 @@ public class ToolUI {
         panel.add(getCodecLayout());
         // fps
         panel.add(getFpsLayout());
+        // bitrate/crf switch
+        panel.add(getQualityLayout());
         // bitrate
         panel.add(getBitrateLayout());
+        // crf
+        panel.add(getCrfLayout());
         // scale
         panel.add(getScaleLayout());
         // path
@@ -282,16 +321,48 @@ public class ToolUI {
         return panel;
     }
 
-    private JPanel getBitrateLayout() {
+    private JPanel getQualityLayout() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel label = new JLabel("bitrate");
+
+        JLabel label = new JLabel("quality");
         label.setPreferredSize(labelSize);
         panel.add(label);
-        textBitrate.setPreferredSize(new Dimension(60, 20));
-        panel.add(textBitrate);
-        panel.add(new JLabel("k (default 2000k)"));
+
+        JPanel panelRadio = new JPanel();
+        panelRadio.setLayout(new GridLayout(1, 2));
+        panelRadio.add(btnBitrate);
+        panelRadio.add(btnCrf);
+        groupQuality.add(btnBitrate);
+        groupQuality.add(btnCrf);
+        groupQuality.setSelected(btnBitrate.getModel(), true);
+        btnBitrate.addItemListener(qualityGroupListener);
+        btnCrf.addItemListener(qualityGroupListener);
+        panel.add(panelRadio);
+
         return panel;
+    }
+
+    private JPanel getBitrateLayout() {
+        panelBitrate.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("bitrate");
+        label.setPreferredSize(labelSize);
+        panelBitrate.add(label);
+        textBitrate.setPreferredSize(new Dimension(60, 20));
+        panelBitrate.add(textBitrate);
+        panelBitrate.add(new JLabel("k (default 2000k)"));
+        return panelBitrate;
+    }
+
+    private JPanel getCrfLayout() {
+        panelCrf.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("crf");
+        label.setPreferredSize(labelSize);
+        panelCrf.add(label);
+        textCrf.setPreferredSize(new Dimension(60, 20));
+        panelCrf.add(textCrf);
+        panelCrf.add(new JLabel("[0, 51] (default 29)"));
+        return panelCrf;
     }
 
     private JPanel getScaleLayout() {
@@ -476,6 +547,8 @@ public class ToolUI {
             String scale = props.getProperty("scale", String.valueOf(scaleArray[0]));
             String audioPath = props.getProperty("audioPath", "");
             String bitrate = props.getProperty("bitrate", String.valueOf(commonArg.bitrate));
+            String enableCrf = props.getProperty("enableCrf", String.valueOf(commonArg.enableCrf));
+            String crf = props.getProperty("crf", String.valueOf(commonArg.crf));
 
             int v = Integer.parseInt(version);
             // 版本不符直接返回默认值
@@ -486,6 +559,8 @@ public class ToolUI {
             commonArg.inputPath = inputPath;
             commonArg.audioPath = audioPath;
             commonArg.bitrate = Integer.parseInt(bitrate);
+            commonArg.enableCrf = Boolean.TRUE.toString().equals(enableCrf);
+            commonArg.crf = Integer.parseInt(crf);
         } catch (Exception e) {
             TLog.e(TAG, "getProperties error:" + e.getMessage());
         }
@@ -501,6 +576,8 @@ public class ToolUI {
         props.setProperty("audioPath", commonArg.audioPath == null ? "" : commonArg.audioPath);
         props.setProperty("scale", String.valueOf(commonArg.scale));
         props.setProperty("bitrate", String.valueOf(commonArg.bitrate));
+        props.setProperty("crf", String.valueOf(commonArg.crf));
+        props.setProperty("enableCrf", String.valueOf(commonArg.enableCrf));
         props.store(new OutputStreamWriter(new FileOutputStream(PROPERTIES_FILE), StandardCharsets.UTF_8), "");
     }
 

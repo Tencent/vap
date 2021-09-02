@@ -327,7 +327,6 @@ public class AnimTool {
                         "-crf", Integer.toString(commonArg.crf),
                         "-profile:v", "main",
                         "-level", "4.0",
-                        "-bf", "0",
                         "-tag:v", "hvc1",
                         "-bufsize", "2000k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
@@ -339,7 +338,6 @@ public class AnimTool {
                         "-b:v", commonArg.bitrate + "k",
                         "-profile:v", "main",
                         "-level", "4.0",
-                        "-bf", "0",
                         "-tag:v", "hvc1",
                         "-bufsize", "2000k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
