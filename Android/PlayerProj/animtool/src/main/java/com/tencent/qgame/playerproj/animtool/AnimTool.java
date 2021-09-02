@@ -133,7 +133,7 @@ public class AnimTool {
                         try {
                             createFrame(commonArg, i);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            TLog.e(TAG, "createFrame error:" + e.getMessage());
                         }
                         synchronized (AnimTool.class) {
                             totalP++;
@@ -296,7 +296,7 @@ public class AnimTool {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            TLog.e(TAG, "createVapcJson error:" + e.getMessage());
             throw new RuntimeException();
         }
     }
@@ -309,35 +309,68 @@ public class AnimTool {
      * 创建mp4
      */
     private boolean createMp4(CommonArg commonArg, String videoPath, String frameImagePath) throws Exception {
-        String[] cmd;
-        if (commonArg.enableH265) {
-            cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
-                    "-i", frameImagePath + "%03d.png",
-                    "-pix_fmt", "yuv420p",
-                    "-vcodec", "libx265",
-                    "-b:v", commonArg.bitrate + "k",
-                    "-profile:v", "main",
-                    "-level", "4.0",
-                    "-tag:v", "hvc1",
-                    "-bufsize", "2000k",
-                    "-y", videoPath + TEMP_VIDEO_FILE};
-        } else {
-            cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
-                    "-i", frameImagePath + "%03d.png",
-                    "-pix_fmt", "yuv420p",
-                    "-vcodec", "libx264",
-                    "-b:v", commonArg.bitrate + "k",
-                    "-profile:v", "main",
-                    "-level", "4.0",
-                    "-bf", "0",
-                    "-bufsize", "2000k",
-                    "-y", videoPath + TEMP_VIDEO_FILE};
-        }
 
         TLog.i(TAG, "run createMp4");
-        int result = ProcessUtil.run(cmd);
+        int result = ProcessUtil.run(getFFmpegCmd(commonArg, videoPath, frameImagePath));
         TLog.i(TAG, "createMp4 result=" + (result == 0? "success" : "fail"));
         return result == 0;
+    }
+
+    private String[] getFFmpegCmd(CommonArg commonArg, String videoPath, String frameImagePath) {
+        String[] cmd;
+        if (commonArg.enableH265) {
+            if (commonArg.enableCrf) {
+                cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                        "-i", frameImagePath + "%03d.png",
+                        "-pix_fmt", "yuv420p",
+                        "-vcodec", "libx265",
+                        "-crf", Integer.toString(commonArg.crf),
+                        "-profile:v", "main",
+                        "-level", "4.0",
+                        "-tag:v", "hvc1",
+                        "-bufsize", "2000k",
+                        "-y", videoPath + TEMP_VIDEO_FILE};
+            } else {
+                cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                        "-i", frameImagePath + "%03d.png",
+                        "-pix_fmt", "yuv420p",
+                        "-vcodec", "libx265",
+                        "-b:v", commonArg.bitrate + "k",
+                        "-profile:v", "main",
+                        "-level", "4.0",
+                        "-tag:v", "hvc1",
+                        "-bufsize", "2000k",
+                        "-y", videoPath + TEMP_VIDEO_FILE};
+            }
+
+        } else {
+            if (commonArg.enableCrf) {
+                cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                        "-i", frameImagePath + "%03d.png",
+                        "-pix_fmt", "yuv420p",
+                        "-vcodec", "libx264",
+                        "-crf", Integer.toString(commonArg.crf),
+                        "-profile:v", "main",
+                        "-level", "4.0",
+                        "-bf", "0",
+                        "-bufsize", "2000k",
+                        "-y", videoPath + TEMP_VIDEO_FILE};
+            } else {
+                cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                        "-i", frameImagePath + "%03d.png",
+                        "-pix_fmt", "yuv420p",
+                        "-vcodec", "libx264",
+                        "-b:v", commonArg.bitrate + "k",
+                        "-profile:v", "main",
+                        "-level", "4.0",
+                        "-bf", "0",
+                        "-bufsize", "2000k",
+                        "-y", videoPath + TEMP_VIDEO_FILE};
+            }
+
+        }
+
+        return cmd;
     }
 
     /**

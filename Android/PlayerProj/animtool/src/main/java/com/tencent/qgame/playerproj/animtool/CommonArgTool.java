@@ -138,14 +138,14 @@ class CommonArgTool {
         }
 
         // 计算出 16倍数的视频
-        int[] size = calSizeFill(commonArg.outputW, commonArg.outputH, 0, 0);
+        int[] size = calSizeFill(commonArg.outputW, commonArg.outputH);
         // 得到最终视频宽高
         commonArg.outputW += size[0];
         commonArg.outputH += size[1];
 
         if (commonArg.outputW > 1504 || commonArg.outputH > 1504) {
             String msg = "[Warning] Output video width:" + commonArg.outputW + " or height:" + commonArg.outputH
-                    + " is over 1504. Some devices will display exception, like video turn green!";
+                    + " is over 1504. Some devices will display exception. For example green screen!";
             TLog.w(TAG, msg);
             if (toolListener != null) {
                 toolListener.onWarning(msg);
@@ -170,8 +170,14 @@ class CommonArgTool {
         }
 
         // 码率检查
-        if (commonArg.bitrate <= 0) {
+        if (!commonArg.enableCrf && commonArg.bitrate <= 0) {
             TLog.e(TAG, "bitrate=" + commonArg.bitrate);
+            return false;
+        }
+
+        // crf检查
+        if (commonArg.enableCrf && (commonArg.crf < 0 || commonArg.crf > 51)) {
+            TLog.e(TAG, "crf=" + commonArg.crf + ", no in [0, 51]");
             return false;
         }
 
@@ -181,16 +187,17 @@ class CommonArgTool {
     /**
      * 寻找最小wFill & hFill情况下 整个视频宽高能被16整除
      */
-    private static int[] calSizeFill(int outW, int outH, int wFill, int hFill) {
-        boolean wCheck = (outW + wFill)% 16 == 0;
-        boolean hCheck = (outH + hFill) % 16 == 0;
-
-        if (wCheck && hCheck) {
-            return new int[]{wFill, hFill};
+    private static int[] calSizeFill(int outW, int outH) {
+        int wFill = 0;
+        if (outW % 16 != 0) {
+            wFill = ((outW / 16) + 1) * 16 - outW;
         }
 
-        // 递归计算
-        return calSizeFill(outW, outH, wCheck? wFill : wFill + 1, hCheck? hFill : hFill + 1);
+        int hFill = 0;
+        if (outH % 16 != 0) {
+            hFill = ((outH / 16) + 1) * 16 - outH;
+        }
+        return new int[]{wFill, hFill};
     }
 
 
