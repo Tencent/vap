@@ -133,7 +133,7 @@ public class AnimTool {
                         try {
                             createFrame(commonArg, i);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            TLog.e(TAG, "createFrame error:" + e.getMessage());
                         }
                         synchronized (AnimTool.class) {
                             totalP++;
@@ -296,7 +296,7 @@ public class AnimTool {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            TLog.e(TAG, "createVapcJson error:" + e.getMessage());
             throw new RuntimeException();
         }
     }

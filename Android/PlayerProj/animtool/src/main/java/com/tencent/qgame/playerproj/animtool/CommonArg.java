@@ -27,7 +27,7 @@ public class CommonArg {
 
     public boolean enableH265 = false; // 是否开启h265
 
-    public int fps = 24;
+    public int fps = 25;
 
     public String inputPath; // 输入帧文件地址
 
