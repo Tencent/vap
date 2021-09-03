@@ -393,11 +393,11 @@ public class AnimTool {
     /**
      * 合并vapc.bin到mp4里
      */
-    private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String tempVideoFile, String videoPath) throws Exception{
-        String[] cmd = new String[] {commonArg.mp4editCmd, "--insert", ":"+inputFile+":1", videoPath + tempVideoFile, videoPath + VIDEO_FILE};
+    private boolean mergeBin2Mp4(CommonArg commonArg, String inputFile, String tempVideoFile, String videoPath) throws Exception {
+        String[] cmd = new String[]{commonArg.mp4editCmd, "--insert", ":" + inputFile + ":3", videoPath + tempVideoFile, videoPath + VIDEO_FILE};
         TLog.i(TAG, "run mergeBin2Mp4");
         int result = ProcessUtil.run(cmd);
-        TLog.i(TAG, "mergeBin2Mp4 result=" + (result == 0? "success" : "fail"));
+        TLog.i(TAG, "mergeBin2Mp4 result=" + (result == 0 ? "success" : "fail"));
         return result == 0;
     }
 
