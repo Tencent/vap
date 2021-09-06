@@ -2,16 +2,16 @@
 
 VapTool Java版本支持 Windows 与Mac
 
-版本: [tool2.0.3](https://github.com/Tencent/vap/releases/tag/tool2.0.3)
+版本: [tool2.0.4](https://github.com/Tencent/vap/releases/tag/tool2.0.4)
 
-os|download|description
----|---|---
-Windows|[VapTool\_win\_2.0.3.zip](https://github.com/Tencent/vap/releases/download/tool2.0.3/VapTool_win_2.0.3.zip)|包含jre 可直接运行
-Mac|[VapTool\_mac\_2.0.3.zip](https://github.com/Tencent/vap/releases/download/tool2.0.3/VapTool_mac_2.0.3.zip)|未含jre 但Mac基本自带java 
+
+Windows: [vaptool_win_v2.0.4.zip](https://github.com/Tencent/vap/releases/download/tool2.0.4/vaptool_win_v2.0.4.zip)(包含jre 可直接运行)
+
+Mac: [vaptool_mac_v2.0.4.zip](https://github.com/Tencent/vap/releases/download/tool2.0.4/vaptool_mac_v2.0.4.zip)(未含jre 但Mac基本自带java)
 
 运行包中包含其它工具，可以单独下载jar文件，替换后运行：
 
-download jar: [animtool_2.0.3.zip](https://github.com/Tencent/vap/releases/download/tool2.0.3/animtool_2.0.3.zip)
+download jar: [animtool_jar_v2.0.4.zip](https://github.com/Tencent/vap/releases/download/tool2.0.4/animtool_jar_v2.0.4.zip)
 
 测试素材下载：[test_demo.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/test_demo.zip)
 
@@ -49,7 +49,7 @@ chmod +x mac_start.sh
 
 ### Mac App版
 
-如果不会使用命令行运行，可以下载Mac App版本：[VapTool_mac_app_2.0.3.zip](https://github.com/Tencent/vap/releases/download/tool2.0.3/VapTool_mac_app_2.0.3.zip)
+如果不会使用命令行运行，可以下载Mac App版本：[vaptool_mac_app_v2.0.4.zip](https://github.com/Tencent/vap/releases/download/tool2.0.4/vaptool_mac_app_v2.0.4.zip)
 
 使用方法：
 1. 解压后双击VapToolMac运行
@@ -70,7 +70,7 @@ ps:建议使用命令行方式，Mac App版有些问题没解决，比如参数�
 
 * fps: 每秒播放多少帧;
 * quality: 清晰度参数选择，提供 bitrate/crf 两个选项 
-	* bitrate(default): 设置视频码率，默认2000k，数字越大越清晰，但文件也越大, 相比crf能更精确控制文件大小, 推荐使用bitrate设置;
+	* bitrate(default): 设置视频码率，默认2000k，数字越大越清晰，但文件也越大, 相比crf能更精确控制文件大小;
 	* crf: 画面质量参数，取值范围[0,51] 默认29 (0表示无损压缩，文件会非常大), 对清晰度要求比较高可以控制crf参数，设置一个较小的值能显著提高视频清晰度，但文件大小不好控制（文件会比较大）。
 * alpha scale: 视频alpha区域是否缩放(默认缩放0.5)，目前可选: 缩放0.5;不缩放1. 缩放视频能最终减小视频分辨率，提高兼容性;
 * frames path: 视频帧存放的位置
