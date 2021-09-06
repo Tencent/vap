@@ -75,7 +75,8 @@ class AudioPlayer(val player: AnimPlayer) {
         }
         extractor.selectTrack(audioIndex)
         val format = extractor.getTrackFormat(audioIndex)
-        val mime =format.getString(MediaFormat.KEY_MIME) ?: ""
+        val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
+        ALog.i(TAG, "audio mime=$mime")
         if (!MediaUtil.checkSupportCodec(mime)) {
             ALog.e(TAG, "mime=$mime not support")
             release()

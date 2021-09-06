@@ -30,10 +30,7 @@ object MediaUtil {
     private var isTypeMapInit = false
     private val supportTypeMap = HashMap<String, Boolean>()
 
-    val isDeviceSupportHevc by lazy {
-        checkSupportCodec("video/hevc")
-    }
-
+    const val MIME_HEVC = "video/hevc"
 
     fun getExtractor(file: IFileContainer): MediaExtractor {
         val extractor = MediaExtractor()
@@ -78,6 +75,7 @@ object MediaUtil {
     /**
      * 检查设备解码支持类型
      */
+    @Synchronized
     fun checkSupportCodec(mimeType: String): Boolean {
         if (!isTypeMapInit) {
             isTypeMapInit = true
