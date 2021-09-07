@@ -61,6 +61,12 @@ VAP交流群：719738292
 
 [常见问题解答](https://github.com/Tencent/vap/wiki/FAQ)
 
+
+## 已接入APP
+
+![icons](https://user-images.githubusercontent.com/3285051/132276577-470ea27b-22d2-4af4-9c82-7c604180264d.png)
+
+
 ## License
 
 VAP is under the MIT license. See the [LICENSE](./LICENSE.txt) file for details.
