@@ -106,17 +106,6 @@ VAP还支持在动画中融入自定义属性，比如用户名称, 头像。我
 ![](./images/pic5.png)
 
 
-## 已接入APP
-
-
-![](./images/icons.png)
-
-## QQ交流群
-遇到任何问题或者有好的建议，欢迎提issues，或者加入QQ群交流
-
-![](./images/qq_group.png)
-
-
 ## License
 
 VAP is under the MIT license. See the LICENSE file for details.
