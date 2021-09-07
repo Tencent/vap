@@ -47,7 +47,7 @@ VAP|***1.5M***|***硬解***|***全支持***
 
 素材制作工具：[VapTool](./tool) (工具使用说明在tool目录下)
 
-播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview0.1.0/vap-player-0.1.0.dmg), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview0.1.0/vap-player_0.1.0.exe)
+播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.1.0/vap-player-1.1.0.dmg), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.1.0/vap-player_1.1.0.exe)
 
 
 ## QQ交流群
@@ -66,6 +66,7 @@ VAP交流群：719738292
 
 ![icons](https://user-images.githubusercontent.com/3285051/132276577-470ea27b-22d2-4af4-9c82-7c604180264d.png)
 
+需要显示自己App图标，可以加入QQ群，群公告里有App图标加入说明
 
 ## License
 
