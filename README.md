@@ -64,7 +64,8 @@ VAP交流群：719738292
 
 ## 已接入APP
 
-![icons](https://user-images.githubusercontent.com/3285051/132276577-470ea27b-22d2-4af4-9c82-7c604180264d.png)
+![icons](https://user-images.githubusercontent.com/3285051/132648537-b5c9d764-7df4-4093-a91c-e1e07e313b74.png)
+
 
 需要显示自己App图标，可以加入QQ群，群公告里有App图标加入说明
 
