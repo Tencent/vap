@@ -133,16 +133,18 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 /// 使用WrapView，支持ContentMode
 - (void)playVapWithWrapView {
+    //p_setupContentModeWithConfig
+    /// 某些Video 在计算宽高可能会出现NaN
     static BOOL pause = NO;
     QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
     wrapView.center = self.view.center;
     wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;
     wrapView.autoDestoryAfterFinish = YES;
     [self.view addSubview:wrapView];
-    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
+    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/nanVideo.mp4", [[NSBundle mainBundle] resourcePath]];
     [wrapView playHWDMP4:resPath repeatCount:-1 delegate:self];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doNothingonImageviewTap:)];
-    
+
     __weak __typeof(wrapView) weakWrapView = wrapView;
     [wrapView addVapGesture:tap callback:^(UIGestureRecognizer *gestureRecognizer, BOOL insideSource, QGVAPSourceDisplayItem *source) {
         if ((pause = !pause)) {

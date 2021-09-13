@@ -128,7 +128,11 @@
                 realHeight = layoutHeight;
                 realWidth = videoRatio * realHeight;
             }
-            
+            // realWidth realHeight maybe NaN
+//            realWidth   = isnan(realWidth);
+//            realHeight  = isnan(realHeight);
+            realWidth  = MAX(0, realWidth);
+            realHeight = MAX(0, realHeight);
             self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
             self.vapView.center = self.center;
         }
@@ -141,7 +145,9 @@
                 realHeight = layoutHeight;
                 realWidth = videoRatio * realHeight;
             }
-            
+            // realWidth realHeight maybe NaN
+            realWidth  = MAX(0, realWidth);
+            realHeight = MAX(0, realHeight);
             self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
             self.vapView.center = self.center;
         }
