@@ -80,7 +80,7 @@
     paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
     NSDictionary *attr = @{NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName:color};
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
-    rect.origin.y = (rect.size.height - font.lineHeight)/2.0;
+    rect.origin.y = (rect.size.height - textSize.height)/2.0;
     [textStr drawWithRect:rect options:NSStringDrawingUsesLineFragmentOrigin attributes:attr context:nil];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -165,7 +165,7 @@
     CGSize stringSize = [text sizeWithAttributes:@{NSFontAttributeName:designedFont}];
     CGFloat fontSize = designedFontSize;
     NSInteger remainExcuteCount = 100;
-    while (stringSize.width > fitFrame.size.width && fontSize > 2.0 && remainExcuteCount > 0) {
+    while ((stringSize.width > fitFrame.size.width || stringSize.height > fitFrame.size.height) && fontSize > 2.0 && remainExcuteCount > 0) {
         fontSize *= 0.9;
         remainExcuteCount -= 1;
         designedFont = isBold? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
