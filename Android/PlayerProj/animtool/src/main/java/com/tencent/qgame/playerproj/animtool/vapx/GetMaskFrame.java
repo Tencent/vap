@@ -122,7 +122,7 @@ public class GetMaskFrame {
             // 只按宽度进行判断防止横跳
             if (frame.frame.w > src.w) {
                 src.w = frame.frame.w;
-                src.h = frame.mFrame.h;
+                src.h = frame.frame.h;
             }
         }
         return frame;
