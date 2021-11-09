@@ -116,7 +116,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         if (onSizeChangedCalled) {
             uiHandler.post(prepareTextureViewRunnable)
         } else {
-            ALog.e(TAG, "onSizeChanged not Called")
+            ALog.e(TAG, "onSizeChanged not called")
             needPrepareTextureView = true
         }
     }
