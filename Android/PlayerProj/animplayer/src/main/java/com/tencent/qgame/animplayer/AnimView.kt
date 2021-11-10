@@ -242,6 +242,14 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         scaleTypeUtil.scaleTypeImpl = scaleType
     }
 
+    /**
+     * @param isMute true 静音
+     */
+    override fun setMute(isMute: Boolean) {
+        ALog.e(TAG, "set mute=$isMute")
+        player.isMute = isMute
+    }
+
     override fun startPlay(file: File) {
         try {
             val fileContainer = FileContainer(file)
@@ -273,7 +281,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
                 lastFile = fileContainer
                 player.startPlay(fileContainer)
             } else {
-                ALog.i(TAG, "is running can not start")
+                ALog.e(TAG, "is running can not start")
             }
         }
     }
