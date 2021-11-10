@@ -47,7 +47,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     companion object {
         private const val TAG = "${Constant.TAG}.AnimView"
     }
-    private val player: AnimPlayer
+    private lateinit var player: AnimPlayer
 
     private val uiHandler by lazy { Handler(Looper.getMainLooper()) }
     private var surface: SurfaceTexture? = null
@@ -61,8 +61,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         object : IAnimListener {
 
             override fun onVideoConfigReady(config: AnimConfig): Boolean {
-                scaleTypeUtil.videoWidth = config.width
-                scaleTypeUtil.videoHeight = config.height
+                scaleTypeUtil.setVideoSize(config.width, config.height)
                 return animListener?.onVideoConfigReady(config) ?: super.onVideoConfigReady(config)
             }
 
@@ -91,6 +90,20 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
+    // 保证AnimView已经布局完成才加入TextureView
+    private var onSizeChangedCalled = false
+    private var needPrepareTextureView = false
+    private val prepareTextureViewRunnable = Runnable {
+        removeAllViews()
+        innerTextureView = InnerTextureView(context).apply {
+            player = this@AnimView.player
+            isOpaque = false
+            surfaceTextureListener = this@AnimView
+            layoutParams = scaleTypeUtil.getLayoutParam(this)
+        }
+        addView(innerTextureView)
+    }
+
 
     init {
         hide()
@@ -100,15 +113,11 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
     override fun prepareTextureView() {
-        uiHandler.post {
-            removeAllViews()
-            innerTextureView = InnerTextureView(context).apply {
-                player = this@AnimView.player
-                isOpaque = false
-                surfaceTextureListener = this@AnimView
-                layoutParams = scaleTypeUtil.getLayoutParam(this)
-            }
-            addView(innerTextureView)
+        if (onSizeChangedCalled) {
+            uiHandler.post(prepareTextureViewRunnable)
+        } else {
+            ALog.e(TAG, "onSizeChanged not called")
+            needPrepareTextureView = true
         }
     }
 
@@ -136,15 +145,21 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        ALog.i(TAG, "onSurfaceTextureAvailable")
+        ALog.i(TAG, "onSurfaceTextureAvailable width=$width height=$height")
         this.surface = surface
         player.onSurfaceTextureAvailable(width, height)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        scaleTypeUtil.layoutWidth = w
-        scaleTypeUtil.layoutHeight = h
+        ALog.i(TAG, "onSizeChanged w=$w, h=$h")
+        scaleTypeUtil.setLayoutSize(w, h)
+        onSizeChangedCalled = true
+        // 需要保证onSizeChanged被调用
+        if (needPrepareTextureView) {
+            needPrepareTextureView = false
+            prepareTextureView()
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -152,7 +167,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         super.onAttachedToWindow()
         player.isDetachedFromWindow = false
         // 自动恢复播放
-        if ((player.playLoop ?: 0) > 0) {
+        if (player.playLoop > 0) {
             lastFile?.apply {
                 startPlay(this)
             }
@@ -167,6 +182,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
         player.isDetachedFromWindow = true
         player.onSurfaceTextureDestroyed()
+        onSizeChangedCalled = false
     }
 
 
@@ -226,6 +242,14 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         scaleTypeUtil.scaleTypeImpl = scaleType
     }
 
+    /**
+     * @param isMute true 静音
+     */
+    override fun setMute(isMute: Boolean) {
+        ALog.e(TAG, "set mute=$isMute")
+        player.isMute = isMute
+    }
+
     override fun startPlay(file: File) {
         try {
             val fileContainer = FileContainer(file)
@@ -257,7 +281,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
                 lastFile = fileContainer
                 player.startPlay(fileContainer)
             } else {
-                ALog.i(TAG, "is running can not start")
+                ALog.e(TAG, "is running can not start")
             }
         }
     }

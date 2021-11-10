@@ -50,6 +50,8 @@ interface IAnimView {
 
     fun setScaleType(scaleType: IScaleType)
 
+    fun setMute(isMute: Boolean)
+
     fun startPlay(file: File)
 
     fun startPlay(assetManager: AssetManager, assetsPath: String)

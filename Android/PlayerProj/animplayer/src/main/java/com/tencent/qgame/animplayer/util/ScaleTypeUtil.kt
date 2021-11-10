@@ -175,16 +175,23 @@ class ScaleTypeUtil {
     private val scaleTypeFitXY by lazy { ScaleTypeFitXY() }
     private val scaleTypeFitCenter by lazy { ScaleTypeFitCenter() }
     private val scaleTypeCenterCrop by lazy { ScaleTypeCenterCrop() }
+    private var layoutWidth = 0
+    private var layoutHeight = 0
+    private var videoWidth = 0
+    private var videoHeight = 0
 
     var currentScaleType = ScaleType.FIT_XY
     var scaleTypeImpl: IScaleType? = null
 
-    var layoutWidth = 0
-    var layoutHeight = 0
+    fun setLayoutSize(w: Int, h: Int) {
+        layoutWidth = w
+        layoutHeight = h
+    }
 
-    var videoWidth = 0
-    var videoHeight = 0
-
+    fun setVideoSize(w: Int, h: Int) {
+        videoWidth = w
+        videoHeight = h
+    }
 
     /**
      * 获取实际视频容器宽高

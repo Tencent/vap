@@ -51,6 +51,7 @@ class AnimPlayer(val animView: IAnimView) {
     var isSurfaceAvailable = false
     var startRunnable: Runnable? = null
     var isStartRunning = false // 启动时运行状态
+    var isMute = false // 是否静音
 
     val configManager = AnimConfigManager(this)
     val pluginManager = AnimPluginManager(this)
@@ -106,11 +107,13 @@ class AnimPlayer(val animView: IAnimView) {
             if (isSurfaceAvailable) {
                 isStartRunning = false
                 decoder?.start(fileContainer)
-                audioPlayer?.start(fileContainer)
+                if (!isMute) {
+                    audioPlayer?.start(fileContainer)
+                }
             } else {
                  startRunnable = Runnable {
                     innerStartPlay(fileContainer)
-                }
+                 }
                 animView.prepareTextureView()
             }
         }
