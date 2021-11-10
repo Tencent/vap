@@ -181,6 +181,12 @@
 }
 
 - (void)setupAudioPlayerIfNeed {
+    if ([_decoderDelegate respondsToSelector:@selector(shouldSetupAudioPlayer)]) {
+        BOOL should = [_decoderDelegate shouldSetupAudioPlayer];
+        if (!should) {
+            return;
+        }
+    }
     
     if ([_fileInfo isKindOfClass:[QGMP4HWDFileInfo class]]) {
         QGMP4ParserProxy *mp4Parser = [(QGMP4HWDFileInfo *)_fileInfo mp4Parser];

@@ -74,6 +74,11 @@
     [self.vapView resumeHWDMP4];
 }
 
+- (void)setMute:(BOOL)isMute {
+    [self initVAPViewIfNeed];
+    [self.vapView setMute:isMute];
+}
+
 - (void)addVapGesture:(UIGestureRecognizer *)gestureRecognizer callback:(VAPGestureEventBlock)handler {
     [self initVAPViewIfNeed];
     [self.vapView addVapGesture:gestureRecognizer callback:handler];

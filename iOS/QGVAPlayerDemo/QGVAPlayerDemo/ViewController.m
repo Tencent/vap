@@ -121,6 +121,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     mp4View.hwd_enterBackgroundOP = HWDMP4EBOperationTypePauseAndResume; // ⚠️ 建议设置该选项时对机型进行判断，屏蔽低端机
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onImageviewTap:)];
     [mp4View addGestureRecognizer:tap];
+    [mp4View setMute:YES];
     [mp4View playHWDMP4:mp4Path repeatCount:-1 delegate:self];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -139,7 +140,8 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     wrapView.contentMode = QGVAPWrapViewContentModeAspectFit;
     wrapView.autoDestoryAfterFinish = YES;
     [self.view addSubview:wrapView];
-    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/demo.mp4", [[NSBundle mainBundle] resourcePath]];
+    NSString *resPath = [NSString stringWithFormat:@"%@/Resource/vap.mp4", [[NSBundle mainBundle] resourcePath]];
+    [wrapView setMute:YES];
     [wrapView playHWDMP4:resPath repeatCount:-1 delegate:self];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doNothingonImageviewTap:)];
     

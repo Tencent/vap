@@ -66,6 +66,9 @@ typedef NS_ENUM(NSUInteger, HWDMP4EBOperationType) {
 
 //当素材不包含vapc box时，只有在播放素材前调用此接口设置enable才可播放素材，否则素材无法播放
 - (void)enableOldVersion:(BOOL)enable;
+
+//设置是否静音播放素材，注：在播放开始时进行设置，播放过程中设置无效，循环播放则设置后的下一次播放开始生效
+- (void)setMute:(BOOL)isMute;
 @end
 
 @interface UIView (VAPGesture)

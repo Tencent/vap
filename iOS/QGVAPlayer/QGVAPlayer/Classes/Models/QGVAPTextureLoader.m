@@ -49,7 +49,7 @@
     if (@available(iOS 10.0, *)) {
         MTKTextureLoader *loader = [[MTKTextureLoader alloc] initWithDevice:device];
         NSError *error = nil;
-        id<MTLTexture> texture = [loader newTextureWithCGImage:image.CGImage options:@{MTKTextureLoaderOptionOrigin : MTKTextureLoaderOriginFlippedVertically} error:&error];
+        id<MTLTexture> texture = [loader newTextureWithCGImage:image.CGImage options:@{MTKTextureLoaderOptionOrigin : MTKTextureLoaderOriginFlippedVertically,MTKTextureLoaderOptionSRGB:@(NO)} error:&error];
         if (!texture || error) {
             VAP_Error(kQGVAPModuleCommon, @"loadTexture error:%@", error);
             return nil;
