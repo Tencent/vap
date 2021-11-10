@@ -1,3 +1,13 @@
+## iOS 1.0.15
+
+**bugfix**
+
+- 修改SRGB格式的图像渲染后颜色变深[#issue124](https://github.com/Tencent/vap/issues/124)
+
+**feature**
+
+- UIView(VAP)及QGVAPWrapView 增加setMute接口，设置是否静音播放素材，注：在播放开始时进行设置，播放过程中设置无效，循环播放则设置后的下一次播放开始生效
+
 ## iOS 1.0.14
 
 **bugfix**
@@ -5,7 +15,6 @@
 - 修改vap 取默认帧率的逻辑，添加从vapc box获取帧率操作，若vapc box取到帧率为0，则继续沿用旧有的逻辑，即利用帧数与时长计算帧率
 - 修复MP4Parser解析box长度逻辑不完成导致解析box异常，无法播放素材问题[#issue133](https://github.com/Tencent/vap/issues/133)
 - UIView(VAP) 增加enableOldVersion接口，若素材非vap工具制作（不包含vapc box），则必须在播放前调用此接口设置enable，才可播放
-
 
 
 ## iOS 1.0.13

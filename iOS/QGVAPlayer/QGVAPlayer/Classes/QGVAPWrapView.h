@@ -63,6 +63,9 @@ typedef NS_ENUM(NSUInteger, QGVAPWrapViewContentMode) {
 - (void)pauseHWDMP4;
 - (void)resumeHWDMP4;
 
+//设置是否静音播放素材，注：在播放开始时进行设置，播放过程中设置无效
+- (void)setMute:(BOOL)isMute;
+
 //增加点击的手势识别, 如果开启了autoDestoryAfterFinish，那么手势将在播放完毕后失效
 - (void)addVapTapGesture:(VAPGestureEventBlock)handler;
 //手势识别通用接口, 如果开启了autoDestoryAfterFinish，那么手势将在播放完毕后失效

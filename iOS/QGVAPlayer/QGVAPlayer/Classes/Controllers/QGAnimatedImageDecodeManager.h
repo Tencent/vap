@@ -31,6 +31,7 @@
 
 @optional
 
+- (BOOL)shouldSetupAudioPlayer;
 /**
  到文件末尾时被调用
 
