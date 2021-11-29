@@ -35,6 +35,8 @@ class AnimPlayer(val animView: IAnimView) {
             decoder?.fps = value
             field = value
         }
+    // 设置默认的fps <= 0 表示以vapc配置为准 > 0  表示以此设置为准
+    var defaultFps: Int = 0
     var playLoop: Int = 0
         set(value) {
             decoder?.playLoop = value
@@ -84,7 +86,7 @@ class AnimPlayer(val animView: IAnimView) {
         }
         // 在线程中解析配置
         decoder?.renderThread?.handler?.post {
-            val result = configManager.parseConfig(fileContainer, enableVersion1, videoMode, fps)
+            val result = configManager.parseConfig(fileContainer, enableVersion1, videoMode, defaultFps)
             if (result != Constant.OK) {
                 isStartRunning = false
                 decoder?.onFailed(result, Constant.getErrorMsg(result))
