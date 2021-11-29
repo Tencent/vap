@@ -144,6 +144,7 @@ class AnimConfigManager(val player: AnimPlayer) {
                 this.defaultVideoMode = defaultVideoMode
                 fps = defaultFps
             }
+            player.fps = config.fps
             return true
         }
 

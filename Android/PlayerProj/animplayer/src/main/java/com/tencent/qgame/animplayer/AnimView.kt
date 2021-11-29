@@ -231,7 +231,8 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun setFps(fps: Int) {
-        player.fps = fps
+        ALog.i(TAG, "setFps=$fps")
+        player.defaultFps = fps
     }
 
     override fun setScaleType(type : ScaleType) {
