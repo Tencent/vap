@@ -320,7 +320,7 @@ public class AnimTool {
         String[] cmd;
         if (commonArg.enableH265) {
             if (commonArg.enableCrf) {
-                cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                cmd = new String[] {commonArg.ffmpegCmd, "-framerate", String.valueOf(commonArg.fps),
                         "-i", frameImagePath + "%03d.png",
                         "-pix_fmt", "yuv420p",
                         "-vcodec", "libx265",
@@ -331,7 +331,7 @@ public class AnimTool {
                         "-bufsize", "2000k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
             } else {
-                cmd = new String[] {commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                cmd = new String[] {commonArg.ffmpegCmd, "-framerate", String.valueOf(commonArg.fps),
                         "-i", frameImagePath + "%03d.png",
                         "-pix_fmt", "yuv420p",
                         "-vcodec", "libx265",
@@ -345,7 +345,7 @@ public class AnimTool {
 
         } else {
             if (commonArg.enableCrf) {
-                cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                cmd = new String[]{commonArg.ffmpegCmd, "-framerate", String.valueOf(commonArg.fps),
                         "-i", frameImagePath + "%03d.png",
                         "-pix_fmt", "yuv420p",
                         "-vcodec", "libx264",
@@ -356,7 +356,7 @@ public class AnimTool {
                         "-bufsize", "2000k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
             } else {
-                cmd = new String[]{commonArg.ffmpegCmd, "-r", String.valueOf(commonArg.fps),
+                cmd = new String[]{commonArg.ffmpegCmd, "-framerate", String.valueOf(commonArg.fps),
                         "-i", frameImagePath + "%03d.png",
                         "-pix_fmt", "yuv420p",
                         "-vcodec", "libx264",
