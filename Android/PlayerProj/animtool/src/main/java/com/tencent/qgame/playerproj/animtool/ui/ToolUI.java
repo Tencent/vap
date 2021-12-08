@@ -44,7 +44,7 @@ import javax.swing.SpinnerNumberModel;
 public class ToolUI {
 
     private static final String TAG = "ToolUI";
-    private static final String TOOL_VERSION = "VAP tool 2.0.4";
+    private static final String TOOL_VERSION = "VAP tool 2.0.6";
     private static final String PROPERTIES_FILE = "setting.properties";
     public static final int WIDTH = 900;
     public static final int HEIGHT = 750;
