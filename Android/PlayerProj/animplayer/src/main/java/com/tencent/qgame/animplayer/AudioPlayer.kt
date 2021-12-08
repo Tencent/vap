@@ -180,8 +180,8 @@ class AudioPlayer(val player: AnimPlayer) {
     }
 
     fun destroy() {
-        needDestroy = true
         if (isRunning) {
+            needDestroy = true
             stop()
         } else {
             destroyInner()

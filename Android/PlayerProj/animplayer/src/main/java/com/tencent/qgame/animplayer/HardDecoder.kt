@@ -372,8 +372,8 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     }
 
     override fun destroy() {
-        needDestroy = true
         if (isRunning) {
+            needDestroy = true
             stop()
         } else {
             destroyInner()
@@ -381,6 +381,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     }
 
     private fun destroyInner() {
+        ALog.i(TAG, "destroyInner")
         renderThread.handler?.post {
             player.pluginManager.onDestroy()
             render?.destroyRender()
