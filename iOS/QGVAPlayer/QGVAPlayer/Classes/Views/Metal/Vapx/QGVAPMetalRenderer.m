@@ -120,6 +120,7 @@
     }
     if (self.vertexBuffer == nil || self.yuvMatrixBuffer == nil) {
         VAP_Error(kQGVAPModuleCommon, @"quit rendering cuz vertexBuffer:%p or yuvMatrixBuffer:%p is nil!", self.vertexBuffer, self.yuvMatrixBuffer);
+        [renderEncoder endEncoding];
         return ;
     }
     
