@@ -2,16 +2,16 @@
 
 VapTool Java版本支持 Windows 与Mac
 
-版本: [tool2.0.5](https://github.com/Tencent/vap/releases/tag/tool2.0.5)
+版本: [tool2.0.6](https://github.com/Tencent/vap/releases/tag/tool2.0.6)
 
 
-Windows: [vaptool_win_v2.0.5.zip](https://github.com/Tencent/vap/releases/download/tool2.0.5/vaptool_win_v2.0.5.zip)(包含jre 可直接运行)
+Windows: [vaptool_win_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_win_v2.0.6.zip)(包含jre 可直接运行)
 
-Mac: [vaptool_mac_v2.0.5.zip](https://github.com/Tencent/vap/releases/download/tool2.0.5/vaptool_mac_v2.0.5.zip)(未含jre 但Mac基本自带java)
+Mac: [vaptool_mac_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_mac_v2.0.6.zip)(未含jre 但Mac基本自带java)
 
 运行包中包含其它工具，可以单独下载jar文件，替换后运行：
 
-download jar: [animtool_jar_v2.0.5.zip](https://github.com/Tencent/vap/releases/download/tool2.0.5/animtool_jar_v2.0.5.zip)
+download jar: [animtool_jar_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/animtool_jar_v2.0.6.zip)
 
 测试素材下载：[test_demo.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/test_demo.zip)
 
@@ -49,7 +49,7 @@ chmod +x mac_start.sh
 
 ### Mac App版
 
-如果不会使用命令行运行，可以下载Mac App版本：[vaptool_mac_app_v2.0.5.zip](https://github.com/Tencent/vap/releases/download/tool2.0.5/vaptool_mac_app_v2.0.5.zip)
+如果不会使用命令行运行，可以下载Mac App版本：[vaptool_mac_app_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_mac_app_v2.0.6.zip)
 
 使用方法：
 1. 解压后双击VapToolMac运行
