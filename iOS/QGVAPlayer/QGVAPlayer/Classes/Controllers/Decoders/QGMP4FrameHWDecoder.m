@@ -195,7 +195,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     NSData *packetData = [_mp4Parser readPacketOfSample:frameIndex];
     if (!packetData.length) {
         _finishFrameIndex = frameIndex;
-        [self onInputEnd];
+        [self _onInputEnd];
         return;
     }
     
