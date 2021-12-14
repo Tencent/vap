@@ -1,3 +1,10 @@
+## iOS 1.0.16
+
+**bugfix**
+
+- MTLRenderCommandEncoder释放前需要调用endEncoding方法。
+- 修改QGMP4FrameHWDecoder在解码停止调用onInputEnd为_onInputEnd，即将停止任务立即执行，避免在低端机上解码性能太差，停止任务未及时执行导致finishFrameIndex设置有误陷入渲染死循环。
+
 ## iOS 1.0.15
 
 **bugfix**
