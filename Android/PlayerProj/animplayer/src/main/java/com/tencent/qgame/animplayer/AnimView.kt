@@ -182,7 +182,6 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
         player.isDetachedFromWindow = true
         player.onSurfaceTextureDestroyed()
-        onSizeChangedCalled = false
     }
 
 

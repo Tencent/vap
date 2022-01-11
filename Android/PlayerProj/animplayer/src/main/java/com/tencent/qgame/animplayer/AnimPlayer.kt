@@ -60,6 +60,7 @@ class AnimPlayer(val animView: IAnimView) {
 
     fun onSurfaceTextureDestroyed() {
         isSurfaceAvailable = false
+        isStartRunning = false
         decoder?.destroy()
         audioPlayer?.destroy()
     }
