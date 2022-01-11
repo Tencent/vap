@@ -286,6 +286,13 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
+    override fun pausePlay() {
+        player.pause()
+    }
+
+    override fun resumePlay() {
+        player.resume()
+    }
 
     override fun stopPlay() {
         player.stopPlay()

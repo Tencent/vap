@@ -58,6 +58,10 @@ interface IAnimView {
 
     fun startPlay(fileContainer: IFileContainer)
 
+    fun pausePlay()
+
+    fun resumePlay()
+
     fun stopPlay()
 
     fun isRunning(): Boolean

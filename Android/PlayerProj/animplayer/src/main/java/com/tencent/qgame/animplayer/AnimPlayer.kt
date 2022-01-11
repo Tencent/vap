@@ -122,6 +122,15 @@ class AnimPlayer(val animView: IAnimView) {
         }
     }
 
+    fun pause() {
+        decoder?.pause()
+        audioPlayer?.stop()
+    }
+
+    fun resume() {
+        decoder?.resume()
+    }
+
     fun stopPlay() {
         decoder?.stop()
         audioPlayer?.stop()

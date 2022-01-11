@@ -69,14 +69,27 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
     var playLoop = 0 // 循环播放次数
     var isRunning = false // 是否正在运行
     var isStopReq = false // 是否需要停止
+    var isPauseReq = false // 是否需要暂停
     val speedControlUtil by lazy { SpeedControlUtil() }
 
     abstract fun start(fileContainer: IFileContainer)
+
+    abstract fun start()
 
     fun stop() {
         isStopReq = true
     }
 
+    fun pause() {
+        isPauseReq = true
+    }
+
+    fun resume() {
+        if (isPauseReq) {
+            isPauseReq = false
+            start()
+        }
+    }
     abstract fun destroy()
 
     fun prepareThread(): Boolean {

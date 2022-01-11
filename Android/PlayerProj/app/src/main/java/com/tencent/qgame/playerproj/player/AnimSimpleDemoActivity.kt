@@ -158,7 +158,7 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
 
 
     private fun initLog() {
-        ALog.isDebug = false
+        ALog.isDebug = true
         ALog.log = object : IALog {
             override fun i(tag: String, msg: String) {
                 Log.i(tag, msg)
@@ -192,6 +192,18 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
          */
         btnStop.setOnClickListener {
             animView.stopPlay()
+        }
+        /**
+         * 暂停播放按钮
+         */
+        btnPause.setOnClickListener {
+            animView.pausePlay()
+        }
+        /**
+         * 恢复视频按钮
+         */
+        btnResume.setOnClickListener {
+            animView.resumePlay()
         }
     }
 

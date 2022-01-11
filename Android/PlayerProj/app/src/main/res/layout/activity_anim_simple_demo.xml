@@ -15,15 +15,34 @@
         android:orientation="horizontal"
         android:visibility="gone">
         <Button
+            android:padding="20dp"
+            android:layout_margin="10dp"
             android:id="@+id/btnPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PLAY"/>
         <Button
+            android:padding="20dp"
+            android:layout_margin="10dp"
             android:id="@+id/btnStop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="STOP"/>
+
+        <Button
+            android:padding="20dp"
+            android:layout_margin="10dp"
+            android:id="@+id/btnPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PAUSE"/>
+        <Button
+            android:padding="20dp"
+            android:layout_margin="10dp"
+            android:id="@+id/btnResume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RESUME"/>
 
     </LinearLayout>
 

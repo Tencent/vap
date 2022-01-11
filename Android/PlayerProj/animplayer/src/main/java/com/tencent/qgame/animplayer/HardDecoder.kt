@@ -49,6 +49,15 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     private var needYUV = false
     private var outputFormat: MediaFormat? = null
 
+    private val lock = java.lang.Object()
+
+    override fun start() {
+        synchronized(lock) {
+            ALog.d(TAG, "lock notifyAll")
+            lock.notifyAll()
+        }
+    }
+
     override fun start(fileContainer: IFileContainer) {
         isStopReq = false
         needDestroy = false
@@ -197,6 +206,16 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                 ALog.i(TAG, "stop decode")
                 release(decoder, extractor)
                 return
+            }
+
+            if (isPauseReq) {
+                ALog.i(TAG, "pause decode")
+                synchronized(lock) {
+                    lock.wait()
+                }
+
+                speedControlUtil.reset()
+                ALog.i(TAG, "resume decode")
             }
 
             if (!inputDone) {
