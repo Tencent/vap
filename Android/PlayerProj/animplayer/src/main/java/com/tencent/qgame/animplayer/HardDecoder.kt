@@ -73,7 +73,12 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         renderData()
     }
 
-    fun renderData() {
+    override fun renderLastFrame() {
+        ALog.d(TAG, "CacheRender renderLastFrame")
+        renderData()
+    }
+
+    private fun renderData() {
         renderThread.handler?.post {
             try {
                 glTexture?.apply {

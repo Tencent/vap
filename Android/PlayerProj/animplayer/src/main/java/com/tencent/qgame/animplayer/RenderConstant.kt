@@ -29,7 +29,8 @@ object RenderConstant {
             "    v_TexCoordinateRgb = vec2(vTexCoordinateRgb.x, vTexCoordinateRgb.y);\n" +
             "    gl_Position = vPosition;\n" +
             "}"
-    const val FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n" +
+
+    const val FRAGMENT_SHADER_OES = "#extension GL_OES_EGL_image_external : require\n" +
             "precision mediump float;\n" +
             "uniform samplerExternalOES texture;\n" +
             "varying vec2 v_TexCoordinateAlpha;\n" +
@@ -38,6 +39,30 @@ object RenderConstant {
             "void main () {\n" +
             "    vec4 alphaColor = texture2D(texture, v_TexCoordinateAlpha);\n" +
             "    vec4 rgbColor = texture2D(texture, v_TexCoordinateRgb);\n" +
-            "    gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, alphaColor.r);\n" +
+            "    gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, alphaColor);\n" +
+            "}"
+
+    const val FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n" +
+            "precision mediump float;\n" +
+            "uniform sampler2D texture;\n" +
+            "varying vec2 v_TexCoordinateAlpha;\n" +
+            "varying vec2 v_TexCoordinateRgb;\n" +
+            "\n" +
+            "void main () {\n" +
+            "    vec4 alphaColor = texture2D(texture, v_TexCoordinateAlpha);\n" +
+            "    vec4 rgbColor = texture2D(texture, v_TexCoordinateRgb);\n" +
+            "    gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, alphaColor);\n" +
+            "}"
+
+    const val FBO_FRAGMENT_SHADER = "#extension GL_OES_EGL_image_external : require\n" +
+            "precision mediump float;\n" +
+            "uniform samplerExternalOES texture;\n" +
+            "varying vec2 v_TexCoordinateAlpha;\n" +
+            "varying vec2 v_TexCoordinateRgb;\n" +
+            "\n" +
+            "void main () {\n" +
+            "    vec4 alphaColor = texture2D(texture, v_TexCoordinateAlpha);\n" +
+            "    vec4 rgbColor = texture2D(texture, v_TexCoordinateRgb);\n" +
+            "    gl_FragColor = vec4(rgbColor.r, rgbColor.g, rgbColor.b, alphaColor);\n" +
             "}"
 }

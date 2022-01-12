@@ -76,8 +76,11 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
 
     abstract fun start()
 
+    abstract fun renderLastFrame()
+
     fun stop() {
         isStopReq = true
+        renderLastFrame()
     }
 
     fun pause() {

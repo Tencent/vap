@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import com.tencent.qgame.animplayer.AnimConfig
@@ -65,6 +66,13 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
         setContentView(R.layout.activity_anim_simple_demo)
         // 文件加载完成后会调用init方法
         loadFile()
+
+        val dm = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(dm)
+        val screenWidth = dm.widthPixels
+        val screenHeight = dm.heightPixels
+
+        ALog.d(TAG, "screenWidth: $screenWidth, screenHeight: $screenHeight")
     }
 
     private fun init() {
@@ -153,7 +161,7 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     override fun onPause() {
         super.onPause()
         // 页面切换是停止播放
-        animView.stopPlay()
+//        animView.stopPlay()
     }
 
 
