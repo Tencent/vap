@@ -7,6 +7,12 @@
     android:background="@drawable/bg">
 
 
+    <com.tencent.qgame.animplayer.AnimView
+        android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
+
     <LinearLayout
         android:id="@+id/btnLayout"
         android:layout_width="wrap_content"
@@ -46,11 +52,5 @@
 
     </LinearLayout>
 
-    
-    <com.tencent.qgame.animplayer.AnimView
-        android:id="@+id/playerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"/>
     
 </FrameLayout>

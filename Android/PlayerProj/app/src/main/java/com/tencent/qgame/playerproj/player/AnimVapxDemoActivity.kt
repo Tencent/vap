@@ -263,6 +263,18 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         btnStop.setOnClickListener {
             animView.stopPlay()
         }
+        /**
+         * 暂停播放按钮
+         */
+        btnPause.setOnClickListener {
+            animView.pausePlay()
+        }
+        /**
+         * 恢复视频按钮
+         */
+        btnResume.setOnClickListener {
+            animView.resumePlay()
+        }
     }
 
     private fun loadFile() {
