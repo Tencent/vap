@@ -69,6 +69,7 @@ class AnimPlayer(val animView: IAnimView) {
         isSurfaceAvailable = true
         startRunnable?.run()
         startRunnable = null
+        decoder?.onSurfaceSizeChanged(width, height)
     }
 
 

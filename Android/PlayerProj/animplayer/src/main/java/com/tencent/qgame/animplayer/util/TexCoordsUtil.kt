@@ -82,7 +82,7 @@ object TexCoordsUtil {
     }
 
     /**
-     * 顺时针180度
+     * 上下翻转
      */
     fun rotateE(array: FloatArray): FloatArray {
         val tx = array[0]
@@ -92,20 +92,22 @@ object TexCoordsUtil {
         array[0] = array[2]
         array[1] = array[3]
 
-        // 0->1
-        array[2] = tx
-        array[3] = ty
-
-        val tx2 = array[4]
-        val ty2 = array[5]
+        // 暂存 2->1
+        array[2] = array[4]
+        array[3] = array[5]
 
         // 3->2
         array[4] = array[6]
         array[5] = array[7]
 
-        // 2->3
-        array[6] = tx2
-        array[7] = ty2
+        // 2->3 (2在1中)
+        array[6] = array[2]
+        array[7] = array[3]
+
+        // 0->1
+        array[2] = tx
+        array[3] = ty
+
 
 
         return array

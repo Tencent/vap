@@ -1,14 +1,18 @@
 package com.tencent.qgame.animplayer
 
+import android.graphics.Bitmap
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
+import android.os.Environment
 import android.util.Log
 import com.tencent.qgame.animplayer.util.*
 import android.util.DisplayMetrics
 
 import android.view.WindowManager
-
-
+import java.io.BufferedOutputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.ByteBuffer
 
 
 /**
@@ -32,7 +36,9 @@ class CacheBuffer {
     private var aTextureAlphaLocation: Int = 0
     private var aTextureRgbLocation: Int = 0
 
-    
+    private var width: Int = 0
+    private var height: Int = 0
+
     // 输入纹理ID
     private var textureId = -1
     // FBO纹理ID
@@ -100,6 +106,8 @@ class CacheBuffer {
      */
     fun genCatch(width: Int, height: Int) {
         ALog.d(TAG, "genCatch: $width x $height")
+        this.width = width
+        this.height = height
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboFrameBuffer)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, fboTextureId)
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, fboTextureId, 0)
@@ -134,6 +142,9 @@ class CacheBuffer {
         //开始绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         checkGLError("glDrawArrays drawFBO")
+
+        // todo : 测试用，记得删
+//        saveRgb2Bitmap(intArrayOf(230), width, height, "fbo")
 
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0)
         checkGLError("glBindTexture 0 drawFBO")

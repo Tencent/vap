@@ -43,6 +43,7 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
 
     private var catchTextureId = -1
 
+    // 是否使用fbo缓冲
     private var useFbo = true
 
     private val catchBuf by lazy { CacheBuffer() }
@@ -61,7 +62,7 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
 
     private fun setVertexBuf(config: AnimConfig) {
         val fArr = VertexUtil.create(config.width, config.height, PointRect(0, 0, config.width, config.height), vertexArray.array)
-        ALog.d(CacheBuffer.TAG, "setVertexArr: ${fArr.toList()}")
+        ALog.d(TAG, "setVertexArr: ${fArr.toList()}")
 
         if (useFbo) {
             catchBuf.setVertexArr(fArr)
@@ -72,12 +73,11 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
     private fun setTexCoords(config: AnimConfig) {
         val rgb = TexCoordsUtil.create(config.videoWidth, config.videoHeight, config.rgbPointRect, rgbArray.array)
         val alpha = TexCoordsUtil.create(config.videoWidth, config.videoHeight, config.alphaPointRect, alphaArray.array)
-        ALog.d(CacheBuffer.TAG, "setTexArr: texRgbArray: ${rgb.toList()}")
-        ALog.d(CacheBuffer.TAG, "setTexArr: texAlphaArray: ${alpha.toList()}")
+        ALog.d(TAG, "setTexArr: texRgbArray: ${rgb.toList()}")
+        ALog.d(TAG, "setTexArr: texAlphaArray: ${alpha.toList()}")
 
         if (useFbo) {
             catchBuf.setTexArr(rgb, alpha)
-            catchBuf.genCatch(config.width, config.height)
             rgbArray.setArray(mTextureCoors)
             alphaArray.setArray(mTextureCoors)
         } else {
@@ -118,6 +118,9 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
             }
         }
 
+        // todo 测试用，记得删
+        updateSave2BitmapIndex()
+
         if (useFbo) {
             catchBuf.draw()
         }
@@ -134,6 +137,9 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
     override fun destroyRender() {
         releaseTexture()
         eglUtil.release()
+
+        // todo 测试用，记得删
+        resetSave2Bitmap()
     }
 
     override fun releaseTexture() {
@@ -190,6 +196,9 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
 
         // draw
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+
+        // todo : 测试用，记得删
+//        saveRgb2Bitmap(intArrayOf(230), surfaceWidth, surfaceHeight, "def")
 
         if (useFbo) {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, GLES20.GL_NONE)

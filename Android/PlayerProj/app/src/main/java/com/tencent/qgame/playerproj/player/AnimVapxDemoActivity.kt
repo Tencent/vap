@@ -58,6 +58,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
 
     private var head1Img = true
 
+    private var inited = false
+
     // 视频信息
     data class VideoInfo(val fileName: String, val md5: String)
 
@@ -86,6 +88,9 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         animView = playerView
         // 居中（根据父布局按比例居中并裁剪）
         animView.setScaleType(ScaleType.CENTER_CROP)
+
+        inited = true
+
         /**
          * 注册资源获取类
          */
@@ -222,8 +227,18 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
 
     override fun onPause() {
         super.onPause()
-        // 页面切换是停止播放
-        animView.stopPlay()
+        if (inited) {
+            // 页面切换是停止播放
+            animView.pausePlay()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (inited) {
+            // 页面切换恢复播放
+            animView.resumePlay()
+        }
     }
 
 
