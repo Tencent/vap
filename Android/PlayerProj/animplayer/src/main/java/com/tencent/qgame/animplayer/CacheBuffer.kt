@@ -1,18 +1,8 @@
 package com.tencent.qgame.animplayer
 
-import android.graphics.Bitmap
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import android.os.Environment
-import android.util.Log
 import com.tencent.qgame.animplayer.util.*
-import android.util.DisplayMetrics
-
-import android.view.WindowManager
-import java.io.BufferedOutputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.nio.ByteBuffer
 
 
 /**
@@ -73,7 +63,7 @@ class CacheBuffer {
         }
         this.textureId = textureId
 
-        shaderProgram = ShaderUtil.createProgram(RenderConstant.VERTEX_SHADER, RenderConstant.FBO_FRAGMENT_SHADER)
+        shaderProgram = ShaderUtil.createProgram(RenderConstant.VERTEX_SHADER_ALPHA, RenderConstant.FRAGMENT_SHADER_ALPHA)
         uTextureLocation = GLES20.glGetUniformLocation(shaderProgram, "texture")
         aPositionLocation = GLES20.glGetAttribLocation(shaderProgram, "vPosition")
         aTextureAlphaLocation = GLES20.glGetAttribLocation(shaderProgram, "vTexCoordinateAlpha")

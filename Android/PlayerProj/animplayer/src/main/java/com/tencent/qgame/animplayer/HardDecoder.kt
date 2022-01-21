@@ -83,8 +83,10 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             try {
                 glTexture?.apply {
                     updateTexImage()
+
                     render?.renderFrame()
                     player.pluginManager.onRendering()
+
                     render?.swapBuffers()
                 }
             } catch (e: Throwable) {

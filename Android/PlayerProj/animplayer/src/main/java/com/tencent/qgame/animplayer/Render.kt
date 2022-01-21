@@ -18,7 +18,6 @@ package com.tencent.qgame.animplayer
 import android.graphics.SurfaceTexture
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import android.util.Log
 import com.tencent.qgame.animplayer.util.*
 
 class Render(surfaceTexture: SurfaceTexture): IRenderListener {
@@ -79,7 +78,6 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
         if (useFbo) {
             catchBuf.setTexArr(rgb, alpha)
             rgbArray.setArray(mTextureCoors)
-            alphaArray.setArray(mTextureCoors)
         } else {
             rgbArray.setArray(rgb)
             alphaArray.setArray(alpha)
@@ -87,7 +85,7 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
     }
 
     override fun initRender() {
-        shaderProgram = ShaderUtil.createProgram(RenderConstant.VERTEX_SHADER, if (useFbo) RenderConstant.FRAGMENT_SHADER else RenderConstant.FRAGMENT_SHADER_OES)
+        shaderProgram = ShaderUtil.createProgram(RenderConstant.VERTEX_SHADER_ALPHA, if (useFbo) RenderConstant.FRAGMENT_SHADER else RenderConstant.FRAGMENT_SHADER_ALPHA)
         uTextureLocation = GLES20.glGetUniformLocation(shaderProgram, "texture")
         aPositionLocation = GLES20.glGetAttribLocation(shaderProgram, "vPosition")
         aTextureAlphaLocation = GLES20.glGetAttribLocation(shaderProgram, "vTexCoordinateAlpha")
@@ -119,7 +117,7 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
         }
 
         // todo 测试用，记得删
-        updateSave2BitmapIndex()
+//        updateSave2BitmapIndex()
 
         if (useFbo) {
             catchBuf.draw()
@@ -139,7 +137,7 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
         eglUtil.release()
 
         // todo 测试用，记得删
-        resetSave2Bitmap()
+//        resetSave2Bitmap()
     }
 
     override fun releaseTexture() {
