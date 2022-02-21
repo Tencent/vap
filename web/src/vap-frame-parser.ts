@@ -71,19 +71,19 @@ export default class FrameParser {
     return Promise.all(
       (dataJson.src || []).map(async item => {
         item.img = null;
-        if (!this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+        if (!this.headData[item.srcTag.slice(1, item.srcTag.length - 1)] && !this.headData[item.srcTag]) {
           console.warn(`vap: 融合信息没有传入：${item.srcTag}`);
         } else {
           if (item.srcType === 'txt') {
             if (this.headData['fontStyle'] && !item['fontStyle']) {
               item['fontStyle'] = this.headData['fontStyle']
             }
-            item.textStr = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
+            item.textStr = this.headData[item.srcTag] || item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
               return this.headData[$1];
             });
             item.img = this.makeTextImg(item);
           } else if (item.srcType === 'img') {
-            item.imgUrl = item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
+            item.imgUrl = this.headData[item.srcTag] || item.srcTag.replace(/\[(.*)\]/, ($0, $1) => {
               return this.headData[$1]
             });
             try {

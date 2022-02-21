@@ -1,6 +1,6 @@
 {
   "name": "video-animation-player",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "webgl动画特效组件",
   "main": "dist/vap.js",
   "scripts": {

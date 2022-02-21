@@ -1148,7 +1148,7 @@
                   case 0:
                     item.img = null;
 
-                    if (this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+                    if (!(!this.headData[item.srcTag.slice(1, item.srcTag.length - 1)] && !this.headData[item.srcTag])) {
                       _context2.next = 5;
                       break;
                     }
@@ -1167,7 +1167,7 @@
                       item['fontStyle'] = this.headData['fontStyle'];
                     }
 
-                    item.textStr = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
+                    item.textStr = this.headData[item.srcTag] || item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
                       return _this2.headData[$1];
                     });
                     item.img = this.makeTextImg(item);
@@ -1180,7 +1180,7 @@
                       break;
                     }
 
-                    item.imgUrl = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
+                    item.imgUrl = this.headData[item.srcTag] || item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
                       return _this2.headData[$1];
                     });
                     _context2.prev = 13;
