@@ -80,8 +80,9 @@ export default class WebglRenderVap extends VapVideo {
     if (!canvas) {
       canvas = this.instance.canvas = document.createElement('canvas');
     }
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = width * 2;
+    canvas.height = height * 2;
+    canvas.style.transform = 'scale(.5)'
     this.container.appendChild(canvas);
   }
 
