@@ -78,35 +78,22 @@
         //第一个子box
         offset = calBox.superBox ? (calBox.startIndexInBytes + kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes) : 0;
         
-        //avcbox特殊处理
-        if (calBox.type == QGMP4BoxType_avc1 || calBox.type == QGMP4BoxType_hvc1 || calBox.type == QGMP4BoxType_stsd) {
-            unsigned long long avcOffset = calBox.startIndexInBytes+kQGBoxSizeLengthInBytes+kQGBoxTypeLengthInBytes;
-            unsigned long long avcEdge = calBox.startIndexInBytes+calBox.length-kQGBoxSizeLengthInBytes-kQGBoxTypeLengthInBytes;
-            unsigned long long avcLength = 0;
-            QGMP4BoxType avcType = QGMP4BoxType_unknown;
-            for (; avcOffset < avcEdge; avcOffset++) {
-                readBoxTypeAndLength(_fileHandle, avcOffset, &avcType, &avcLength);
-                if (avcType == QGMP4BoxType_avc1 || avcType == QGMP4BoxType_avcC || avcType == QGMP4BoxType_hvc1 || avcType == QGMP4BoxType_hvcC) {
-                    QGMP4Box *avcBox = [QGMP4BoxFactory createBoxForType:avcType startIndex:avcOffset length:avcLength];
-                    if (!calBox.subBoxes) {
-                        calBox.subBoxes = [NSMutableArray new];
-                    }
-                    [calBox.subBoxes addObject:avcBox];
-                    avcBox.superBox = calBox;
-                    [BFSQueue addObject:avcBox];
-                    offset = (avcBox.startIndexInBytes+avcBox.length);
-                    [self didParseBox:avcBox];
-                    break ;
-                }
-            }
+        //特殊处理
+        if ([self shouldResetOffset:calBox.type]) {
+            [self calibrateOffset:&offset boxType:calBox.type];
         }
+        
+        //解析子box
         do {
             //判断是否会越界
             if ((offset+kQGBoxSizeLengthInBytes+kQGBoxTypeLengthInBytes)>(calBox.startIndexInBytes+calBox.length)) {
                 break ;
             }
-            readBoxTypeAndLength(_fileHandle, offset, &type, &length);
             
+            if (![self readBoxTypeAndLength:offset type:&type length:&length]) {
+                break;
+            }
+          
             if ((offset+length)>(calBox.startIndexInBytes+calBox.length)) {
                 //reach to super box end or not a box
                 break ;
@@ -134,6 +121,50 @@
     }
     
     [self didFinisheParseFile];
+}
+
+- (BOOL)readBoxTypeAndLength:(uint64_t)offset type:(QGMP4BoxType *)type length:(uint64_t*)length {
+    [_fileHandle seekToFileOffset:offset];
+    NSData *data = [_fileHandle readDataOfLength:(kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes)];
+    if (data.length < kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes) {
+      VAP_Error(kQGVAPModuleCommon, @"read box length and type error");
+      return NO;
+    }
+    const char *bytes = data.bytes;
+    *length = [self readValue:bytes length:kQGBoxSizeLengthInBytes];
+    *type = [self readValue:&bytes[kQGBoxSizeLengthInBytes] length:kQGBoxTypeLengthInBytes];
+    if (*length == kQGBoxLargeSizeFlagLengthInBytes) {
+      offset += kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes;
+      [_fileHandle seekToFileOffset:offset];
+      data = [_fileHandle readDataOfLength:kQGBoxLargeSizeLengthInBytes];
+      if (data.length < kQGBoxLargeSizeLengthInBytes) {
+        VAP_Error(kQGVAPModuleCommon, @"read box length and type error");
+        return NO;
+      }
+      bytes = data.bytes;
+      *length = [self readValue:bytes length:kQGBoxLargeSizeLengthInBytes];
+    }
+    return YES;
+}
+
+- (BOOL)shouldResetOffset:(QGMP4BoxType)type {
+    return type == QGMP4BoxType_stsd ||
+           type == QGMP4BoxType_avc1 ||
+           type == QGMP4BoxType_hvc1;
+}
+
+- (void)calibrateOffset:(uint64_t*)offset boxType:(QGMP4BoxType)type {
+    switch (type) {
+        case QGMP4BoxType_stsd:
+            *offset += 8;
+            break;
+        case QGMP4BoxType_avc1:
+        case QGMP4BoxType_hvc1:
+            *offset += (24 + 2 + 2 + 14 + 32 + 4);
+            break;
+        default:
+            break;
+    }
 }
 
 - (NSData *)readDataForBox:(QGMP4Box *)box {
@@ -170,33 +201,6 @@
     
     if ([self.delegate respondsToSelector:@selector(MP4FileDidFinishParse:)]) {
         [self.delegate MP4FileDidFinishParse:self];
-    }
-}
-
-unsigned long long dataConvertToUInt64(NSData *data) {
-    
-    unsigned long long largeSize = 0;
-    if (data.length < 8) {
-        return largeSize;
-    }
-    const char *bytes = data.bytes;
-    for (int i = 0; i < 8; i++) {
-        largeSize += ((bytes[i]&0xff) << (8 - i - 1) * 8);
-    }
-    return largeSize;
-}
-
-void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, QGMP4BoxType *type, unsigned long long *length) {
-    
-    [fileHandle seekToFileOffset:offset];
-    NSData *data = [fileHandle readDataOfLength:kQGBoxSizeLengthInBytes+kQGBoxTypeLengthInBytes];
-    const char *bytes = data.bytes;
-    *length = ((bytes[0]&0xff)<<24)+((bytes[1]&0xff)<<16)+((bytes[2]&0xff)<<8)+(bytes[3]&0xff);
-    *type = ((bytes[4]&0xff)<<24)+((bytes[5]&0xff)<<16)+((bytes[6]&0xff)<<8)+(bytes[7]&0xff);
-    if (*length == kQGBoxLargeSizeFlagLengthInBytes) {
-        [fileHandle seekToFileOffset:offset + kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes];
-        NSData *largeSizeData = [fileHandle readDataOfLength:kQGBoxLargeSizeLengthInBytes];
-        *length = dataConvertToUInt64(largeSizeData);
     }
 }
 

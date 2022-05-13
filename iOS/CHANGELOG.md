@@ -1,3 +1,9 @@
+## iOS 1.0.17
+
+**bugfix**
+
+- 修复mp4解析length异常。
+
 ## iOS 1.0.16
 
 **bugfix**
