@@ -107,7 +107,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     //指定素材混合模式，重复播放次数，delegate的接口
     
     //注意若素材不含vapc box，则必须用调用如下接口设置enable才可播放
-    //[mp4View enableOldVersion:YES];
+    [mp4View enableOldVersion:YES];
     [mp4View playHWDMP4:resPath repeatCount:-1 delegate:self];
 }
 
