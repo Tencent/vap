@@ -70,6 +70,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         Handler(Looper.getMainLooper())
     }
 
+    private var isAsync = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anim_simple_demo)
@@ -90,11 +92,25 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
          * 注册资源获取类
          */
         animView.setFetchResource(object : IFetchResource {
+            val asyncDelayTime = 9_000L
+
             /**
              * 获取图片资源
              * 无论图片是否获取成功都必须回调 result 否则会无限等待资源
              */
             override fun fetchImage(resource: Resource, result: (Bitmap?) -> Unit) {
+                if (isAsync) {
+                    ALog.i(TAG, "fetchImage start ${resource.tag}, ${resource.id}")
+                    Handler().postDelayed({
+                        ALog.i(TAG, "fetchImage real start ${resource.tag}, ${resource.id}")
+                        realFetchImage(resource, result)
+                    }, asyncDelayTime + 1000)
+                } else {
+                    realFetchImage(resource, result)
+                }
+            }
+
+            private fun realFetchImage(resource: Resource, result: (Bitmap?) -> Unit) {
                 /**
                  * srcTag是素材中的一个标记，在制作素材时定义
                  * 解析时由业务读取tag决定需要播放的内容是什么
@@ -117,6 +133,16 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
              * 获取文字资源
              */
             override fun fetchText(resource: Resource, result: (String?) -> Unit) {
+                if (isAsync) {
+                    Handler().postDelayed({
+                        realFetchText(resource, result)
+                    }, asyncDelayTime)
+                } else {
+                    realFetchText(resource, result)
+                }
+            }
+
+            fun realFetchText(resource: Resource, result: (String?) -> Unit) {
                 val str = "恭喜 No.${1000 + Random().nextInt(8999)}用户 升神"
                 val srcTag = resource.tag
 
@@ -251,6 +277,13 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
 
     private fun initTestView() {
         btnLayout.visibility = View.VISIBLE
+        /**
+         * 是否异步
+         */
+        async.setOnCheckedChangeListener { _, async ->
+            isAsync = async
+            animView.setFetchResourceAsync(async)
+        }
         /**
          * 开始播放按钮
          */

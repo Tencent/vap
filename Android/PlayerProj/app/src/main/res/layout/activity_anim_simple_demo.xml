@@ -13,7 +13,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <CheckBox
+            android:id="@+id/async"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#60000000"
+            android:checked="false"
+            android:text="异步" />
         <Button
             android:id="@+id/btnPlay"
             android:layout_width="wrap_content"

@@ -36,6 +36,8 @@ interface IAnimView {
 
     fun setFetchResource(fetchResource: IFetchResource?)
 
+    fun setFetchResourceAsync(async: Boolean)
+
     fun setOnResourceClickListener(resourceClickListener: OnResourceClickListener?)
 
     fun setLoop(playLoop: Int)

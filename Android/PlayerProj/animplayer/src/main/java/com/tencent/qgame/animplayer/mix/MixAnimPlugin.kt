@@ -40,6 +40,7 @@ class MixAnimPlugin(val player: AnimPlayer): IAnimPlugin {
     private val mixTouch by lazy { MixTouch(this) }
     var autoTxtColorFill = true // 是否启动自动文字填充 默认开启
 
+    var async: Boolean = false
     private var mixResourceRequest: IMixResourceRequest? = null
 
     override fun onConfigCreate(config: AnimConfig): Int {
@@ -60,7 +61,11 @@ class MixAnimPlugin(val player: AnimPlayer): IAnimPlugin {
     }
 
     private fun createMixResourceRequest(): IMixResourceRequest {
-        return MixResourceRequestSync(resourceRequest, srcMap)
+        return if (async) {
+            MixResourceRequestASync(resourceRequest, srcMap)
+        } else {
+            MixResourceRequestSync(resourceRequest, srcMap)
+        }
     }
 
     override fun onRenderCreate() {
