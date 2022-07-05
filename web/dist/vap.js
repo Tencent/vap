@@ -1922,7 +1922,7 @@
         var _this2 = this;
 
         var timePoint = info && info.mediaTime >= 0 ? info.mediaTime : this.video.currentTime;
-        var frame = Math.round(timePoint * this.options.fps) + this.options.offset;
+        var frame = info && info.presentedFrames > 0 ? info.presentedFrames - 1 : Math.round(timePoint * this.options.fps) + this.options.offset;
         var frameCbs = this.events['frame'] || [];
         frameCbs.forEach(function (cb) {
           cb(frame + 1, timePoint);
@@ -1998,8 +1998,9 @@
 
         if (canvas) {
           canvas.parentNode && canvas.parentNode.removeChild(canvas);
-        } // glUtil.cleanWebGL(gl, this.shaders, this.program, this.textures, this.buffers)
+        }
 
+        gl.clear(gl.COLOR_BUFFER_BIT); // glUtil.cleanWebGL(gl, this.shaders, this.program, this.textures, this.buffers)
 
         get(getPrototypeOf$1(WebglRenderVap.prototype), "destroy", this).call(this);
 
