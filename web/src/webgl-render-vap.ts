@@ -336,6 +336,7 @@ export default class WebglRenderVap extends VapVideo {
     if (canvas) {
       canvas.parentNode && canvas.parentNode.removeChild(canvas);
     }
+    gl.clear(gl.COLOR_BUFFER_BIT);
     // glUtil.cleanWebGL(gl, this.shaders, this.program, this.textures, this.buffers)
     super.destroy();
     this.clearMemoryCache();
