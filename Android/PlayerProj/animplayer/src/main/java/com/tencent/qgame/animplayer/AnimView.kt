@@ -193,6 +193,10 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         player.pluginManager.getMixAnimPlugin()?.resourceRequest = fetchResource
     }
 
+    override fun setFetchResourceAsync(async: Boolean) {
+        player.pluginManager.getMixAnimPlugin()?.async = async
+    }
+
     override fun setOnResourceClickListener(resourceClickListener: OnResourceClickListener?) {
         player.pluginManager.getMixAnimPlugin()?.resourceClickListener = resourceClickListener
     }
