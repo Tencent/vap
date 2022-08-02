@@ -16,9 +16,6 @@
 #import "QGBaseDecoder.h"
 #import "QGAnimatedImageDecodeThreadPool.h"
 
-NSString* kQGVAPDecoderSeekStart = @"kQGVAPDecoderSeekStart";
-NSString* kQGVAPDecoderSeekFinish = @"kQGVAPDecoderSeekFinish";
-
 @interface QGBaseDecoder() {
 
     QGBaseDFileInfo *_fileInfo;
@@ -68,6 +65,10 @@ NSString* kQGVAPDecoderSeekFinish = @"kQGVAPDecoderSeekFinish";
  */
 - (void)decodeFrame:(NSInteger)frameIndex buffers:(NSMutableArray *)buffers {
     // No implementation here. Meant to be overriden in subclass.
+}
+
+- (NSTimeInterval)duration {
+    return 0;
 }
 
 @end

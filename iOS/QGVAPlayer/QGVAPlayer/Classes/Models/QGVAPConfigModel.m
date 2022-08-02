@@ -44,6 +44,18 @@ QGAGAttachmentSourceStyle   const kQGAGAttachmentSourceStyleBoldText   = @"b";  
 
 @implementation QGVAPCommonInfo
 
+- (QGHWDTextureBlendMode)blendMode {
+    if (CGRectGetMinX(self.rgbAreaRect) == CGRectGetMinX(self.alphaAreaRect)) {
+        BOOL isRgbTop = CGRectGetMinY(self.rgbAreaRect) < CGRectGetMinY(self.alphaAreaRect);
+        return isRgbTop ? QGHWDTextureBlendMode_AlphaBottom : QGHWDTextureBlendMode_AlphaTop;
+        // 上下模式
+    } else {
+        // 左右模式
+        BOOL isRgbLeft = CGRectGetMinX(self.rgbAreaRect) < CGRectGetMinX(self.alphaAreaRect);
+        return isRgbLeft ? QGHWDTextureBlendMode_AlphaRight : QGHWDTextureBlendMode_AlphaLeft;
+    }
+}
+
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@: %p> {version:%@, frames:%@, size:(%@,%@), videoSize:(%@,%@) orien:%@, fps:%@, merged:%@, alpha:(%@,%@,%@,%@), rgb:(%@,%@,%@,%@)}", self.class, self, @(_version), @(_framesCount), @(_size.width), @(_size.height), @(_videoSize.width), @(_videoSize.height), @(_targetOrientaion), @(_fps), @(_isMerged), @(_alphaAreaRect.origin.x), @(_alphaAreaRect.origin.y), @(_alphaAreaRect.size.width), @(_alphaAreaRect.size.height), @(_rgbAreaRect.origin.x), @(_rgbAreaRect.origin.y), @(_rgbAreaRect.size.width), @(_rgbAreaRect.size.height)];
 }

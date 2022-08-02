@@ -21,11 +21,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define VAP_Logger(level, module, format, ...) if(external_VAP_Logger)external_VAP_Logger(level, __FILE__, __LINE__, __FUNCTION__, module, format, ##__VA_ARGS__); else internal_VAP_Logger_handler(level, __FILE__, __LINE__, __FUNCTION__, module, format, ##__VA_ARGS__);
 
+#if DEBUG
 #define VAP_Error(module, format, ...)   VAP_Logger(VAPLogLevelError, module, format,  ##__VA_ARGS__)
 #define VAP_Event(module, format, ...)   VAP_Logger(VAPLogLevelEvent,  module, format,  ##__VA_ARGS__)
 #define VAP_Warn(module, format, ...)    VAP_Logger(VAPLogLevelWarn, module, format,  ##__VA_ARGS__)
 #define VAP_Info(module, format, ...)    VAP_Logger(VAPLogLevelInfo, module, format,  ##__VA_ARGS__)
 #define VAP_Debug(module, format, ...)   VAP_Logger(VAPLogLevelDebug, module, format,  ##__VA_ARGS__)
+#else
+#define VAP_Error(module, format, ...)
+#define VAP_Event(module, format, ...)
+#define VAP_Warn(module, format, ...)
+#define VAP_Info(module, format, ...)
+#define VAP_Debug(module, format, ...)
+#endif
 
 typedef enum {
     VAPLogLevelAll = 0,

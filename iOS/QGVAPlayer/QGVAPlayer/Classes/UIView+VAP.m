@@ -39,6 +39,8 @@ NSInteger const kQGHWDMP4MinFPS = 1;
 NSInteger const QGHWDMP4MaxFPS = 60;
 NSInteger const VapMaxCompatibleVersion = 2;
 
+NSString *const QGVapErrorDomain = @"QGVapErrorDomain";
+
 @interface UIView () <QGAnimatedImageDecoderDelegate,QGHWDMP4OpenGLViewDelegate, QGHWDMetelViewDelegate, QGVAPMetalViewDelegate, QGVAPConfigDelegate>
 
 @property (nonatomic, assign) QGHWDTextureBlendMode         hwd_blendMode;              //alpha通道混合模式
@@ -48,66 +50,35 @@ NSInteger const VapMaxCompatibleVersion = 2;
 @property (nonatomic, strong) QGAnimatedImageDecodeConfig   *hwd_decodeConfig;          //线程数与buffer数
 @property (nonatomic, strong) NSOperationQueue              *hwd_callbackQueue;         //回调执行队列
 @property (nonatomic, assign) BOOL                          hwd_onPause;                //标记是否暂停中
-@property (nonatomic, assign) BOOL                          hwd_onSeek;                 //正在seek当中，此时继续播放会导致时序混乱
 @property (nonatomic, strong) QGHWDMP4OpenGLView            *hwd_openGLView;            //opengl绘制图层
 @property (nonatomic, strong) QGHWDMetalView                *hwd_metalView;             //metal绘制图层
 @property (nonatomic, strong) QGVAPMetalView                *vap_metalView;             //vap格式mp4渲染图层
 @property (nonatomic, assign) BOOL                          hwd_isFinish;               //标记是否结束
 @property (nonatomic, assign) NSInteger                     hwd_repeatCount;            //播放次数；-1 表示无限循环
-@property (nonatomic, strong) QGVAPConfigManager            *hwd_configManager;         //额外的配置信息
-@property (nonatomic, strong) dispatch_queue_t              vap_renderQueue;            //播放队列
-@property (nonatomic, assign) BOOL                          vap_enableOldVersion;       //标记是否兼容不含vapc box的素材播放
-@property (nonatomic, assign) BOOL                          vap_isMute;                 //标记是否禁止音频播放
+@property (nonatomic, strong) QGVAPConfigManager            *hwd_configManager;             //额外的配置信息
+@property (nonatomic, strong) dispatch_queue_t              vap_renderQueue;                //播放队列
+
 @end
 
 @implementation UIView (VAP)
 
 #pragma mark - private methods
 
+
 - (void)hwd_registerNotification {
     
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillEnterForegroundNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveSeekStartNotification:) name:kQGVAPDecoderSeekStart object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveSeekFinishNotification:) name:kQGVAPDecoderSeekFinish object:nil];
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillResignActiveNotification:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillResignActiveNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveDidBecomeActiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveDidBecomeActiveNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 
-- (void)hwd_didReceiveEnterBackgroundNotification:(NSNotification *)notification {
-    switch (self.hwd_enterBackgroundOP) {
-        case HWDMP4EBOperationTypePauseAndResume:
-            [self pauseHWDMP4];
-            break;
-        case HWDMP4EBOperationTypeDoNothing:
-            break;
-            
-        default:
-            [self stopHWDMP4];
-    }
+- (void)hwd_didReceiveWillResignActiveNotification:(NSNotification *)notification {
+    [self pauseHWDMP4];
 }
 
-- (void)hwd_didReceiveWillEnterForegroundNotification:(NSNotification *)notification {
-    switch (self.hwd_enterBackgroundOP) {
-        case HWDMP4EBOperationTypePauseAndResume:
-            [self resumeHWDMP4];
-            break;
-            
-        default:
-            break;
-    }
-    
-}
-
-- (void)hwd_didReceiveSeekStartNotification:(NSNotification *)notification {
-    if ([self.hwd_decodeManager containsThisDeocder:notification.object]) {
-        self.hwd_onSeek = YES;
-    }
-}
-
-- (void)hwd_didReceiveSeekFinishNotification:(NSNotification *)notification {
-    if ([self.hwd_decodeManager containsThisDeocder:notification.object]) {
-        self.hwd_onSeek = NO;
-    }
+- (void)hwd_didReceiveDidBecomeActiveNotification:(NSNotification *)notification {
+    [self resumeHWDMP4];
 }
 
 //结束播放
@@ -127,7 +98,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
             [EAGLContext setCurrentContext:self.hwd_openGLView.glContext];
         }
         [self.hwd_openGLView dispose];
-        glFinish();
     }
     if (self.hwd_metalView) {
         [self.hwd_metalView dispose];
@@ -135,7 +105,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
     if (self.vap_metalView) {
         [self.vap_metalView dispose];
     }
-    [self.hwd_decodeManager tryToStopAudioPlay];
     [self.hwd_callbackQueue addOperationWithBlock:^{
         //此处必须延迟释放，避免野指针
         if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
@@ -222,7 +191,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
 }
 
 - (void)hwd_loadMetalDataIfNeed {
-    
+    if (self.hwd_renderByOpenGL) return;
     [self.hwd_configManager loadMTLTextures:kQGHWDMetalRendererDevice];//加载所需的纹理数据
     [self.hwd_configManager loadMTLBuffers:kQGHWDMetalRendererDevice];//加载所需的buffer
 }
@@ -232,6 +201,11 @@ NSInteger const VapMaxCompatibleVersion = 2;
     if (!self.hwd_renderByOpenGL) {
         return ;
     }
+    
+    if (self.hwd_configManager) {
+        mode = self.hwd_configManager.model.info.blendMode;
+    }
+    
     if (self.hwd_openGLView) {
         self.hwd_openGLView.blendMode = mode;
         self.hwd_openGLView.pause = NO;
@@ -301,16 +275,29 @@ NSInteger const VapMaxCompatibleVersion = 2;
     
     VAP_Info(kQGVAPModuleCommon, @"try to display mp4:%@ blendMode:%@ fps:%@ repeatCount:%@", filePath, @(mode), @(fps), @(repeatCount));
     NSAssert([NSThread isMainThread], @"HWDMP4 needs to be accessed on the main thread.");
-    //filePath check
-    if (!filePath || filePath.length == 0) {
-        VAP_Error(kQGVAPModuleCommon, @"playHWDMP4 error! has no filePath!");
-        return ;
+    // file && app state check
+    if (!filePath || filePath.length == 0
+//        ![[NSFileManager defaultManager] fileExistsAtPath:filePath] ||
+//        [UIApplication sharedApplication].applicationState == UIApplicationStateInactive || [UIApplication sharedApplication].applicationState == UIApplicationStateBackground
+        ) {
+        if (delegate && [delegate respondsToSelector:@selector(viewDidFailPlayMP4:)]) {
+            NSString *des = [NSString stringWithFormat:@"filePath not be nil or application state not be UIApplicationStateBackground.Your filePath is:(%@), application state is %ld", filePath, (long)[UIApplication sharedApplication].applicationState];
+            NSError *error = [NSError errorWithDomain:QGVapErrorDomain code:-1 userInfo:@{NSFilePathErrorKey:filePath?:@"None", NSLocalizedDescriptionKey:des}];
+            if (self.hwd_callbackQueue) {
+                [self.hwd_callbackQueue addOperationWithBlock:^{
+                    if ([delegate respondsToSelector:@selector(viewDidFailPlayMP4:)]) {
+                        [delegate viewDidFailPlayMP4:error];
+                    }
+                }];
+            } else {
+                if ([delegate respondsToSelector:@selector(viewDidFailPlayMP4:)]) {
+                    [delegate viewDidFailPlayMP4:error];
+                }
+            }
+        }
+        return;
     }
-    NSFileManager *fileMgr = [NSFileManager defaultManager];
-    if (![fileMgr fileExistsAtPath:filePath]) {
-        VAP_Error(kQGVAPModuleCommon, @"playHWDMP4 error! fileNotExistsAtPath filePath:%#", filePath);
-        return ;
-    }
+    
     self.hwd_isFinish = NO;
     self.hwd_blendMode = mode;
     self.hwd_fps = fps;
@@ -340,11 +327,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
         return ;
     }
     
-    if (!configManager.hasValidConfig && !self.vap_enableOldVersion) {
-        VAP_Error(kQGVAPModuleCommon, @"playHWDMP4 error! don't has vapc box and enableOldVersion is false!");
-        [self stopHWDMP4];
-        return ;
-    }
     //reset
     self.hwd_currentFrameInstance = nil;
     self.hwd_decodeManager = nil;
@@ -367,7 +349,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
     if (!self.vap_renderQueue) {
         self.vap_renderQueue = dispatch_queue_create("com.qgame.vap.render", DISPATCH_QUEUE_SERIAL);
     }
-    self.hwd_decodeManager = [[QGAnimatedImageDecodeManager alloc] initWith:self.hwd_fileInfo config:self.hwd_decodeConfig delegate:self];
+    self.hwd_decodeManager = [[QGAnimatedImageDecodeManager alloc] initWith:self.hwd_fileInfo config:self.hwd_decodeConfig enableAudio:self.hwd_enableAudio delegate:self];
     [self.hwd_configManager loadConfigResources]; //必须按先加载必要资源才能播放 - onVAPConfigResourcesLoaded
 }
 
@@ -390,7 +372,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
                 if (self.hwd_isFinish) {
                     break ;
                 }
-                if (self.hwd_onPause || self.hwd_onSeek) {
+                if (self.hwd_onPause) {
                     lastRenderingInterval = NSDate.timeIntervalSinceReferenceDate;
                     [NSThread sleepForTimeInterval:durationForWaitingFrame];
                     continue;
@@ -432,7 +414,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
         return nil;
     }
     //音频播放
-    if (nextIndex == 0) {
+    if (nextIndex == 0 && self.hwd_enableAudio) {
         [self.hwd_decodeManager tryToStartAudioPlay];
     }
     nextFrame.duration = [self hwd_appropriateDurationForFrame:nextFrame];
@@ -468,14 +450,12 @@ NSInteger const VapMaxCompatibleVersion = 2;
     
     VAP_Info(kQGVAPModuleCommon, @"pauseHWDMP4");
     self.hwd_onPause = YES;
-    [self.hwd_decodeManager tryToPauseAudioPlay];
-// pause回调stop会导致一般使用场景将view移除，无法resume，因此暂时去掉该回调触发
-//    [self.hwd_callbackQueue addOperationWithBlock:^{
-//        //此处必须延迟释放，避免野指针
-//        if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
-//            [self.hwd_Delegate viewDidStopPlayMP4:self.hwd_currentFrame.frameIndex view:self];
-//        }
-//    }];
+    [self.hwd_callbackQueue addOperationWithBlock:^{
+        //此处必须延迟释放，避免野指针
+        if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
+            [self.hwd_Delegate viewDidStopPlayMP4:self.hwd_currentFrame.frameIndex view:self];
+        }
+    }];
 }
 
 - (void)resumeHWDMP4 {
@@ -483,21 +463,12 @@ NSInteger const VapMaxCompatibleVersion = 2;
     VAP_Info(kQGVAPModuleCommon, @"resumeHWDMP4");
     self.hwd_onPause = NO;
     self.hwd_openGLView.pause = NO;
-    // 目前音频和视频没有同步逻辑，多次暂停恢复会使音视频差距越来越大
-    [self.hwd_decodeManager tryToResumeAudioPlay];
 }
 
 + (void)registerHWDLog:(QGVAPLoggerFunc)logger {
     [QGVAPLogger registerExternalLog:logger];
 }
 
-- (void)enableOldVersion:(BOOL)enable {
-    self.vap_enableOldVersion = enable;
-}
-
-- (void)setMute:(BOOL)isMute {
-    self.vap_isMute = isMute;
-}
 #pragma mark - delegate
 
 #pragma clang diagnostic push
@@ -505,10 +476,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
 //decoder
 - (Class)decoderClassForManager:(QGAnimatedImageDecodeManager *)manager {
     return [QGMP4FrameHWDecoder class];
-}
-
-- (BOOL)shouldSetupAudioPlayer {
-    return !self.vap_isMute;
 }
 
 - (void)decoderDidFinishDecode:(QGBaseDecoder *)decoder {
@@ -530,13 +497,17 @@ NSInteger const VapMaxCompatibleVersion = 2;
 //opengl
 - (void)onViewUnavailableStatus {
     VAP_Error(kQGVAPModuleCommon, @"onViewUnavailableStatus");
-    [self hwd_stopHWDMP4];
+    if (!self.hwd_openGLView) {
+        [self hwd_stopHWDMP4];
+    }
 }
 
 //metal
 - (void)onMetalViewUnavailable {
     VAP_Error(kQGVAPModuleCommon, @"onMetalViewUnavailable");
-    [self stopHWDMP4];
+    if (!self.hwd_metalView && !self.vap_metalView) {
+        [self stopHWDMP4];
+    }
 }
 
 //config resources loaded
@@ -596,10 +567,21 @@ NSInteger const VapMaxCompatibleVersion = 2;
     return objc_setAssociatedObject(self, @"MP4PlayDelegate", weakDelegate, OBJC_ASSOCIATION_RETAIN);
 }
 
+- (NSTimeInterval)hwd_animationDuration {
+    return self.hwd_decodeManager.duration;
+}
+
+- (void)setHwd_enableAudio:(BOOL)hwd_enableAudio {
+    objc_setAssociatedObject(self, _cmd, @(hwd_enableAudio), OBJC_ASSOCIATION_RETAIN);
+    [self.hwd_decodeManager setEnableAudio:hwd_enableAudio];
+}
+
+- (BOOL)hwd_enableAudio {
+    return [(objc_getAssociatedObject(self, @selector(setHwd_enableAudio:)) ?: @(YES)) boolValue];
+}
+
 //category methods
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_onPause, setHwd_onPause, BOOL)
-HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_onSeek, setHwd_onSeek, BOOL)
-HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_enterBackgroundOP, setHwd_enterBackgroundOP, HWDMP4EBOperationType)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_renderByOpenGL, setHwd_renderByOpenGL, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_isFinish, setHwd_isFinish, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_fps, setHwd_fps, NSInteger)
@@ -617,8 +599,7 @@ HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(vap_metalView, setVap_metalView, OBJC_ASSOCIATI
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(hwd_attachmentsModel, setHwd_attachmentsModel, OBJC_ASSOCIATION_RETAIN)
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(hwd_configManager, setHwd_configManager, OBJC_ASSOCIATION_RETAIN)
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(vap_renderQueue, setVap_renderQueue, OBJC_ASSOCIATION_RETAIN)
-HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(vap_enableOldVersion, setVap_enableOldVersion, BOOL)
-HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(vap_isMute, setVap_isMute, BOOL)
+
 @end
 
 

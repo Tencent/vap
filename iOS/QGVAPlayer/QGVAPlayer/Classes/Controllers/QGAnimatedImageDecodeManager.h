@@ -31,7 +31,6 @@
 
 @optional
 
-- (BOOL)shouldSetupAudioPlayer;
 /**
  到文件末尾时被调用
 
@@ -47,16 +46,16 @@
 
 @property (nonatomic, weak) id<QGAnimatedImageDecoderDelegate> decoderDelegate;
 
+@property (nonatomic, readonly) NSTimeInterval duration;
+@property (nonatomic, assign) BOOL enableAudio;
+
 - (instancetype)initWith:(QGBaseDFileInfo *)fileInfo
                   config:(QGAnimatedImageDecodeConfig *)config
+             enableAudio:(BOOL)enableAudio
                 delegate:(id<QGAnimatedImageDecoderDelegate>)delegate;
 
 - (QGBaseAnimatedImageFrame *)consumeDecodedFrame:(NSInteger)frameIndex;
 
 - (void)tryToStartAudioPlay;
-- (void)tryToStopAudioPlay;
-- (void)tryToPauseAudioPlay;
-- (void)tryToResumeAudioPlay;
-- (BOOL)containsThisDeocder:(id)decoder;
 
 @end

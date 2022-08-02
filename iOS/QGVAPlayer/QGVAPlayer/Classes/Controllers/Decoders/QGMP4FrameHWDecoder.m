@@ -25,6 +25,9 @@
 #include <sys/sysctl.h>
 #import <AVFoundation/AVFoundation.h>
 
+#define TASK_QUEUE_LOCK dispatch_semaphore_wait(self->_taskQueueLock, DISPATCH_TIME_FOREVER);
+#define TASK_QUEUE_UNLOCK dispatch_semaphore_signal(self->_taskQueueLock);
+
 @implementation UIDevice (HWD)
 
 - (BOOL)hwd_isSimulator {
@@ -73,6 +76,14 @@
 
 @end
 
+@interface QGMP4FrameHWDecoderTask : NSObject
+@property (nonatomic, assign) NSInteger frameIndex;
+@property (nonatomic, assign) BOOL drop;
+@end
+
+@implementation QGMP4FrameHWDecoderTask
+@end
+
 @interface QGMP4FrameHWDecoder() {
     
     NSMutableArray *_buffers;
@@ -88,15 +99,15 @@
     QGMP4ParserProxy *_mp4Parser;
     
     int _invalidRetryCount;
+    NSMutableArray *_taskQueue;
+    dispatch_semaphore_t _taskQueueLock;
 }
 
-@property (atomic, strong) dispatch_queue_t decodeQueue; //dispatch decode task
+@property (nonatomic, strong) dispatch_queue_t decodeQueue; //dispatch decode task
 @property (nonatomic, strong) NSData *ppsData; //Picture Parameter Set
 @property (nonatomic, strong) NSData *spsData; //Sequence Parameter Set
 /** Video Parameter Set */
 @property (nonatomic, strong) NSData *vpsData;
-
-@property (atomic, assign) NSInteger lastDecodeFrame;
 
 @end
 
@@ -138,8 +149,9 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     
     if (self = [super initWith:fileInfo error:error]) {
         _decodeQueue = dispatch_queue_create("com.qgame.vap.decode", DISPATCH_QUEUE_SERIAL);
-        _lastDecodeFrame = -1;
         _mp4Parser = fileInfo.mp4Parser;
+        _taskQueue = [NSMutableArray array];
+        _taskQueueLock = dispatch_semaphore_create(1);
         BOOL isOpenSuccess = [self onInputStart];
         if (!isOpenSuccess) {
             VAP_Event(kQGVAPModuleCommon, @"onInputStart fail!");
@@ -153,31 +165,78 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
 }
 
 - (void)registerNotification {
-
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 - (void)hwd_didReceiveEnterBackgroundNotification:(NSNotification *)notification {
-    
-}
-
-- (void)decodeFrame:(NSInteger)frameIndex buffers:(NSMutableArray *)buffers {
-    
-    if (frameIndex == self.currentDecodeFrame) {
-        VAP_Event(kQGVAPModuleCommon, @"already in decode");
-        return ;
-    }
-    self.currentDecodeFrame = frameIndex;
-    _buffers = buffers;
     dispatch_async(self.decodeQueue, ^{
-        if (frameIndex != self.lastDecodeFrame + 1) {
-            // 必须是依次增大，否则解出来的画面会异常
-            return;
-        }
-        [self _decodeFrame:frameIndex drop:NO];
+        [self _destroyDecodeSession];
     });
 }
 
+- (void)_destroyDecodeSession {
+    if (_mDecodeSession) {
+        VTDecompressionSessionInvalidate(_mDecodeSession);
+        CFRelease(_mDecodeSession);
+        _mDecodeSession = NULL;
+    }
+}
+
+- (void)decodeFrame:(NSInteger)frameIndex buffers:(NSMutableArray *)buffers {
+    _buffers = buffers;
+    [self _addDecodeTask:frameIndex drop:NO];
+}
+
+- (void)_addDecodeTask:(NSInteger)frameIndex drop:(BOOL)drop {
+    TASK_QUEUE_LOCK
+    BOOL add = YES;
+    NSUInteger i = 0;
+    for (; i < _taskQueue.count; i++) {
+        QGMP4FrameHWDecoderTask *task = _taskQueue[i];
+        if (task.frameIndex == frameIndex) {
+            task.drop |= drop;
+            add = NO;
+            VAP_Info(kQGVAPModuleCommon, @"drop Task:%ld drop:%d", frameIndex, drop);
+            break;
+        } else if (frameIndex < task.frameIndex) {
+            break;
+        }
+    }
+    
+    if (add) {
+        VAP_Info(kQGVAPModuleCommon, @"add Task:%ld drop:%d index:%d", frameIndex, drop, i);
+        QGMP4FrameHWDecoderTask *newTask = [QGMP4FrameHWDecoderTask new];
+        newTask.frameIndex = frameIndex;
+        newTask.drop = drop;
+        [_taskQueue insertObject:newTask atIndex:i];
+        dispatch_async(self.decodeQueue, ^{
+            TASK_QUEUE_LOCK
+            QGMP4FrameHWDecoderTask *firstTask = self->_taskQueue.firstObject;
+            TASK_QUEUE_UNLOCK
+            if (firstTask) {
+                [self _decodeFrame:firstTask.frameIndex drop:firstTask.drop];
+                TASK_QUEUE_LOCK
+                [self->_taskQueue removeObject:firstTask];
+                TASK_QUEUE_UNLOCK
+            }
+        });
+    }
+    TASK_QUEUE_UNLOCK
+}
+
 - (void)_decodeFrame:(NSInteger)frameIndex drop:(BOOL)dropFlag {
+    self.currentDecodeFrame = frameIndex;
+    
+    if (!_mDecodeSession) {
+        if (_invalidRetryCount++ >= 3) {
+            [self onInputEnd];
+            return;
+        }
+        [self createDecompressionSession];
+        [self findKeyFrameAndDecodeToCurrent:frameIndex];
+        return;
+    }
+    VAP_Info(kQGVAPModuleCommon, @"_decodeFrame:%ld drop:%d", frameIndex, dropFlag);
     if (_isFinish) {
         return ;
     }
@@ -195,7 +254,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     NSData *packetData = [_mp4Parser readPacketOfSample:frameIndex];
     if (!packetData.length) {
         _finishFrameIndex = frameIndex;
-        [self _onInputEnd];
+        [self onInputEnd];
         return;
     }
     
@@ -211,7 +270,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
                                                  packetData.length,
                                                  kCFAllocatorNull, NULL, 0,
                                                  packetData.length, 0,
-                                                 &blockBuffer);    
+                                                 &blockBuffer);
     // 6. create a CMSampleBuffer.
     CMSampleBufferRef sampleBuffer = NULL;
     const size_t sampleSizeArray[] = {packetData.length};
@@ -249,7 +308,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
             CFRelease(sampleBuffer);
             
             // 防止陷入死循环
-            if (_invalidRetryCount >= 3) {
+            if (_invalidRetryCount++ >= 3) {
+                [self onInputEnd];
                 return;
             }
             
@@ -269,7 +329,8 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         if (_status == kVTInvalidSessionErr) {
             CFRelease(sampleBuffer);
             // 防止陷入死循环
-            if (_invalidRetryCount >= 3) {
+            if (_invalidRetryCount++ >= 3) {
+                [self onInputEnd];
                 return;
             }
             
@@ -300,8 +361,6 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
                       startDate:(NSDate *)startDate
                          status:(OSStatus)status
                        needDrop:(BOOL)dropFlag {
-    
-    self.lastDecodeFrame = frameIndex;
     
     CFRelease(sampleBuffer);
     
@@ -348,6 +407,10 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         return (frameIndex >= _finishFrameIndex);
     }
     return NO;
+}
+
+- (NSTimeInterval)duration {
+    return _mp4Parser.duration;
 }
 
 -(void)dealloc {
@@ -498,13 +561,10 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
 }
 
 - (void)findKeyFrameAndDecodeToCurrent:(NSInteger)frameIndex {
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kQGVAPDecoderSeekStart object:self];
-    
     NSArray<NSNumber *> *keyframeIndexes = [_mp4Parser videoSyncSampleIndexes];
     NSInteger index = [[keyframeIndexes firstObject] integerValue];
     for(NSNumber *number in keyframeIndexes) {
-        if(number.integerValue < frameIndex) {
+        if(number.integerValue <= frameIndex) {
             index = number.integerValue;
             continue;
         } else {
@@ -518,8 +578,6 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
         index++;
     }
     [self _decodeFrame:frameIndex drop:NO];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kQGVAPDecoderSeekFinish object:self];
 }
 
 - (void)_onInputEnd  {

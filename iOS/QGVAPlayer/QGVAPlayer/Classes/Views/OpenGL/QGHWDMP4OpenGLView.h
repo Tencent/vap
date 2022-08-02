@@ -24,12 +24,15 @@
 
 @end
 
+@class QGVAPCommonInfo;
+
 @interface QGHWDMP4OpenGLView : UIView
 
 @property (nonatomic, strong) EAGLContext *glContext;
 @property (nonatomic, weak) id<QGHWDMP4OpenGLViewDelegate> displayDelegate;
 @property (nonatomic, assign) QGHWDTextureBlendMode blendMode;
 @property (nonatomic, assign) BOOL pause;
+@property (nonatomic, strong) QGVAPCommonInfo *commonInfo;
 
 - (void)setupGL;
 - (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer;

@@ -22,13 +22,14 @@
 #import <sys/stat.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface QGAnimatedImageDecodeManager() {
+@interface QGAnimatedImageDecodeManager()<AVAudioPlayerDelegate> {
 
     QGAnimatedImageDecodeConfig *_config;           //解码配置
     QGBaseDFileInfo *_fileInfo;                     //sharpP文件信息
     NSMutableArray *_decoders;                      //解码器
     QGAnimatedImageBufferManager *_bufferManager;   //缓冲管理
     AVAudioPlayer *_audioPlayer;
+    QGBaseAnimatedImageFrame *_lastDecodedFrame;
 }
 
 @end
@@ -37,10 +38,11 @@
 
 - (instancetype)initWith:(QGBaseDFileInfo *)fileInfo
                   config:(QGAnimatedImageDecodeConfig *)config
+             enableAudio:(BOOL)enableAudio
                 delegate:(id<QGAnimatedImageDecoderDelegate>)delegate {
 
     if (self = [super init]) {
-        
+        _enableAudio = enableAudio;
         _config = config;
         _fileInfo = fileInfo;
         _decoderDelegate = delegate;
@@ -50,6 +52,14 @@
         [self setupAudioPlayerIfNeed];
     }
     return self;
+}
+
+- (NSTimeInterval)duration {
+    if (_decoders.count > 0) {
+        QGBaseDecoder *decoder = _decoders[0];
+        return decoder.duration;
+    }
+    return 0;
 }
 
 /**
@@ -97,27 +107,13 @@
     [_audioPlayer play];
 }
 
-- (void)tryToStopAudioPlay {
-    if (!_audioPlayer) {
-        return;
+- (void)setEnableAudio:(BOOL)enableAudio {
+    _enableAudio = enableAudio;
+    if (_enableAudio) {
+        [_audioPlayer setVolume:1.0];
+    } else {
+        [_audioPlayer setVolume:0];
     }
-    // CoreAudio（AVAudioPlaeyrCpp）回调audioPlayerDidFinishPlaying:successfully:时在子线程，恰巧此时释放将可能导致野指针问题
-    // 如果只是stop不能解决，可以考虑产生循环持有并延迟释放_audioPlayer
-    [_audioPlayer stop];
-}
-
-- (void)tryToPauseAudioPlay {
-    if (!_audioPlayer) {
-        return;
-    }
-    [_audioPlayer pause];
-}
-
-- (void)tryToResumeAudioPlay {
-    if (!_audioPlayer) {
-        return;
-    }
-    [_audioPlayer play];
 }
 
 #pragma mark - private methods
@@ -174,20 +170,13 @@
 }
 
 - (void)initializeBuffersFromIndex:(NSInteger)start {
-    
     for (int i = 0; i < _config.bufferCount; i++) {
         [self decodeFrame:start+i];
     }
 }
 
 - (void)setupAudioPlayerIfNeed {
-    if ([_decoderDelegate respondsToSelector:@selector(shouldSetupAudioPlayer)]) {
-        BOOL should = [_decoderDelegate shouldSetupAudioPlayer];
-        if (!should) {
-            return;
-        }
-    }
-    
+    if (!_enableAudio) return;
     if ([_fileInfo isKindOfClass:[QGMP4HWDFileInfo class]]) {
         QGMP4ParserProxy *mp4Parser = [(QGMP4HWDFileInfo *)_fileInfo mp4Parser];
         if (!mp4Parser.audioTrackBox) {
@@ -196,6 +185,7 @@
         }
         NSError *error;
         _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:_fileInfo.filePath] error:&error];
+        _audioPlayer.delegate = self;
     }
 }
 
@@ -203,13 +193,9 @@
 
 }
 
-- (BOOL)containsThisDeocder:(id)decoder {
-    for (id d in _decoders) {
-        if (d == decoder) {
-            return YES;
-        }
-    }
-    return NO;
+#pragma mark - AVAudioPlayerDelegate
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+    
 }
 
 @end

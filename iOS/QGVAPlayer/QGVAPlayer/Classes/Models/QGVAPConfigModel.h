@@ -16,6 +16,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <Metal/Metal.h>
+#import "VAPMacros.h"
 
 typedef NS_ENUM(NSInteger, QGVAPOrientation){
     
@@ -66,6 +67,7 @@ UIKIT_EXTERN QGAGAttachmentSourceStyle const kQGAGAttachmentSourceStyleBoldText;
 @property (nonatomic, assign) BOOL                      isMerged;
 @property (nonatomic, assign) CGRect                    alphaAreaRect;
 @property (nonatomic, assign) CGRect                    rgbAreaRect;
+@property (nonatomic, readonly) QGHWDTextureBlendMode   blendMode; ///< 根据 alphaAreaRect 和 rgbAreaRect 对比得出的 blendMode, for OpenGLES
 
 @end
 

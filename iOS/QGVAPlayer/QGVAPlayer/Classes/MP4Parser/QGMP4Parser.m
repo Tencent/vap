@@ -78,22 +78,35 @@
         //第一个子box
         offset = calBox.superBox ? (calBox.startIndexInBytes + kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes) : 0;
         
-        //特殊处理
-        if ([self shouldResetOffset:calBox.type]) {
-            [self calibrateOffset:&offset boxType:calBox.type];
+        //avcbox特殊处理
+        if (calBox.type == QGMP4BoxType_avc1 || calBox.type == QGMP4BoxType_hvc1 || calBox.type == QGMP4BoxType_stsd) {
+            unsigned long long avcOffset = calBox.startIndexInBytes+kQGBoxSizeLengthInBytes+kQGBoxTypeLengthInBytes;
+            unsigned long long avcEdge = calBox.startIndexInBytes+calBox.length-kQGBoxSizeLengthInBytes-kQGBoxTypeLengthInBytes;
+            unsigned long long avcLength = 0;
+            QGMP4BoxType avcType = QGMP4BoxType_unknown;
+            for (; avcOffset < avcEdge; avcOffset++) {
+                readBoxTypeAndLength(_fileHandle, avcOffset, &avcType, &avcLength);
+                if (avcType == QGMP4BoxType_avc1 || avcType == QGMP4BoxType_avcC || avcType == QGMP4BoxType_hvc1 || avcType == QGMP4BoxType_hvcC) {
+                    QGMP4Box *avcBox = [QGMP4BoxFactory createBoxForType:avcType startIndex:avcOffset length:avcLength];
+                    if (!calBox.subBoxes) {
+                        calBox.subBoxes = [NSMutableArray new];
+                    }
+                    [calBox.subBoxes addObject:avcBox];
+                    avcBox.superBox = calBox;
+                    [BFSQueue addObject:avcBox];
+                    offset = (avcBox.startIndexInBytes+avcBox.length);
+                    [self didParseBox:avcBox];
+                    break ;
+                }
+            }
         }
-        
-        //解析子box
         do {
             //判断是否会越界
             if ((offset+kQGBoxSizeLengthInBytes+kQGBoxTypeLengthInBytes)>(calBox.startIndexInBytes+calBox.length)) {
                 break ;
             }
+            readBoxTypeAndLength(_fileHandle, offset, &type, &length);
             
-            if (![self readBoxTypeAndLength:offset type:&type length:&length]) {
-                break;
-            }
-          
             if ((offset+length)>(calBox.startIndexInBytes+calBox.length)) {
                 //reach to super box end or not a box
                 break ;
@@ -121,50 +134,6 @@
     }
     
     [self didFinisheParseFile];
-}
-
-- (BOOL)readBoxTypeAndLength:(uint64_t)offset type:(QGMP4BoxType *)type length:(uint64_t*)length {
-    [_fileHandle seekToFileOffset:offset];
-    NSData *data = [_fileHandle readDataOfLength:(kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes)];
-    if (data.length < kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes) {
-      VAP_Error(kQGVAPModuleCommon, @"read box length and type error");
-      return NO;
-    }
-    const char *bytes = data.bytes;
-    *length = [self readValue:bytes length:kQGBoxSizeLengthInBytes];
-    *type = [self readValue:&bytes[kQGBoxSizeLengthInBytes] length:kQGBoxTypeLengthInBytes];
-    if (*length == kQGBoxLargeSizeFlagLengthInBytes) {
-      offset += kQGBoxSizeLengthInBytes + kQGBoxTypeLengthInBytes;
-      [_fileHandle seekToFileOffset:offset];
-      data = [_fileHandle readDataOfLength:kQGBoxLargeSizeLengthInBytes];
-      if (data.length < kQGBoxLargeSizeLengthInBytes) {
-        VAP_Error(kQGVAPModuleCommon, @"read box length and type error");
-        return NO;
-      }
-      bytes = data.bytes;
-      *length = [self readValue:bytes length:kQGBoxLargeSizeLengthInBytes];
-    }
-    return YES;
-}
-
-- (BOOL)shouldResetOffset:(QGMP4BoxType)type {
-    return type == QGMP4BoxType_stsd ||
-           type == QGMP4BoxType_avc1 ||
-           type == QGMP4BoxType_hvc1;
-}
-
-- (void)calibrateOffset:(uint64_t*)offset boxType:(QGMP4BoxType)type {
-    switch (type) {
-        case QGMP4BoxType_stsd:
-            *offset += 8;
-            break;
-        case QGMP4BoxType_avc1:
-        case QGMP4BoxType_hvc1:
-            *offset += (24 + 2 + 2 + 14 + 32 + 4);
-            break;
-        default:
-            break;
-    }
 }
 
 - (NSData *)readDataForBox:(QGMP4Box *)box {
@@ -202,6 +171,15 @@
     if ([self.delegate respondsToSelector:@selector(MP4FileDidFinishParse:)]) {
         [self.delegate MP4FileDidFinishParse:self];
     }
+}
+
+void readBoxTypeAndLength(NSFileHandle *fileHandle, unsigned long long offset, QGMP4BoxType *type, unsigned long long *length) {
+    
+    [fileHandle seekToFileOffset:offset];
+    NSData *data = [fileHandle readDataOfLength:kQGBoxSizeLengthInBytes+kQGBoxTypeLengthInBytes];
+    const char *bytes = data.bytes;
+    *length = ((bytes[0]&0xff)<<24)+((bytes[1]&0xff)<<16)+((bytes[2]&0xff)<<8)+(bytes[3]&0xff);
+    *type = ((bytes[4]&0xff)<<24)+((bytes[5]&0xff)<<16)+((bytes[6]&0xff)<<8)+(bytes[7]&0xff);
 }
 
 @end
@@ -269,68 +247,72 @@
     }
     NSMutableArray *videoSamples = [NSMutableArray new];
     
+    uint64_t start_play_time = 0;
     uint64_t tmp = 0;
+    uint32_t sampIdx = 0;
     QGMP4SttsBox *sttsBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stts];
     QGMP4StszBox *stszBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stsz];
     QGMP4StscBox *stscBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stsc];
     QGMP4StcoBox *stcoBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_stco];
     QGMP4CttsBox *cttsBox = [self.videoTrackBox subBoxOfType:QGMP4BoxType_ctts];
-
-    uint32_t stscEntryIndex = 0;
-    uint32_t stscEntrySampleIndex = 0;
-    uint32_t stscEntrySampleOffset = 0;
-    uint32_t sttsEntryIndex = 0;
-    uint32_t sttsEntrySampleIndex = 0;
-    uint32_t stcoChunkLogicIndex = 0;
-    for (int i = 0; i < stszBox.sampleCount; ++i) {
-        if (stscEntryIndex >= stscBox.entries.count ||
-            sttsEntryIndex >= sttsBox.entries.count ||
-            stcoChunkLogicIndex >= stcoBox.chunkOffsets.count) {
-            break;
-        }
-
-        QGStscEntry *stscEntry = stscBox.entries[stscEntryIndex];
-        QGSttsEntry *sttsEntry = sttsBox.entries[sttsEntryIndex];
-        uint32_t sampleOffset = [stcoBox.chunkOffsets[stcoChunkLogicIndex] unsignedIntValue] + stscEntrySampleOffset;
-        uint32_t ctts = 0;
-        if (i < cttsBox.compositionOffsets.count) {
-            ctts = [cttsBox.compositionOffsets[i] unsignedIntValue];
-        }
-
-        QGMP4Sample *sample = [QGMP4Sample new];
-        sample.codecType = QGMP4CodecTypeVideo;
-        sample.sampleIndex = i;
-        sample.chunkIndex = stcoChunkLogicIndex;
-        sample.sampleDelta = sttsEntry.sampleDelta;
-        sample.sampleSize = [stszBox.sampleSizes[i] unsignedIntValue];
-        sample.pts = tmp + ctts;
-        sample.streamOffset = sampleOffset;
-        [videoSamples addObject:sample];
-
-        stscEntrySampleOffset += sample.sampleSize;
-        tmp += sample.sampleDelta;
-
-        stscEntrySampleIndex++;
-        if (stscEntrySampleIndex >= stscEntry.samplesPerChunk) {
-            if (stcoChunkLogicIndex + 1 < stcoBox.chunkOffsets.count) {
-                stcoChunkLogicIndex++;
+    for (int i = 0; i < sttsBox.entries.count; ++i) {
+        QGSttsEntry *entry = sttsBox.entries[i];
+        for (int j = 0; j < entry.sampleCount; ++j) {
+            QGMP4Sample *sample = [QGMP4Sample new];
+            sample.sampleDelta = entry.sampleDelta;
+            sample.codecType = QGMP4CodecTypeVideo;
+            sample.sampleIndex = sampIdx;
+            sample.pts = tmp + [cttsBox.compositionOffsets[j] unsignedLongLongValue];
+            if (sampIdx < stszBox.sampleSizes.count) {
+                sample.sampleSize = (int32_t)[stszBox.sampleSizes[sampIdx] integerValue];
             }
-
-            stscEntrySampleIndex = 0;
-            stscEntrySampleOffset = 0;
+            [videoSamples addObject:sample];
+            start_play_time += entry.sampleDelta;
+            sampIdx++;
+            tmp += entry.sampleDelta;
         }
-
-        sttsEntrySampleIndex++;
-        if (sttsEntrySampleIndex >= sttsEntry.sampleCount) {
-            sttsEntrySampleIndex = 0;
-            if (sttsEntryIndex + 1 < sttsBox.entries.count) {
-                sttsEntryIndex++;
+        
+        NSMutableArray<QGChunkOffsetEntry *> *chunkOffsets = [NSMutableArray new];
+        uint32_t chunkIndex = 0;
+        uint32_t totalSample = 0;
+        for (int j = 0; j < stscBox.entries.count; ++j) {
+            QGStscEntry *entry = stscBox.entries[j];
+            if (j < stscBox.entries.count - 1) {
+                QGStscEntry *nextEntry = stscBox.entries[j+1];
+                for (int k = 0; k < nextEntry.firstChunk - entry.firstChunk; ++k) {
+                    QGChunkOffsetEntry *offsetEntry = [QGChunkOffsetEntry new];
+                    offsetEntry.samplesPerChunk = entry.samplesPerChunk;
+                    totalSample += entry.samplesPerChunk;
+                    if (chunkIndex < stcoBox.chunkOffsets.count) {
+                        offsetEntry.offset = (uint32_t)[stcoBox.chunkOffsets[chunkIndex] integerValue];
+                    }
+                    chunkIndex++;
+                    [chunkOffsets addObject:offsetEntry];
+                }
+            } else {
+                //只有一个或最后一个
+                while (chunkIndex < stcoBox.chunkOffsets.count) {
+                    QGChunkOffsetEntry *offsetEntry = [QGChunkOffsetEntry new];
+                    offsetEntry.samplesPerChunk = entry.samplesPerChunk;
+                    offsetEntry.offset = (uint32_t)[stcoBox.chunkOffsets[chunkIndex] integerValue];
+                    totalSample += entry.samplesPerChunk;
+                    chunkIndex++;
+                    [chunkOffsets addObject:offsetEntry];
+                }
             }
         }
-
-        if (stscEntryIndex + 1 < stscBox.entries.count) {
-            if (stcoChunkLogicIndex >= stscBox.entries[stscEntryIndex + 1].firstChunk - 1) {
-                stscEntryIndex++;
+        sampIdx = 0;
+        for (int i = 0; i < chunkOffsets.count; ++i) {
+            QGChunkOffsetEntry *offsetEntry = chunkOffsets[i];
+            uint32_t offsetChunk = 0;
+            for (int j = 0; j < offsetEntry.samplesPerChunk; ++j) {
+                if (sampIdx < videoSamples.count) {
+                    QGMP4Sample *videoSample = videoSamples[sampIdx];
+                    videoSample.chunkIndex = i;
+                    videoSample.streamOffset = offsetEntry.offset + offsetChunk;
+                    offsetChunk += videoSample.sampleSize;
+                    sampIdx++;
+                }
             }
         }
     }

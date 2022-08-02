@@ -45,7 +45,7 @@ static const GLfloat kColorConversion709[] = {
 };
 
 // BT.601 full range-http://www.equasys.de/colorconversion.html
-const GLfloat kColorConversion601FullRange[] = {
+static const GLfloat kColorConversion601FullRange[] = {
     1.0,    1.0,    1.0,
     0.0,    -0.343, 1.765,
     1.4,    -0.711, 0.0,
@@ -54,28 +54,28 @@ const GLfloat kColorConversion601FullRange[] = {
 
 // texture coords for blend
 
-const GLfloat textureCoordLeft[] =  { // 左侧
+static const GLfloat textureCoordLeft[] =  { // 左侧
     0.5, 0.0,
     0.0, 0.0,
     0.5, 1.0,
     0.0, 1.0
 };
 
-const GLfloat textureCoordRight[] =  { // 右侧
+static const GLfloat textureCoordRight[] =  { // 右侧
     1.0, 0.0,
     0.5, 0.0,
     1.0, 1.0,
     0.5, 1.0
 };
 
-const GLfloat textureCoordTop[] =  { // 上侧
+static const GLfloat textureCoordTop[] =  { // 上侧
     1.0, 0.0,
     0.0, 0.0,
     1.0, 0.5,
     0.0, 0.5
 };
 
-const GLfloat textureCoordBottom[] =  { // 下侧
+static const GLfloat textureCoordBottom[] =  { // 下侧
     1.0, 0.5,
     0.0, 0.5,
     1.0, 1.0,

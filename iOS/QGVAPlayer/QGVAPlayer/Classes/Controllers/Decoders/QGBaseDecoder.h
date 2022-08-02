@@ -17,9 +17,6 @@
 #import "QGAnimatedImageDecodeThread.h"
 #import "QGBaseDFileInfo.h"
 
-extern NSString* kQGVAPDecoderSeekStart;
-extern NSString* kQGVAPDecoderSeekFinish;
-
 @interface QGBaseDecoder : NSObject
 
 @property (atomic, assign) NSInteger currentDecodeFrame;    //正在解码的帧索引
@@ -29,5 +26,6 @@ extern NSString* kQGVAPDecoderSeekFinish;
 - (void)decodeFrame:(NSInteger)frameIndex buffers:(NSMutableArray *)buffers;
 - (BOOL)shouldStopDecode:(NSInteger)nextFrameIndex;
 - (BOOL)isFrameIndexBeyondEnd:(NSInteger)frameIndex;
+- (NSTimeInterval)duration;
 
 @end
