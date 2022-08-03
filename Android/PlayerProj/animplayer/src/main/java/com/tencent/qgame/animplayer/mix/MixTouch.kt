@@ -38,7 +38,9 @@ class MixTouch(private val mixAnimPlugin: MixAnimPlugin) {
                 list?.forEach {frame ->
                     val src = mixAnimPlugin.srcMap?.map?.get(frame.srcId) ?: return@forEach
                     if (calClick(x.toInt(), y.toInt(), frame.frame)) {
-                        return Resource(src)
+                        return Resource(src).apply {
+                            curPoint = frame.frame
+                        }
                     }
                 }
             }

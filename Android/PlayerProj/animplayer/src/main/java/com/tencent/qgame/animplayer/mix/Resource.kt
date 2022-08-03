@@ -16,18 +16,20 @@
 package com.tencent.qgame.animplayer.mix
 
 import android.graphics.Bitmap
+import com.tencent.qgame.animplayer.PointRect
 
 /**
  * 资源描述
  */
-class Resource {
+class Resource(src: Src) {
     var id = ""
     var type = Src.SrcType.UNKNOWN
     var loadType = Src.LoadType.UNKNOWN
     var tag = ""
     var bitmap: Bitmap? = null
+    var curPoint: PointRect? = null  // src在当前帧的位置信息
 
-    constructor(src: Src) {
+    init {
         id = src.srcId
         type = src.srcType
         loadType = src.loadType

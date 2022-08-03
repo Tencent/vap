@@ -70,6 +70,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         Handler(Looper.getMainLooper())
     }
 
+    private var lastToast: Toast? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anim_simple_demo)
@@ -140,11 +142,13 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         // 注册点击事件监听
         animView.setOnResourceClickListener(object : OnResourceClickListener {
             override fun onClick(resource: Resource) {
-                Toast.makeText(
+                lastToast?.cancel()
+                lastToast = Toast.makeText(
                     this@AnimVapxDemoActivity,
-                    "srcTag=${resource.tag} onClick",
+                    "srcTag=${resource.tag} onClick ${resource.curPoint}",
                     Toast.LENGTH_LONG
-                ).show()
+                )
+                lastToast?.show()
             }
         })
 
