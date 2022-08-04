@@ -4,11 +4,11 @@ export interface VapConfig {
     config: string | {
         [key: string]: any;
     };
-    width: number;
-    height: number;
     fps?: number;
+    loop: boolean;
     mute?: boolean;
     precache?: boolean;
+    accurate: boolean;
     onLoadError?: (e: ErrorEvent) => void;
     onDestory?: () => void;
     [key: string]: any;

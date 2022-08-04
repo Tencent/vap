@@ -1,4 +1,9 @@
-export declare function createShader(gl: any, type: any, source: any): any;
-export declare function createProgram(gl: any, vertexShader: any, fragmentShader: any): any;
-export declare function createTexture(gl: any, index: number, imgData?: TexImageSource): any;
-export declare function cleanWebGL(gl: any, shaders: any, program: any, textures: any, buffers: any): void;
+export declare function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader;
+export declare function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram;
+export declare function createTexture(gl: WebGLRenderingContext, index: number, imgData?: TexImageSource): WebGLTexture;
+export declare function cleanWebGL(gl: WebGLRenderingContext, { shaders, program, textures, buffers }: {
+    shaders?: any[];
+    program?: any;
+    textures?: any[];
+    buffers?: any[];
+}): void;
