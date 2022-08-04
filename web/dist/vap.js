@@ -1345,6 +1345,7 @@
       classCallCheck(this, VapVideo);
 
       this.events = {};
+      this.firstPlaying = true;
       this.customEvent = ['frame', 'percentage', ''];
     }
 
@@ -1467,6 +1468,8 @@
           document.body.appendChild(this.video);
           video.load();
         }
+
+        this.firstPlaying = true;
 
         if ('requestVideoFrameCallback' in this.video) {
           this.useFrameCallback = !!this.options.accurate;
@@ -1662,8 +1665,8 @@
     }, {
       key: "onplaying",
       value: function onplaying() {
-        if (!this.firstPlaying) {
-          this.firstPlaying = true;
+        if (this.firstPlaying) {
+          this.firstPlaying = false;
 
           if (!this.useFrameCallback) {
             this.drawFrame(null, null);
