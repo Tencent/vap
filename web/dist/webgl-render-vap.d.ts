@@ -1,34 +1,32 @@
-import { VapConfig } from "./type";
+import { VapConfig } from './type';
 import VapVideo from './video';
 export default class WebglRenderVap extends VapVideo {
-    constructor(options: VapConfig);
-    private insType;
+    private canvas;
+    private gl;
+    private vertexShader;
+    private fragmentShader;
+    private program;
     private textures;
     private buffers;
-    private shaders;
     private vapFrameParser;
-    private resources;
-    private instance;
-    private program;
-    private videoTexture;
     private aPosition;
     private aTexCoord;
     private aAlphaTexCoord;
     private _imagePos;
-    init(): Promise<void>;
-    setCanvas(): void;
+    constructor(options?: VapConfig);
+    play(options?: VapConfig): this;
     initWebGL(): any;
     /**
      * 顶点着色器
      */
-    initVertexShader(): any;
+    initVertexShader(gl: WebGLRenderingContext): WebGLShader;
     /**
      * 片元着色器
      */
-    initFragmentShader(): any;
+    initFragmentShader(gl: WebGLRenderingContext): WebGLShader;
     initTexture(): void;
     initVideoTexture(): void;
     drawFrame(_: any, info: any): void;
+    clear(): void;
     destroy(): void;
-    clearMemoryCache(): void;
 }

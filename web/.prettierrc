@@ -1,0 +1,14 @@
+{
+    "semi": true,
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "useTabs": false,
+    "tabWidth": 2,
+    "printWidth": 120,
+    "proseWrap": "preserve",
+    "endOfLine": "lf",
+    "eslintIntegration": true,
+    "htmlWhitespaceSensitivity": "strict"
+}
