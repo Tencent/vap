@@ -131,10 +131,10 @@ export default class VapVideo {
       video.load();
     }
 
-    this.cancelRequestAnimation();
     if ('requestVideoFrameCallback' in this.video) {
       this.useFrameCallback = !!this.options.accurate;
     }
+    this.cancelRequestAnimation();
 
     // 绑定事件
     this.offAll();
@@ -206,6 +206,9 @@ export default class VapVideo {
   }
 
   cancelRequestAnimation() {
+    if (!this.animId) {
+      return;
+    }
     if (this.useFrameCallback) {
       try {
         // @ts-ignore
@@ -218,6 +221,11 @@ export default class VapVideo {
     } else {
       clearTimeout(this.animId);
     }
+    this.animId = 0;
+  }
+
+  clear() {
+    this.cancelRequestAnimation();
   }
 
   destroy() {

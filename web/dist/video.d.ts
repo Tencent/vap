@@ -22,6 +22,7 @@ export default class VapVideo {
     setTime(t: any): void;
     requestAnimFunc(): (cb: any) => number;
     cancelRequestAnimation(): void;
+    clear(): void;
     destroy(): void;
     on(event: any, callback: any): this;
     once(event: any, callback: any): this;

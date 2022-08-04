@@ -1468,12 +1468,11 @@
           video.load();
         }
 
-        this.cancelRequestAnimation();
-
         if ('requestVideoFrameCallback' in this.video) {
           this.useFrameCallback = !!this.options.accurate;
-        } // 绑定事件
+        }
 
+        this.cancelRequestAnimation(); // 绑定事件
 
         this.offAll();
         ['playing', 'error', 'canplay'].forEach(function (item) {
@@ -1562,6 +1561,10 @@
     }, {
       key: "cancelRequestAnimation",
       value: function cancelRequestAnimation() {
+        if (!this.animId) {
+          return;
+        }
+
         if (this.useFrameCallback) {
           try {
             // @ts-ignore
@@ -1574,6 +1577,13 @@
         } else {
           clearTimeout(this.animId);
         }
+
+        this.animId = 0;
+      }
+    }, {
+      key: "clear",
+      value: function clear() {
+        this.cancelRequestAnimation();
       }
     }, {
       key: "destroy",
@@ -2007,6 +2017,8 @@
     }, {
       key: "clear",
       value: function clear() {
+        get(getPrototypeOf(WebglRenderVap.prototype), "clear", this).call(this);
+
         var gl = this.gl,
             textures = this.textures,
             buffers = this.buffers;

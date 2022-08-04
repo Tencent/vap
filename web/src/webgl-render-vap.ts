@@ -340,6 +340,7 @@ export default class WebglRenderVap extends VapVideo {
 
   // 清理数据,为下一次播放做准备
   clear() {
+    super.clear();
     const { gl, textures, buffers } = this;
     glUtil.cleanWebGL(gl, { textures, buffers });
     // 清除界面，解决同类型type切换MP4时，第一帧是上一个mp4最后一帧的问题
