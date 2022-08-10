@@ -13,117 +13,124 @@
  * either express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {VapConfig} from "./type";
+import { VapConfig } from './type';
 import VapFrameParser from './vap-frame-parser';
 import * as glUtil from './gl-util';
 import VapVideo from './video';
 
+type ResourceCache = {
+  canvas: HTMLCanvasElement;
+  gl: WebGLRenderingContext;
+  vertexShader: WebGLShader;
+  fragmentShader: WebGLShader;
+  program: WebGLProgram;
+};
+
 let clearTimer = null;
-let instances = {};
+let cachedInstance: ResourceCache = null;
 const PER_SIZE = 9;
 
-function computeCoord(x:number, y:number, w:number, h:number, vw:number, vh:number) {
+function computeCoord(x: number, y: number, w: number, h: number, vw: number, vh: number) {
   // leftX rightX bottomY topY
-  return [x / vw, (x + w) / vw, (vh - y - h) / vh, (vh - y) / vh]
+  return [x / vw, (x + w) / vw, (vh - y - h) / vh, (vh - y) / vh];
 }
 
 export default class WebglRenderVap extends VapVideo {
-  constructor(options:VapConfig) {
-    super(options);
-    if ( this.useFrameCallback ) {
-      // @ts-ignore
-      this.animId = this.video.requestVideoFrameCallback( this.drawFrame.bind(this) );
+  private canvas: HTMLCanvasElement;
+  private gl: WebGLRenderingContext;
+  private vertexShader: WebGLShader;
+  private fragmentShader: WebGLShader;
+  private program: WebGLProgram;
+  private textures: Array<WebGLTexture> = [];
+  private buffers: Array<WebGLBuffer> = [];
+  private vapFrameParser: VapFrameParser;
+  private aPosition: number;
+  private aTexCoord: number;
+  private aAlphaTexCoord: number;
+  private _imagePos: WebGLUniformLocation;
+
+  constructor(options?: VapConfig) {
+    super();
+    if (options) {
+      this.play(options);
     }
-    this.insType = this.options.type;
-    if (instances[this.insType]) {
-      this.instance = instances[this.insType]
+  }
+
+  play(options?: VapConfig) {
+    if (options) {
+      this.setOptions(options);
+    }
+    if (!this.options?.config) {
+      console.error(`options.config cannot be empty.`);
+      return this;
+    }
+    if (options) {
+      this.initVideo();
+      // 重新解析
+      this.vapFrameParser = new VapFrameParser(this.options.config, this.options);
+      this.vapFrameParser
+        .init()
+        .then(() => {
+          this.initWebGL();
+          this.initTexture();
+          this.initVideoTexture();
+          this.options.fps = this.vapFrameParser.config.info.fps || 30;
+          super.play();
+        })
+        .catch((e) => {
+          this.vapFrameParser = null;
+          console.error('[Alpha video] parse vap frame error.', e);
+          return this;
+        });
     } else {
-      this.instance = instances[this.insType] = {}
+      super.play();
     }
-    this.textures = [];
-    this.buffers = [];
-    this.shaders = [];
-    this.init();
-  }
-
-  private insType;
-  private textures;
-  private buffers;
-  private shaders;
-  private vapFrameParser;
-  private resources;
-  private instance;
-  private program;
-  private videoTexture;
-  private aPosition;
-  private aTexCoord;
-  private aAlphaTexCoord;
-  private _imagePos;
-
-  async init() {
-    this.setCanvas();
-    if (this.options.config) {
-      try {
-        this.vapFrameParser = await new VapFrameParser(this.options.config, this.options).init();
-        this.resources = this.vapFrameParser.srcData;
-      } catch (e) {
-        console.error('[Alpha video] parse vap frame error.', e);
-      }
-    }
-    this.resources = this.resources || {};
-    this.initWebGL();
-    this.play();
-  }
-  setCanvas() {
-    let canvas = this.instance.canvas;
-    const { width, height } = this.options;
-    if (!canvas) {
-      canvas = this.instance.canvas = document.createElement('canvas');
-    }
-    canvas.width = width;
-    canvas.height = height;
-    this.container.appendChild(canvas);
+    return this;
   }
 
   initWebGL() {
-    const { canvas } = this.instance;
-    let { gl, vertexShader, fragmentShader, program } = this.instance;
+    let { canvas, gl, vertexShader, fragmentShader, program } = (cachedInstance || this) as any;
+    // 防止被其他实例访问
+    cachedInstance = null;
+
     if (!canvas) {
-      return
+      canvas = document.createElement('canvas');
     }
+    const { w, h } = this.vapFrameParser.config.info;
+    canvas.width = w;
+    canvas.height = h;
+    this.container.appendChild(canvas);
+
     if (!gl) {
-      this.instance.gl = gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      gl = canvas.getContext('webgl') || (canvas.getContext('experimental-webgl') as WebGLRenderingContext);
       gl.disable(gl.BLEND);
       gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     }
+    gl.viewport(0, 0, w, h);
 
-    // 清除界面，解决同类型type切换MP4时，第一帧是上一个mp4最后一帧的问题
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    if (gl) {
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      if (!vertexShader) {
-        vertexShader = this.instance.vertexShader = this.initVertexShader();
-      }
-      if (!fragmentShader) {
-        fragmentShader = this.instance.fragmentShader = this.initFragmentShader();
-      }
-      if (!program) {
-        program = this.instance.program = glUtil.createProgram(gl, vertexShader, fragmentShader);
-      }
-      this.program = program;
-      this.initTexture();
-      this.initVideoTexture();
-      return gl;
+    if (!vertexShader) {
+      vertexShader = this.initVertexShader(gl);
     }
+    if (!fragmentShader) {
+      fragmentShader = this.initFragmentShader(gl);
+    }
+    if (!program) {
+      program = glUtil.createProgram(gl, vertexShader, fragmentShader);
+    }
+
+    this.canvas = canvas;
+    this.gl = gl;
+    this.vertexShader = vertexShader;
+    this.fragmentShader = fragmentShader;
+    this.program = program;
+    return gl;
   }
 
   /**
    * 顶点着色器
    */
-  initVertexShader() {
-    const { gl } = this.instance;
+  initVertexShader(gl: WebGLRenderingContext) {
     return glUtil.createShader(
       gl,
       gl.VERTEX_SHADER,
@@ -143,8 +150,7 @@ export default class WebglRenderVap extends VapVideo {
   /**
    * 片元着色器
    */
-  initFragmentShader() {
-    const { gl } = this.instance;
+  initFragmentShader(gl: WebGLRenderingContext) {
     const bgColor = `vec4(texture2D(u_image_video, v_texcoord).rgb, texture2D(u_image_video,v_alpha_texCoord).r);`;
     const textureSize = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1;
     // const textureSize =0
@@ -158,8 +164,8 @@ export default class WebglRenderVap extends VapVideo {
           `if(ndx == ${i + 1}){
                         color = texture2D(u_image${i + 1},uv);
                     }`
-        )
-        samplers.push(`uniform sampler2D u_image${i + 1};`)
+        );
+        samplers.push(`uniform sampler2D u_image${i + 1};`);
       }
 
       sourceUniform = `
@@ -207,7 +213,7 @@ export default class WebglRenderVap extends VapVideo {
             `;
     }
 
-    const fragmentSharder = `
+    const fragmentShader = `
         precision lowp float;
         varying vec2 v_texcoord;
         varying vec2 v_alpha_texCoord;
@@ -221,14 +227,18 @@ export default class WebglRenderVap extends VapVideo {
             gl_FragColor = bgColor;
         }
         `;
-    return glUtil.createShader(gl, gl.FRAGMENT_SHADER, fragmentSharder)
+    return glUtil.createShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
   }
 
   initTexture() {
-    const { gl } = this.instance;
+    const { gl } = this;
     let i = 1;
     if (!this.vapFrameParser || !this.vapFrameParser.srcData) {
-      return
+      return;
+    }
+    if (this.textures.length) {
+      glUtil.cleanWebGL(this.gl, { textures: this.textures });
+      this.textures = [];
     }
     const resources = this.vapFrameParser.srcData;
     for (const key in resources) {
@@ -242,18 +252,22 @@ export default class WebglRenderVap extends VapVideo {
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, dumpTexture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-    this.videoTexture = glUtil.createTexture(gl, i);
+    // video texture
+    this.textures.push(glUtil.createTexture(gl, i));
     const sampler = gl.getUniformLocation(this.program, `u_image_video`);
     gl.uniform1i(sampler, i);
   }
 
   initVideoTexture() {
-    const { gl } = this.instance;
+    const { gl } = this;
+    if (this.buffers.length) {
+      glUtil.cleanWebGL(gl, { buffers: this.buffers });
+      this.buffers = [];
+    }
     const vertexBuffer = gl.createBuffer();
     this.buffers.push(vertexBuffer);
     if (!this.vapFrameParser || !this.vapFrameParser.config || !this.vapFrameParser.config.info) {
-      return
+      return;
     }
     const info = this.vapFrameParser.config.info;
     const ver = [];
@@ -284,71 +298,92 @@ export default class WebglRenderVap extends VapVideo {
   }
 
   drawFrame(_, info) {
-    const timePoint = (info && info.mediaTime >= 0) ? info.mediaTime : this.video.currentTime
-    const frame = info && info.presentedFrames > 0 ? info.presentedFrames - 1 : Math.round(timePoint * this.options.fps) + this.options.offset;
-    const frameCbs = this.events['frame'] || []
-    frameCbs.forEach(cb => {
-      cb(frame + 1, timePoint)
-    })
-    const gl = this.instance.gl;
+    const { gl } = this;
     if (!gl) {
       super.drawFrame(_, info);
-      return
+      return;
     }
+
+    const frame =
+      !this.options.loop && info?.presentedFrames > 0
+        ? info.presentedFrames - 1
+        : Math.round(this.video.currentTime * this.options.fps) + this.options.offset;
+    // console.info('frame:', info.presentedFrames - 1, Math.round(this.video.currentTime * this.options.fps));
+    const frameData = this.vapFrameParser.getFrame(frame);
+    let posArr = [];
+
+    if (frameData && frameData.obj) {
+      const { videoW: vW, videoH: vH, rgbFrame } = this.vapFrameParser.config.info;
+      frameData.obj.forEach((frame) => {
+        posArr[posArr.length] = +this.vapFrameParser.textureMap[frame.srcId];
+
+        // frame坐标是最终展示坐标，这里glsl中计算使用视频坐标
+        const [rgbX, rgbY] = rgbFrame;
+        const [x, y, w, h] = frame.frame;
+        const [mX, mY, mW, mH] = frame.mFrame;
+        const coord = computeCoord(x + rgbX, y + rgbY, w, h, vW, vH);
+        const mCoord = computeCoord(mX, mY, mW, mH, vW, vH);
+        posArr = posArr.concat(coord).concat(mCoord);
+      });
+    }
+
+    this.trigger('frame', frame + 1, frameData, this.vapFrameParser.config);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    if (this.vapFrameParser) {
-      const frameData = this.vapFrameParser.getFrame(frame);
-      let posArr = [];
-
-      if (frameData && frameData.obj) {
-        frameData.obj.forEach((frame, index) => {
-          posArr[posArr.length] = +this.vapFrameParser.textureMap[frame.srcId];
-
-          const info = this.vapFrameParser.config.info;
-          const { videoW: vW, videoH: vH } = info;
-          // frame坐标是最终展示坐标，这里glsl中计算使用视频坐标
-          const [rgbX, rgbY] = info.rgbFrame;
-          const [x, y, w, h] = frame.frame;
-          const [mX, mY, mW, mH] = frame.mFrame;
-          const coord = computeCoord(x + rgbX, y + rgbY, w, h, vW, vH);
-          const mCoord = computeCoord(mX, mY, mW, mH, vW, vH);
-          posArr = posArr.concat(coord).concat(mCoord);
-        })
-      }
-      //
-      const size = (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1) * PER_SIZE;
-      posArr = posArr.concat(new Array(size - posArr.length).fill(0));
-      this._imagePos = this._imagePos || gl.getUniformLocation(this.program, 'image_pos');
-      gl.uniform1fv(this._imagePos, new Float32Array(posArr));
-    }
+    const size = (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1) * PER_SIZE;
+    posArr = posArr.concat(new Array(size - posArr.length).fill(0));
+    this._imagePos = this._imagePos || gl.getUniformLocation(this.program, 'image_pos');
+    gl.uniform1fv(this._imagePos, new Float32Array(posArr));
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.video); // 指定二维纹理方式
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     super.drawFrame(_, info);
   }
 
-  destroy() {
-    const { canvas, gl } = this.instance;
-    if (this.textures && this.textures.length) {
-      for (let i = 0; i < this.textures.length; i++) {
-        gl.deleteTexture(this.textures[i]);
-      }
-    }
-    if (canvas) {
-      canvas.parentNode && canvas.parentNode.removeChild(canvas);
-    }
+  // 清理数据,为下一次播放做准备
+  clear() {
+    super.clear();
+    const { gl, textures, buffers } = this;
+    glUtil.cleanWebGL(gl, { textures, buffers });
+    // 清除界面，解决同类型type切换MP4时，第一帧是上一个mp4最后一帧的问题
     gl.clear(gl.COLOR_BUFFER_BIT);
-    // glUtil.cleanWebGL(gl, this.shaders, this.program, this.textures, this.buffers)
-    super.destroy();
-    this.clearMemoryCache();
+    this.textures = [];
+    this.buffers = [];
   }
 
-  clearMemoryCache() {
-    if (clearTimer) {
-      clearTimeout(clearTimer);
+  // 销毁,释放webgl资源,销毁后调用play,资源会重新初始化
+  destroy() {
+    const { canvas, gl, vertexShader, fragmentShader, program } = this;
+    if (gl) {
+      this.clear();
+      if (canvas) {
+        canvas.parentNode && canvas.parentNode.removeChild(canvas);
+      }
+      this.canvas = null;
+      this.gl = null;
+      this.vertexShader = null;
+      this.fragmentShader = null;
+      this.program = null;
+      super.destroy();
+      clearMemoryCache({ canvas, gl, vertexShader, fragmentShader, program });
     }
-
-    clearTimer = setTimeout(() => {
-      instances = {};
-    }, 30 * 60 * 1000);
   }
+}
+
+function clearMemoryCache(instance) {
+  if (clearTimer) {
+    clearTimeout(clearTimer);
+  }
+  if (cachedInstance) {
+    glUtil.cleanWebGL(cachedInstance.gl, {
+      program: cachedInstance.program,
+      shaders: [cachedInstance.vertexShader, cachedInstance.fragmentShader],
+    });
+  }
+  cachedInstance = instance;
+  clearTimer = setTimeout(() => {
+    glUtil.cleanWebGL(cachedInstance.gl, {
+      program: cachedInstance.program,
+      shaders: [cachedInstance.vertexShader, cachedInstance.fragmentShader],
+    });
+    cachedInstance = null;
+  }, 30 * 60 * 1000);
 }

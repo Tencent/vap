@@ -1,16 +1,16 @@
 export default class FrameParser {
     constructor(source: any, headData: any);
-    private config;
+    config: any;
     private headData;
     private frame;
-    private textureMap;
+    textureMap: any;
     private canvas;
     private ctx;
-    private srcData;
+    srcData: any;
     init(): Promise<this>;
     initCanvas(): void;
     loadImg(url: string): Promise<unknown>;
-    parseSrc(dataJson: any): Promise<[unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown, unknown]>;
+    parseSrc(dataJson: any): Promise<void>;
     /**
      * 下载json文件
      * @param jsonUrl json外链

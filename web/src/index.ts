@@ -13,23 +13,23 @@
  * either express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {VapConfig} from "./type";
-import WebglRenderVap from './webgl-render-vap'
-let isCanWebGL: Boolean;
+import { VapConfig } from './type';
+import WebglRenderVap from './webgl-render-vap';
+let isCanWebGL: boolean;
 /**
  * @param options
  * @constructor
  * @return {null}
  */
-export default function(options: VapConfig) {
+export default function (options?: VapConfig) {
   if (canWebGL()) {
-    return new WebglRenderVap(Object.assign({}, options));
+    return new WebglRenderVap(options);
   } else {
     throw new Error('your browser not support webgl');
   }
 }
 
-function canWebGL(): Boolean {
+export function canWebGL(): boolean {
   if (typeof isCanWebGL !== 'undefined') {
     return isCanWebGL;
   }

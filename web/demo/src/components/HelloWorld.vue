@@ -27,7 +27,7 @@ export default {
         return
       }
       const that = this
-      this.vap = new Vap(Object.assign({}, {
+      this.vap = new Vap().play(Object.assign({}, {
         container: this.$refs.anim,
         // 素材视频链接
         src: this.url,
