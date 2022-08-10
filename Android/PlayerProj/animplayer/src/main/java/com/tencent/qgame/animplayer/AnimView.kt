@@ -135,13 +135,14 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         ALog.i(TAG, "onSurfaceTextureDestroyed")
+        this.surface = null
         player.onSurfaceTextureDestroyed()
         uiHandler.post {
             innerTextureView?.surfaceTextureListener = null
             innerTextureView = null
             removeAllViews()
         }
-        return !belowKitKat()
+        return true
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
@@ -177,9 +178,6 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun onDetachedFromWindow() {
         ALog.i(TAG, "onDetachedFromWindow")
         super.onDetachedFromWindow()
-        if (belowKitKat()) {
-            release()
-        }
         player.isDetachedFromWindow = true
         player.onSurfaceTextureDestroyed()
     }
@@ -310,19 +308,4 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         if (Looper.myLooper() == Looper.getMainLooper()) f() else uiHandler.post { f() }
     }
 
-    /**
-     * fix Error detachFromGLContext crash
-     */
-    private fun belowKitKat(): Boolean {
-        return Build.VERSION.SDK_INT <= 19
-    }
-
-    private fun release() {
-        try {
-            surface?.release()
-        } catch (error: Throwable) {
-            ALog.e(TAG, "failed to release mSurfaceTexture= $surface: ${error.message}", error)
-        }
-        surface = null
-    }
 }

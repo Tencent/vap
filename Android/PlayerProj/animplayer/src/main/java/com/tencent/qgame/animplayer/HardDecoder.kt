@@ -33,6 +33,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         private const val TAG = "${Constant.TAG}.HardDecoder"
     }
 
+    private var surface: Surface? = null
     private var glTexture: SurfaceTexture? = null
     private val bufferInfo by lazy { MediaCodec.BufferInfo() }
     private var needDestroy = false
@@ -64,7 +65,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         renderData()
     }
 
-    fun renderData() {
+    private fun renderData() {
         renderThread.handler?.post {
             try {
                 glTexture?.apply {
@@ -160,7 +161,8 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                     )
                     configure(format, null, null, 0)
                 } else {
-                    configure(format, Surface(glTexture), null, 0)
+                    surface = Surface(glTexture)
+                    configure(format, surface, null, 0)
                 }
 
                 start()
@@ -360,6 +362,8 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                 speedControlUtil.reset()
                 player.pluginManager.onRelease()
                 render?.releaseTexture()
+                surface?.release()
+                surface = null
             } catch (e: Throwable) {
                 ALog.e(TAG, "release e=$e", e)
             }

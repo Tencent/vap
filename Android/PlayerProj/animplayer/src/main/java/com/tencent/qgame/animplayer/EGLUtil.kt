@@ -32,6 +32,7 @@ class EGLUtil {
     private var eglSurface: EGLSurface? = null
     private var eglContext: EGLContext? = null
     private var eglConfig: EGLConfig? = null
+    private var surface: Surface? = null
 
     init {
         eglDisplay = EGL10.EGL_NO_DISPLAY
@@ -46,7 +47,8 @@ class EGLUtil {
             val version = IntArray(2)
             egl?.eglInitialize(eglDisplay, version)
             eglConfig = chooseConfig()
-            eglSurface = egl?.eglCreateWindowSurface(eglDisplay, eglConfig, Surface(surfaceTexture), null)
+            surface = Surface(surfaceTexture)
+            eglSurface = egl?.eglCreateWindowSurface(eglDisplay, eglConfig, surface, null)
             eglContext = createContext(egl, eglDisplay, eglConfig)
             if (eglSurface == null || eglSurface == EGL10.EGL_NO_SURFACE) {
                 ALog.e(TAG, "error:${Integer.toHexString(egl?.eglGetError() ?: 0)}")
@@ -105,6 +107,8 @@ class EGLUtil {
             eglDestroySurface(eglDisplay, eglSurface)
             eglDestroyContext(eglDisplay, eglContext)
             eglTerminate(eglDisplay)
+            surface?.release()
+            surface = null
         }
     }
 
