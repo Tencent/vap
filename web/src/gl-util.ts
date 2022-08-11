@@ -59,10 +59,12 @@ export function cleanWebGL(gl: WebGLRenderingContext, { shaders = [], program = 
     buffers.forEach((b) => {
       gl.deleteBuffer(b);
     });
-    shaders.forEach((shader) => {
-      gl.detachShader(program, shader);
-      gl.deleteShader(shader);
-    });
-    gl.deleteProgram(program);
+    if (program) {
+      shaders.forEach((shader) => {
+        gl.detachShader(program, shader);
+        gl.deleteShader(shader);
+      });
+      gl.deleteProgram(program);
+    }
   } catch (e) {}
 }

@@ -35,7 +35,7 @@ export default class WebglRenderVap extends VapVideo {
   private videoTexture: WebGLTexture;
   private vertexBuffer: WebGLBuffer;
   private vapFrameParser: VapFrameParser;
-  private _imagePos: WebGLUniformLocation;
+  private imagePosLoc: WebGLUniformLocation;
 
   constructor(options?: VapConfig) {
     super();
@@ -81,7 +81,8 @@ export default class WebglRenderVap extends VapVideo {
     if (!canvas) {
       canvas = document.createElement('canvas');
     }
-    const { w, h } = this.vapFrameParser.config.info;
+    const { vapFrameParser } = this;
+    const { w, h } = vapFrameParser.config.info;
     canvas.width = w;
     canvas.height = h;
     this.container.appendChild(canvas);
@@ -97,18 +98,21 @@ export default class WebglRenderVap extends VapVideo {
     if (!vertexShader) {
       vertexShader = this.initVertexShader(gl);
     }
-    if (!fragmentShader) {
-      fragmentShader = this.initFragmentShader(gl);
+
+    if (fragmentShader && program) {
+      glUtil.cleanWebGL(gl, { program, shaders: [fragmentShader] });
     }
-    if (!program) {
-      program = glUtil.createProgram(gl, vertexShader, fragmentShader);
-    }
+
+    const { srcData } = vapFrameParser;
+    fragmentShader = this.initFragmentShader(gl, Object.keys(srcData).length);
+    program = glUtil.createProgram(gl, vertexShader, fragmentShader);
 
     this.canvas = canvas;
     this.gl = gl;
     this.vertexShader = vertexShader;
     this.fragmentShader = fragmentShader;
     this.program = program;
+    this.imagePosLoc = null;
     return gl;
   }
 
@@ -135,12 +139,13 @@ export default class WebglRenderVap extends VapVideo {
   /**
    * 片元着色器
    */
-  initFragmentShader(gl: WebGLRenderingContext) {
+  initFragmentShader(gl: WebGLRenderingContext, textureSize) {
     const bgColor = `vec4(texture2D(u_image_video, v_texcoord).rgb, texture2D(u_image_video,v_alpha_texCoord).r);`;
-    const textureSize = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1;
     let sourceTexure = '';
     let sourceUniform = '';
+
     if (textureSize > 0) {
+      const bufferSize = textureSize * PER_SIZE;
       const imgColor = [];
       const samplers = [];
       for (let i = 0; i < textureSize; i++) {
@@ -154,7 +159,7 @@ export default class WebglRenderVap extends VapVideo {
 
       sourceUniform = `
             ${samplers.join('\n')}
-            uniform float image_pos[${textureSize * PER_SIZE}];
+            uniform float image_pos[${bufferSize}];
             vec4 getSampleFromArray(int ndx, vec2 uv) {
                 vec4 color;
                 ${imgColor.join(' else ')}
@@ -167,7 +172,7 @@ export default class WebglRenderVap extends VapVideo {
             int srcIndex;
             float x1,x2,y1,y2,mx1,mx2,my1,my2; //显示的区域
 
-            for(int i=0;i<${textureSize * PER_SIZE};i+= ${PER_SIZE}){
+            for(int i=0;i<${bufferSize};i+= ${PER_SIZE}){
                 if ((int(image_pos[i]) > 0)) {
                   srcIndex = int(image_pos[i]);
     
@@ -207,7 +212,6 @@ export default class WebglRenderVap extends VapVideo {
         void main(void) {
             vec4 bgColor = ${bgColor}
             ${sourceTexure}
-            // bgColor = texture2D(u_image[0], v_texcoord);
             gl_FragColor = bgColor;
         }
         `;
@@ -232,9 +236,9 @@ export default class WebglRenderVap extends VapVideo {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.img);
       } else {
         this.textures.push(glUtil.createTexture(gl, i, resource.img));
-        const sampler = gl.getUniformLocation(this.program, `u_image${i}`);
-        gl.uniform1i(sampler, i);
       }
+      const sampler = gl.getUniformLocation(this.program, `u_image${i}`);
+      gl.uniform1i(sampler, i);
       this.vapFrameParser.textureMap[resource.srcId] = i++;
     }
   }
@@ -248,9 +252,10 @@ export default class WebglRenderVap extends VapVideo {
     // video texture
     if (!this.videoTexture) {
       this.videoTexture = glUtil.createTexture(gl, 0);
-      const sampler = gl.getUniformLocation(program, `u_image_video`);
-      gl.uniform1i(sampler, 0);
     }
+
+    const sampler = gl.getUniformLocation(program, `u_image_video`);
+    gl.uniform1i(sampler, 0);
     gl.activeTexture(gl.TEXTURE0);
 
     const info = vapFrameParser.config.info;
@@ -300,9 +305,9 @@ export default class WebglRenderVap extends VapVideo {
         : Math.round(video.currentTime * options.fps) + options.offset;
     // console.info('frame:', info.presentedFrames - 1, Math.round(this.video.currentTime * this.options.fps));
     const frameData = vapFrameParser.getFrame(frame);
-    let posArr = [];
 
-    if (frameData && frameData.obj) {
+    if (frameData?.obj) {
+      let posArr = [];
       const { videoW: vW, videoH: vH, rgbFrame } = vapFrameParser.config.info;
       frameData.obj.forEach((frame) => {
         // 有可能用户没有传入src
@@ -318,14 +323,14 @@ export default class WebglRenderVap extends VapVideo {
           posArr = posArr.concat(coord).concat(mCoord);
         }
       });
+      if (posArr.length) {
+        this.imagePosLoc = this.imagePosLoc || gl.getUniformLocation(this.program, 'image_pos');
+        gl.uniform1fv(this.imagePosLoc, new Float32Array(posArr));
+      }
     }
 
     this.trigger('frame', frame + 1, frameData, vapFrameParser.config);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    const size = (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1) * PER_SIZE;
-    posArr = posArr.concat(new Array(size - posArr.length).fill(0));
-    this._imagePos = this._imagePos || gl.getUniformLocation(this.program, 'image_pos');
-    gl.uniform1fv(this._imagePos, new Float32Array(posArr));
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video); // 指定二维纹理方式
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     super.drawFrame(_, info);
@@ -360,7 +365,7 @@ export default class WebglRenderVap extends VapVideo {
     this.vertexShader = null;
     this.fragmentShader = null;
     this.program = null;
-    this._imagePos = null;
+    this.imagePosLoc = null;
     this.vertexBuffer = null;
     this.videoTexture = null;
     this.textures = [];

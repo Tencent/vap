@@ -1356,11 +1356,14 @@
       buffers.forEach(function (b) {
         gl.deleteBuffer(b);
       });
-      shaders.forEach(function (shader) {
-        gl.detachShader(program, shader);
-        gl.deleteShader(shader);
-      });
-      gl.deleteProgram(program);
+
+      if (program) {
+        shaders.forEach(function (shader) {
+          gl.detachShader(program, shader);
+          gl.deleteShader(shader);
+        });
+        gl.deleteProgram(program);
+      }
     } catch (e) {}
   }
 
@@ -1803,9 +1806,10 @@
           canvas = document.createElement('canvas');
         }
 
-        var _this$vapFrameParser$ = this.vapFrameParser.config.info,
-            w = _this$vapFrameParser$.w,
-            h = _this$vapFrameParser$.h;
+        var vapFrameParser = this.vapFrameParser;
+        var _vapFrameParser$confi = vapFrameParser.config.info,
+            w = _vapFrameParser$confi.w,
+            h = _vapFrameParser$confi.h;
         canvas.width = w;
         canvas.height = h;
         this.container.appendChild(canvas);
@@ -1823,19 +1827,22 @@
           vertexShader = this.initVertexShader(gl);
         }
 
-        if (!fragmentShader) {
-          fragmentShader = this.initFragmentShader(gl);
+        if (fragmentShader && program) {
+          cleanWebGL(gl, {
+            program: program,
+            shaders: [fragmentShader]
+          });
         }
 
-        if (!program) {
-          program = createProgram(gl, vertexShader, fragmentShader);
-        }
-
+        var srcData = vapFrameParser.srcData;
+        fragmentShader = this.initFragmentShader(gl, Object.keys(srcData).length);
+        program = createProgram(gl, vertexShader, fragmentShader);
         this.canvas = canvas;
         this.gl = gl;
         this.vertexShader = vertexShader;
         this.fragmentShader = fragmentShader;
         this.program = program;
+        this.imagePosLoc = null;
         return gl;
       }
       /**
@@ -1853,13 +1860,13 @@
 
     }, {
       key: "initFragmentShader",
-      value: function initFragmentShader(gl) {
+      value: function initFragmentShader(gl, textureSize) {
         var bgColor = "vec4(texture2D(u_image_video, v_texcoord).rgb, texture2D(u_image_video,v_alpha_texCoord).r);";
-        var textureSize = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1;
         var sourceTexure = '';
         var sourceUniform = '';
 
         if (textureSize > 0) {
+          var bufferSize = textureSize * PER_SIZE;
           var imgColor = [];
           var samplers = [];
 
@@ -1868,11 +1875,11 @@
             samplers.push("uniform sampler2D u_image".concat(i + 1, ";"));
           }
 
-          sourceUniform = "\n            ".concat(samplers.join('\n'), "\n            uniform float image_pos[").concat(textureSize * PER_SIZE, "];\n            vec4 getSampleFromArray(int ndx, vec2 uv) {\n                vec4 color;\n                ").concat(imgColor.join(' else '), "\n                return color;\n            }\n            ");
-          sourceTexure = "\n            vec4 srcColor,maskColor;\n            vec2 srcTexcoord,maskTexcoord;\n            int srcIndex;\n            float x1,x2,y1,y2,mx1,mx2,my1,my2; //\u663E\u793A\u7684\u533A\u57DF\n\n            for(int i=0;i<".concat(textureSize * PER_SIZE, ";i+= ").concat(PER_SIZE, "){\n                if ((int(image_pos[i]) > 0)) {\n                  srcIndex = int(image_pos[i]);\n    \n                    x1 = image_pos[i+1];\n                    x2 = image_pos[i+2];\n                    y1 = image_pos[i+3];\n                    y2 = image_pos[i+4];\n                    \n                    mx1 = image_pos[i+5];\n                    mx2 = image_pos[i+6];\n                    my1 = image_pos[i+7];\n                    my2 = image_pos[i+8];\n    \n    \n                    if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {\n                        srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));\n                         maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));\n                         srcColor = getSampleFromArray(srcIndex,srcTexcoord);\n                         maskColor = texture2D(u_image_video, maskTexcoord);\n                         srcColor.a = srcColor.a*(maskColor.r);\n                      \n                         bgColor = vec4(srcColor.rgb*srcColor.a,srcColor.a) + (1.0-srcColor.a)*bgColor;\n                      \n                    }   \n                }\n            }\n            ");
+          sourceUniform = "\n            ".concat(samplers.join('\n'), "\n            uniform float image_pos[").concat(bufferSize, "];\n            vec4 getSampleFromArray(int ndx, vec2 uv) {\n                vec4 color;\n                ").concat(imgColor.join(' else '), "\n                return color;\n            }\n            ");
+          sourceTexure = "\n            vec4 srcColor,maskColor;\n            vec2 srcTexcoord,maskTexcoord;\n            int srcIndex;\n            float x1,x2,y1,y2,mx1,mx2,my1,my2; //\u663E\u793A\u7684\u533A\u57DF\n\n            for(int i=0;i<".concat(bufferSize, ";i+= ").concat(PER_SIZE, "){\n                if ((int(image_pos[i]) > 0)) {\n                  srcIndex = int(image_pos[i]);\n    \n                    x1 = image_pos[i+1];\n                    x2 = image_pos[i+2];\n                    y1 = image_pos[i+3];\n                    y2 = image_pos[i+4];\n                    \n                    mx1 = image_pos[i+5];\n                    mx2 = image_pos[i+6];\n                    my1 = image_pos[i+7];\n                    my2 = image_pos[i+8];\n    \n    \n                    if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {\n                        srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));\n                         maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));\n                         srcColor = getSampleFromArray(srcIndex,srcTexcoord);\n                         maskColor = texture2D(u_image_video, maskTexcoord);\n                         srcColor.a = srcColor.a*(maskColor.r);\n                      \n                         bgColor = vec4(srcColor.rgb*srcColor.a,srcColor.a) + (1.0-srcColor.a)*bgColor;\n                      \n                    }   \n                }\n            }\n            ");
         }
 
-        var fragmentShader = "\n        precision lowp float;\n        varying vec2 v_texcoord;\n        varying vec2 v_alpha_texCoord;\n        uniform sampler2D u_image_video;\n        ".concat(sourceUniform, "\n        \n        void main(void) {\n            vec4 bgColor = ").concat(bgColor, "\n            ").concat(sourceTexure, "\n            // bgColor = texture2D(u_image[0], v_texcoord);\n            gl_FragColor = bgColor;\n        }\n        ");
+        var fragmentShader = "\n        precision lowp float;\n        varying vec2 v_texcoord;\n        varying vec2 v_alpha_texCoord;\n        uniform sampler2D u_image_video;\n        ".concat(sourceUniform, "\n        \n        void main(void) {\n            vec4 bgColor = ").concat(bgColor, "\n            ").concat(sourceTexure, "\n            gl_FragColor = bgColor;\n        }\n        ");
         return createShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
       }
     }, {
@@ -1900,10 +1907,10 @@
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.img);
           } else {
             this.textures.push(createTexture(gl, i, resource.img));
-            var sampler = gl.getUniformLocation(this.program, "u_image".concat(i));
-            gl.uniform1i(sampler, i);
           }
 
+          var sampler = gl.getUniformLocation(this.program, "u_image".concat(i));
+          gl.uniform1i(sampler, i);
           this.vapFrameParser.textureMap[resource.srcId] = i++;
         }
       }
@@ -1921,10 +1928,10 @@
 
         if (!this.videoTexture) {
           this.videoTexture = createTexture(gl, 0);
-          var sampler = gl.getUniformLocation(program, "u_image_video");
-          gl.uniform1i(sampler, 0);
         }
 
+        var sampler = gl.getUniformLocation(program, "u_image_video");
+        gl.uniform1i(sampler, 0);
         gl.activeTexture(gl.TEXTURE0);
         var info = vapFrameParser.config.info;
         var vW = info.videoW,
@@ -1983,13 +1990,13 @@
         var frame = !options.loop && (info === null || info === void 0 ? void 0 : info.presentedFrames) > 0 ? info.presentedFrames - 1 : Math.round(video.currentTime * options.fps) + options.offset; // console.info('frame:', info.presentedFrames - 1, Math.round(this.video.currentTime * this.options.fps));
 
         var frameData = vapFrameParser.getFrame(frame);
-        var posArr = [];
 
-        if (frameData && frameData.obj) {
-          var _vapFrameParser$confi = vapFrameParser.config.info,
-              vW = _vapFrameParser$confi.videoW,
-              vH = _vapFrameParser$confi.videoH,
-              rgbFrame = _vapFrameParser$confi.rgbFrame;
+        if (frameData === null || frameData === void 0 ? void 0 : frameData.obj) {
+          var posArr = [];
+          var _vapFrameParser$confi2 = vapFrameParser.config.info,
+              vW = _vapFrameParser$confi2.videoW,
+              vH = _vapFrameParser$confi2.videoH,
+              rgbFrame = _vapFrameParser$confi2.rgbFrame;
           frameData.obj.forEach(function (frame) {
             // 有可能用户没有传入src
             var imgIndex = vapFrameParser.textureMap[frame.srcId];
@@ -2018,14 +2025,15 @@
               posArr = posArr.concat(coord).concat(mCoord);
             }
           });
+
+          if (posArr.length) {
+            this.imagePosLoc = this.imagePosLoc || gl.getUniformLocation(this.program, 'image_pos');
+            gl.uniform1fv(this.imagePosLoc, new Float32Array(posArr));
+          }
         }
 
         this.trigger('frame', frame + 1, frameData, vapFrameParser.config);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        var size = (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1) * PER_SIZE;
-        posArr = posArr.concat(new Array(size - posArr.length).fill(0));
-        this._imagePos = this._imagePos || gl.getUniformLocation(this.program, 'image_pos');
-        gl.uniform1fv(this._imagePos, new Float32Array(posArr));
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video); // 指定二维纹理方式
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -2075,7 +2083,7 @@
         this.vertexShader = null;
         this.fragmentShader = null;
         this.program = null;
-        this._imagePos = null;
+        this.imagePosLoc = null;
         this.vertexBuffer = null;
         this.videoTexture = null;
         this.textures = [];

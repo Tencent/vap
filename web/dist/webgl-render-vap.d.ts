@@ -10,7 +10,7 @@ export default class WebglRenderVap extends VapVideo {
     private videoTexture;
     private vertexBuffer;
     private vapFrameParser;
-    private _imagePos;
+    private imagePosLoc;
     constructor(options?: VapConfig);
     play(options?: VapConfig): this;
     initWebGL(): WebGLRenderingContext;
@@ -21,7 +21,7 @@ export default class WebglRenderVap extends VapVideo {
     /**
      * 片元着色器
      */
-    initFragmentShader(gl: WebGLRenderingContext): WebGLShader;
+    initFragmentShader(gl: WebGLRenderingContext, textureSize: any): WebGLShader;
     initTexture(): void;
     initVideoTexture(): void;
     drawFrame(_: any, info: any): void;
