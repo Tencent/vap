@@ -7,15 +7,13 @@ export default class WebglRenderVap extends VapVideo {
     private fragmentShader;
     private program;
     private textures;
-    private buffers;
+    private videoTexture;
+    private vertexBuffer;
     private vapFrameParser;
-    private aPosition;
-    private aTexCoord;
-    private aAlphaTexCoord;
     private _imagePos;
     constructor(options?: VapConfig);
     play(options?: VapConfig): this;
-    initWebGL(): any;
+    initWebGL(): WebGLRenderingContext;
     /**
      * 顶点着色器
      */
