@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "1.0.17"
+  spec.version      = "1.0.18"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
@@ -149,7 +149,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.framework  = "SomeFramework"
-  # spec.frameworks = "SomeFramework", "AnotherFramework"
+  spec.frameworks = "Metal", "MetalKit"
 
   # spec.library   = "iconv"
   # spec.libraries = "iconv", "xml2"

@@ -94,7 +94,7 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 - (void)playVap {
     VAPView *mp4View = [[VAPView alloc] initWithFrame:CGRectMake(0, 0, 752/2, 752/2)];
     //默认使用metal渲染，使用OpenGL请打开下面这个开关
-    //mp4View.renderByOpenGL = YES;
+//    mp4View.hwd_renderByOpenGL = YES;
     mp4View.center = self.view.center;
     [self.view addSubview:mp4View];
     mp4View.userInteractionEnabled = YES;

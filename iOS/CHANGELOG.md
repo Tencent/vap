@@ -1,3 +1,9 @@
+## iOS 1.0.18
+
+**bugfix**
+
+- 修复部分渲染宏与GPUImage冲突。
+
 ## iOS 1.0.17
 
 **bugfix**
