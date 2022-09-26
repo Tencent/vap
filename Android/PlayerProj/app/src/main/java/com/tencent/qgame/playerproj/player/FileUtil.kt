@@ -75,9 +75,7 @@ object FileUtil {
             }
             inputStream.close()
             val digest = md.digest()
-            if (digest != null) {
-                return bufferToHex(digest)
-            }
+            return bufferToHex(digest)
         } catch (t: Throwable) {
             t.printStackTrace()
         } finally {

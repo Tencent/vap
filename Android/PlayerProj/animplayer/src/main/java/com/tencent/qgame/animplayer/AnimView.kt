@@ -198,18 +198,18 @@ class AnimView @JvmOverloads constructor(
     }
 
     override fun setFetchResource(fetchResource: IFetchResource?) {
-        player.pluginManager.getMixAnimPlugin()?.resourceRequest = fetchResource
+        player.pluginManager.getMixAnimPlugin().resourceRequest = fetchResource
     }
 
     override fun setOnResourceClickListener(resourceClickListener: OnResourceClickListener?) {
-        player.pluginManager.getMixAnimPlugin()?.resourceClickListener = resourceClickListener
+        player.pluginManager.getMixAnimPlugin().resourceClickListener = resourceClickListener
     }
 
     /**
      * 兼容方案，优先保证表情显示
      */
-    open fun enableAutoTxtColorFill(enable: Boolean) {
-        player.pluginManager.getMixAnimPlugin()?.autoTxtColorFill = enable
+    fun enableAutoTxtColorFill(enable: Boolean) {
+        player.pluginManager.getMixAnimPlugin().autoTxtColorFill = enable
     }
 
     override fun setLoop(playLoop: Int) {

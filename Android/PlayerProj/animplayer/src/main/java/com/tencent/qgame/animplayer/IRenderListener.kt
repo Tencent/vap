@@ -50,5 +50,5 @@ interface IRenderListener {
 
     fun swapBuffers()
 
-    fun setYUVData(width: Int, height: Int, y: ByteArray?, u: ByteArray?, v: ByteArray?) {}
+    fun setYUVData(width: Int, height: Int, y: ByteArray, u: ByteArray, v: ByteArray) {}
 }

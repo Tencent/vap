@@ -50,7 +50,7 @@ public class SrcSet {
             json.append("\"srcType\":").append("\"").append(srcType).append("\",");
             json.append("\"srcTag\":").append("\"").append(srcTag.trim()).append("\",");
             if (SRC_TYPE_TXT.equals(srcType)) {
-                if (color != null && color != null) {
+                if (color != null) {
                     json.append("\"color\":").append("\"").append(color.trim()).append("\",");
                 }
                 json.append("\"style\":").append("\"").append(style).append("\",");

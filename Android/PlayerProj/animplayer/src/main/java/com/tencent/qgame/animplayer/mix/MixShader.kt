@@ -62,30 +62,20 @@ class MixShader {
     }
 
     // Shader program
-    val program: Int
+    val program = ShaderUtil.createProgram(VERTEX, FRAGMENT)
 
     // Uniform locations
-    val uTextureSrcUnitLocation: Int
-    val uTextureMaskUnitLocation: Int
-    val uIsFillLocation: Int
-    val uColorLocation: Int
+    val uTextureSrcUnitLocation = GLES20.glGetUniformLocation(program, U_TEXTURE_SRC_UNIT)
+    val uTextureMaskUnitLocation = GLES20.glGetUniformLocation(program, U_TEXTURE_MASK_UNIT)
+    val uIsFillLocation = GLES20.glGetUniformLocation(program, U_IS_FILL)
+    val uColorLocation = GLES20.glGetUniformLocation(program, U_COLOR)
 
     // Attribute locations
-    val aPositionLocation: Int
-    val aTextureSrcCoordinatesLocation: Int
-    val aTextureMaskCoordinatesLocation: Int
-
-    init {
-        program = ShaderUtil.createProgram(VERTEX, FRAGMENT)
-        uTextureSrcUnitLocation = GLES20.glGetUniformLocation(program, U_TEXTURE_SRC_UNIT)
-        uTextureMaskUnitLocation = GLES20.glGetUniformLocation(program, U_TEXTURE_MASK_UNIT)
-        uIsFillLocation = GLES20.glGetUniformLocation(program, U_IS_FILL)
-        uColorLocation = GLES20.glGetUniformLocation(program, U_COLOR)
-
-        aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION)
-        aTextureSrcCoordinatesLocation = GLES20.glGetAttribLocation(program, A_TEXTURE_SRC_COORDINATES)
-        aTextureMaskCoordinatesLocation = GLES20.glGetAttribLocation(program, A_TEXTURE_MASK_COORDINATES)
-    }
+    val aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION)
+    val aTextureSrcCoordinatesLocation =
+        GLES20.glGetAttribLocation(program, A_TEXTURE_SRC_COORDINATES)
+    val aTextureMaskCoordinatesLocation =
+        GLES20.glGetAttribLocation(program, A_TEXTURE_MASK_COORDINATES)
 
     fun useProgram() {
         GLES20.glUseProgram(program)

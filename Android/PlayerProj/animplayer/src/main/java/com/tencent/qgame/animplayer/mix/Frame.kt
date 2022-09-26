@@ -53,9 +53,9 @@ class FrameSet(json: JSONObject) {
     init {
         index = json.getInt("i")
         val objJsonArray = json.getJSONArray("obj")
-        val objLen = objJsonArray?.length() ?: 0
+        val objLen = objJsonArray.length() ?: 0
         for (i in 0 until objLen) {
-            val frameJson = objJsonArray?.getJSONObject(i) ?: continue
+            val frameJson = objJsonArray.getJSONObject(i) ?: continue
             val frame = Frame(index, frameJson)
             list.add(frame)
         }
@@ -73,9 +73,9 @@ class FrameAll(json: JSONObject) {
 
     init {
         val frameJsonArray = json.getJSONArray("frame")
-        val frameLen = frameJsonArray?.length() ?: 0
+        val frameLen = frameJsonArray.length()
         for (i in 0 until frameLen) {
-            val frameSetJson = frameJsonArray?.getJSONObject(i) ?: continue
+            val frameSetJson = frameJsonArray.getJSONObject(i) ?: continue
             val frameSet = FrameSet(frameSetJson)
             map.put(frameSet.index, frameSet)
         }

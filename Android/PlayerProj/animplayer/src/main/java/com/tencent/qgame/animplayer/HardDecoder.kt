@@ -96,7 +96,6 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
             extractor.selectTrack(trackIndex)
             format = extractor.getTrackFormat(trackIndex)
-            if (format == null) throw RuntimeException("format is null")
 
             // 是否支持h265
             if (MediaUtil.checkIsHevc(format)) {
@@ -186,7 +185,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     }
 
     private fun startDecode(extractor: MediaExtractor ,decoder: MediaCodec) {
-        val TIMEOUT_USEC = 10000L
+        val timeout = 10000L
         var inputChunk = 0
         var outputDone = false
         var inputDone = false
@@ -203,7 +202,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
 
             if (!inputDone) {
-                val inputBufIndex = decoder.dequeueInputBuffer(TIMEOUT_USEC)
+                val inputBufIndex = decoder.dequeueInputBuffer(timeout)
                 if (inputBufIndex >= 0) {
                     val inputBuf = decoderInputBuffers[inputBufIndex]
                     val chunkSize = extractor.readSampleData(inputBuf, 0)
@@ -224,7 +223,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
 
             if (!outputDone) {
-                val decoderStatus = decoder.dequeueOutputBuffer(bufferInfo, TIMEOUT_USEC)
+                val decoderStatus = decoder.dequeueOutputBuffer(bufferInfo, timeout)
                 when {
                     decoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER -> ALog.d(TAG, "no output from decoder available")
                     decoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> ALog.d(TAG, "decoder output buffers changed")
@@ -307,17 +306,33 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             outputBuffer.get(yuvData)
 
             if (yuvData.isNotEmpty()) {
-                var yData = ByteArray(videoWidth * videoHeight)
-                var uData = ByteArray(videoWidth * videoHeight / 4)
-                var vData = ByteArray(videoWidth * videoHeight / 4)
+                val yData = ByteArray(videoWidth * videoHeight)
+                val uData = ByteArray(videoWidth * videoHeight / 4)
+                val vData = ByteArray(videoWidth * videoHeight / 4)
 
                 if (outputFormat?.getInteger(MediaFormat.KEY_COLOR_FORMAT) == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) {
                     yuvData = yuv420spTop(yuvData)
                 }
 
                 yuvCopy(yuvData, 0, alignWidth, alignHeight, yData, videoWidth, videoHeight)
-                yuvCopy(yuvData, alignWidth * alignHeight, alignWidth / 2, alignHeight / 2, uData, videoWidth / 2, videoHeight / 2)
-                yuvCopy(yuvData, alignWidth * alignHeight * 5 / 4, alignWidth / 2, alignHeight / 2, vData, videoWidth / 2, videoHeight / 2)
+                yuvCopy(
+                    yuvData,
+                    alignWidth * alignHeight,
+                    alignWidth / 2,
+                    alignHeight / 2,
+                    uData,
+                    videoWidth / 2,
+                    videoHeight / 2
+                )
+                yuvCopy(
+                    yuvData,
+                    alignWidth * alignHeight * 5 / 4,
+                    alignWidth / 2,
+                    alignHeight / 2,
+                    vData,
+                    videoWidth / 2,
+                    videoHeight / 2
+                )
 
                 render?.setYUVData(videoWidth, videoHeight, yData, uData, vData)
                 renderData()
