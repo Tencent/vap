@@ -49,7 +49,7 @@ VAP|***1.5M***|***硬解***|***全支持***
 
 素材制作工具：[VapTool](./tool) (工具使用说明在tool目录下)
 
-播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.1.0/vap-player-1.1.0.dmg), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.1.0/vap-player_1.1.0.exe)
+播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_mac_1.2.0.zip), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_1.2.0.exe)
 
 
 ## QQ交流群
