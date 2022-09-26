@@ -49,6 +49,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     // 动画是否需要走YUV渲染逻辑的标志位
     private var needYUV = false
     private var outputFormat: MediaFormat? = null
+    var autoDismiss = true
 
     override fun start(fileContainer: IFileContainer) {
         isStopReq = false
@@ -285,7 +286,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                             isLoop = true
                         }
                         if (outputDone) {
-                            release(decoder, extractor)
+                            release(decoder, extractor, true)
                         }
                     }
                 }
@@ -347,9 +348,10 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         }
     }
 
-    private fun release(decoder: MediaCodec?, extractor: MediaExtractor?) {
+    private fun release(decoder: MediaCodec?, extractor: MediaExtractor?, isDone: Boolean = false) {
         renderThread.handler?.post {
-            render?.clearFrame()
+            if (autoDismiss || !isDone)
+                render?.clearFrame()
             try {
                 ALog.i(TAG, "release")
                 decoder?.apply {
@@ -387,6 +389,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     private fun destroyInner() {
         ALog.i(TAG, "destroyInner")
         renderThread.handler?.post {
+            render?.clearFrame()
             player.pluginManager.onDestroy()
             render?.destroyRender()
             render = null

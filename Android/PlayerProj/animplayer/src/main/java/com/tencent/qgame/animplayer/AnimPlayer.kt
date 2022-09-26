@@ -27,6 +27,7 @@ class AnimPlayer(val animView: IAnimView) {
         private const val TAG = "${Constant.TAG}.AnimPlayer"
     }
 
+    var autoDismiss = true
     var animListener: IAnimListener? = null
     var decoder: Decoder? = null
     var audioPlayer: AudioPlayer? = null
@@ -136,6 +137,7 @@ class AnimPlayer(val animView: IAnimView) {
     private fun prepareDecoder() {
         if (decoder == null) {
             decoder = HardDecoder(this).apply {
+                autoDismiss = this@AnimPlayer.autoDismiss
                 playLoop = this@AnimPlayer.playLoop
                 fps = this@AnimPlayer.fps
             }

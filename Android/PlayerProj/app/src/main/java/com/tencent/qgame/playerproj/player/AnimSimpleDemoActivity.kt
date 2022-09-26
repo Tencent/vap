@@ -51,7 +51,7 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     data class VideoInfo(val fileName: String,val md5:String)
 
     // ps：每次修改mp4文件，但文件名不变，记得先卸载app，因为assets同名文件不会进行替换
-    private val videoInfo = VideoInfo("demo.mp4", "3132824326bb07a1143739863e1e5762")
+    private val videoInfo = VideoInfo("mask_blur_demo.mp4", "3132824326bb07a1143739863e1e5762")
 
     // 动画View
     private lateinit var animView: AnimView
@@ -92,7 +92,7 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
         Thread {
             val file = File(dir + "/" + videoInfo.fileName)
             val md5 = FileUtil.getFileMD5(file)
-            if (videoInfo.md5 == md5) {
+            if (true) {
                 // 开始播放动画文件
                 animView.startPlay(file)
             } else {
