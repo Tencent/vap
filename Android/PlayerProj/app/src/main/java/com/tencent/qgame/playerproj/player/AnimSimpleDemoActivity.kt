@@ -48,7 +48,7 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     }
 
     // 视频信息
-    data class VideoInfo(val fileName: String,val md5:String)
+    data class VideoInfo(val fileName: String, val md5: String)
 
     // ps：每次修改mp4文件，但文件名不变，记得先卸载app，因为assets同名文件不会进行替换
     private val videoInfo = VideoInfo("mask_blur_demo.mp4", "3132824326bb07a1143739863e1e5762")
@@ -147,7 +147,6 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     override fun onFailed(errorType: Int, errorMsg: String?) {
         Log.i(TAG, "onFailed errorType=$errorType errorMsg=$errorMsg")
     }
-
 
 
     override fun onPause() {

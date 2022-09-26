@@ -25,7 +25,7 @@ import com.tencent.qgame.playerproj.player.AnimVapxDemoActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : Activity(){
+class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

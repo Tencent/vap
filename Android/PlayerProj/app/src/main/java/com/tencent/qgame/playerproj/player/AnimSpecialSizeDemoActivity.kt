@@ -49,7 +49,7 @@ class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
     }
 
     // 视频信息
-    data class VideoInfo(val fileName: String,val md5:String)
+    data class VideoInfo(val fileName: String, val md5: String)
 
     // ps：每次修改mp4文件，但文件名不变，记得先卸载app，因为assets同名文件不会进行替换
     private val videoInfo = VideoInfo("special_size_750.mp4", "2acde1639ad74b8bd843083246902e23")
@@ -114,10 +114,10 @@ class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
     override fun onVideoConfigReady(config: AnimConfig): Boolean {
 
         uiHandler.post {
-            val w = dp2px(this,400f).toInt()
+            val w = dp2px(this, 400f).toInt()
             val lp = animView.layoutParams
             lp.width = w
-            lp.height = (w * config.height *1f / config.width).toInt()
+            lp.height = (w * config.height * 1f / config.width).toInt()
             animView.layoutParams = lp
         }
         return true
@@ -160,7 +160,6 @@ class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
     override fun onFailed(errorType: Int, errorMsg: String?) {
         Log.i(TAG, "onFailed errorType=$errorType errorMsg=$errorMsg")
     }
-
 
 
     override fun onPause() {
