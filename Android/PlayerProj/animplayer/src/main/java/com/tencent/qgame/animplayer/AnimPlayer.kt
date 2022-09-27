@@ -40,7 +40,6 @@ class AnimPlayer(val animView: IAnimView) {
     var defaultFps: Int = 0
     var playLoop: Int = 0
         set(value) {
-            decoder?.playLoop = value
             audioPlayer?.playLoop = value
             field = value
         }
