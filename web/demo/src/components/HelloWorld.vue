@@ -34,7 +34,7 @@ export default {
         // 素材配置json对象
         config: config,
         width: 900,
-        height: 600,
+        height: 400,
         // 同素材生成工具中配置的保持一致
         fps: 20,
         // 是否循环

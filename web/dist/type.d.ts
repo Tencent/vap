@@ -5,6 +5,8 @@ export interface VapConfig {
         [key: string]: any;
     };
     fps?: number;
+    width?: number;
+    height?: number;
     loop: boolean;
     mute?: boolean;
     precache?: boolean;

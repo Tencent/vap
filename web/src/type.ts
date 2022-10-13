@@ -3,6 +3,8 @@ export interface VapConfig {
   src: string;
   config: string | { [key: string]: any };
   fps?: number;
+  width?: number;
+  height?: number;
   // 循环播放
   loop: boolean;
   mute?: boolean;

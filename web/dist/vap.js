@@ -244,6 +244,37 @@
 
   var possibleConstructorReturn = _possibleConstructorReturn;
 
+  var getPrototypeOf$1 = createCommonjsModule(function (module) {
+  function _getPrototypeOf(o) {
+    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  module.exports = _getPrototypeOf;
+  });
+
+  var _typeof_1$1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
+
   var runtime_1 = createCommonjsModule(function (module) {
   /**
    * Copyright (c) 2014-present, Facebook, Inc.
@@ -994,7 +1025,7 @@
   }
   });
 
-  var regenerator = runtime_1;
+  var D__project_vapSource_web_node_modules__babel_runtime_regenerator = runtime_1;
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation.
@@ -1050,8 +1081,8 @@
     createClass(FrameParser, [{
       key: "init",
       value: function init() {
-        return __awaiter(this, void 0, void 0, /*#__PURE__*/regenerator.mark(function _callee() {
-          return regenerator.wrap(function _callee$(_context) {
+        return __awaiter(this, void 0, void 0, /*#__PURE__*/D__project_vapSource_web_node_modules__babel_runtime_regenerator.mark(function _callee() {
+          return D__project_vapSource_web_node_modules__babel_runtime_regenerator.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
@@ -1121,10 +1152,10 @@
 
         var src = this.srcData = {};
         return Promise.all((dataJson.src || []).map(function (item) {
-          return __awaiter(_this, void 0, void 0, /*#__PURE__*/regenerator.mark(function _callee2() {
+          return __awaiter(_this, void 0, void 0, /*#__PURE__*/D__project_vapSource_web_node_modules__babel_runtime_regenerator.mark(function _callee2() {
             var _this2 = this;
 
-            return regenerator.wrap(function _callee2$(_context2) {
+            return D__project_vapSource_web_node_modules__babel_runtime_regenerator.wrap(function _callee2$(_context2) {
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
@@ -1261,7 +1292,7 @@
         } else if (typeof fontStyle == 'string') {
           ctx.font = fontStyle;
           ctx.fillStyle = color;
-        } else if (_typeof_1(fontStyle) == 'object') {
+        } else if (_typeof_1$1(fontStyle) == 'object') {
           ctx.font = fontStyle['font'] || getFontStyle();
           ctx.fillStyle = fontStyle['color'] || color;
         } else if (typeof fontStyle == 'function') {
@@ -1722,7 +1753,7 @@
     return VapVideo;
   }();
 
-  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = getPrototypeOf$1(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf$1(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
   var PER_SIZE = 9;
@@ -1781,14 +1812,14 @@
 
             _this2.options.fps = _this2.vapFrameParser.config.info.fps || 30;
 
-            get(getPrototypeOf(WebglRenderVap.prototype), "play", _this2).call(_this2);
+            get(getPrototypeOf$1(WebglRenderVap.prototype), "play", _this2).call(_this2);
           })["catch"](function (e) {
             _this2.vapFrameParser = null;
             console.error('[Alpha video] parse vap frame error.', e);
             return _this2;
           });
         } else {
-          get(getPrototypeOf(WebglRenderVap.prototype), "play", this).call(this);
+          get(getPrototypeOf$1(WebglRenderVap.prototype), "play", this).call(this);
         }
 
         return this;
@@ -1801,6 +1832,9 @@
             vertexShader = this.vertexShader,
             fragmentShader = this.fragmentShader,
             program = this.program;
+        var _this$options = this.options,
+            width = _this$options.width,
+            height = _this$options.height;
 
         if (!canvas) {
           canvas = document.createElement('canvas');
@@ -1810,8 +1844,8 @@
         var _vapFrameParser$confi = vapFrameParser.config.info,
             w = _vapFrameParser$confi.w,
             h = _vapFrameParser$confi.h;
-        canvas.width = w;
-        canvas.height = h;
+        canvas.width = width || w;
+        canvas.height = height || h;
         this.container.appendChild(canvas);
 
         if (!gl) {
@@ -1821,7 +1855,7 @@
           gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         }
 
-        gl.viewport(0, 0, w, h);
+        gl.viewport(0, 0, canvas.width, canvas.height);
 
         if (!vertexShader) {
           vertexShader = this.initVertexShader(gl);
@@ -1982,7 +2016,7 @@
             options = this.options;
 
         if (!gl) {
-          get(getPrototypeOf(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
+          get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
 
           return;
         }
@@ -2038,13 +2072,13 @@
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        get(getPrototypeOf(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
       } // 清理数据,为下一次播放做准备
 
     }, {
       key: "clear",
       value: function clear() {
-        get(getPrototypeOf(WebglRenderVap.prototype), "clear", this).call(this);
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "clear", this).call(this);
 
         var gl = this.gl; // 清除界面，解决连续播放时，第一帧是上一个mp4最后一帧的问题
 
@@ -2054,7 +2088,7 @@
     }, {
       key: "destroy",
       value: function destroy() {
-        get(getPrototypeOf(WebglRenderVap.prototype), "destroy", this).call(this);
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "destroy", this).call(this);
 
         var canvas = this.canvas,
             gl = this.gl,

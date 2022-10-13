@@ -78,13 +78,14 @@ export default class WebglRenderVap extends VapVideo {
 
   initWebGL() {
     let { canvas, gl, vertexShader, fragmentShader, program } = this;
+    const { width, height } = this.options;
     if (!canvas) {
       canvas = document.createElement('canvas');
     }
     const { vapFrameParser } = this;
     const { w, h } = vapFrameParser.config.info;
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = width || w;
+    canvas.height = height || h;
     this.container.appendChild(canvas);
 
     if (!gl) {
@@ -93,7 +94,7 @@ export default class WebglRenderVap extends VapVideo {
       gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     }
-    gl.viewport(0, 0, w, h);
+    gl.viewport(0, 0, canvas.width, canvas.height);
 
     if (!vertexShader) {
       vertexShader = this.initVertexShader(gl);
