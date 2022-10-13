@@ -65,7 +65,7 @@ VAP交流群：719738292
 ## 已接入APP
 
 
-![VAP接入APP](https://user-images.githubusercontent.com/3285051/195228833-ab86ebce-9944-40f4-a509-af1b0ecc40fe.png)
+![VAP接入APP](https://user-images.githubusercontent.com/3285051/195480843-1b9a3be4-8b74-4754-95b8-67638776f036.png)
 
 
 
