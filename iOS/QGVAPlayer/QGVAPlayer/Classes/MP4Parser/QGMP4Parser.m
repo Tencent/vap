@@ -143,6 +143,10 @@
       }
       bytes = data.bytes;
       *length = [self readValue:bytes length:kQGBoxLargeSizeLengthInBytes];
+      if (*length == 0) {
+        VAP_Error(kQGVAPModuleCommon, @"read box length is 0");
+        return NO;
+      }
     }
     return YES;
 }
@@ -182,6 +186,7 @@
     for (int i = 0; i < length; i++) {
         value += (bytes[i]&0xff)<<((length-i-1)*8);
     }
+    VAP_Debug(kQGVAPModuleCommon, @"readValue length:%lld value:%lld", length, value);
     return value;
 }
 

@@ -1,3 +1,9 @@
+## iOS 1.0.19
+
+**bugfix**
+
+- 修复mp4解析length为0异常。
+
 ## iOS 1.0.18
 
 **bugfix**
