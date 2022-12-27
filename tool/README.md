@@ -134,7 +134,7 @@ Java工具源码路径:Android/PlayerProj  项目：[animtool](https://github.co
 
 原Mac工具说明[Mac tool](./Mac_Tool.md)
 
-VAP json配置信息字段说明[](https://github.com/Tencent/vap/blob/master/tool/JsonDesc.md).
+VAP json配置信息字段说明[JsonDesc](https://github.com/Tencent/vap/blob/master/tool/JsonDesc.md).
 
 ## FAQ
 
