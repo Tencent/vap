@@ -47,7 +47,7 @@ beginPoint | 起始播放时间点(单位秒),在一些浏览器中可能无效 
 fontStyle | 融合字体样式[用法参考](https://github.com/Tencent/vap/pull/101) | ''
 accurate | 是否启用精准模式（使用requestVideoFrameCallback提升融合效果，浏览器不兼容时自动降级） | false
 precache | 是否预加载视频资源（默认关闭，即边下边播） | false
-onDestory | 组件销毁时回调 | undefined
+onDestroy | 组件销毁时回调 | undefined
 onLoadError | 加载失败回调 | undefined
 ext（无固定名） | 融合参数（和json配置文件中保持一致）| ''
 
