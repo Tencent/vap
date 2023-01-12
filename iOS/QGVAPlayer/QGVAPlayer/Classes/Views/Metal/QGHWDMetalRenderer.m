@@ -24,17 +24,17 @@
 
 #pragma mark - constants
 
-NSString *const kHWDVertexFunctionName      = @"hwd_vertexShader";
-NSString *const kHWDYUVFragmentFunctionName = @"hwd_yuvFragmentShader";
+NSString *const kQGHWDVertexFunctionName      = @"hwd_vertexShader";
+NSString *const kQGHWDYUVFragmentFunctionName = @"hwd_yuvFragmentShader";
 
-static NSInteger const kQuadVerticesConstantsRow    = 4;
-static NSInteger const kQuadVerticesConstantsColumn = 32;
-static NSInteger const kHWDVertexCount              = 4;
+static NSInteger const kQGQuadVerticesConstantsRow    = 4;
+static NSInteger const kQGQuadVerticesConstantsColumn = 32;
+static NSInteger const kQGHWDVertexCount              = 4;
 
 id<MTLDevice> kQGHWDMetalRendererDevice;
 
 // BT.601, which is the standard for SDTV.
-matrix_float3x3 const kColorConversionMatrix601Default = {{
+matrix_float3x3 const kQGColorConversionMatrix601Default = {{
     {1.164,     1.164,      1.164},
     {0.0,       -0.392,     2.017},
     {1.596,     -0.813,     0.0}
@@ -46,35 +46,35 @@ matrix_float3x3 const kColorConversionMatrix601Default = {{
  1.0 1.765 0.0
  */
 //ITU BT.601 Full Range
- matrix_float3x3 const kColorConversionMatrix601FullRangeDefault = {{
+ matrix_float3x3 const kQGColorConversionMatrix601FullRangeDefault = {{
     {1.0,       1.0,        1.0},
     {0.0,       -0.34413,   1.772},
     {1.402,     -0.71414,   0.0}
 }};
 
 // BT.709, which is the standard for HDTV.
-matrix_float3x3 const kColorConversionMatrix709Default = {{
+matrix_float3x3 const kQGColorConversionMatrix709Default = {{
     {1.164,     1.164,      1.164},
     {0.0,       -0.213,     2.112},
     {1.793,     -0.533,     0.0}
 }};
 
 // BT.709 Full Range.
-matrix_float3x3 const kColorConversionMatrix709FullRangeDefault = {{
+matrix_float3x3 const kQGColorConversionMatrix709FullRangeDefault = {{
     {1.0,       1.0,        1.0},
     {0.0,       -.18732,    1.8556},
     {1.57481,   -.46813,    0.0}
 }};
 
 // Blur weight matrix.
-matrix_float3x3 const kBlurWeightMatrixDefault = {{
+matrix_float3x3 const kQGBlurWeightMatrixDefault = {{
     {0.0625,     0.125,      0.0625},
     {0.125,      0.25,       0.125},
     {0.0625,     0.125,      0.0625}
 }};
 
 //QGHWDVertex  顶点坐标+纹理坐标（rgb+alpha）
-static const float kQuadVerticesConstants[kQuadVerticesConstantsRow][kQuadVerticesConstantsColumn] = {
+static const float kQGQuadVerticesConstants[kQGQuadVerticesConstantsRow][kQGQuadVerticesConstantsColumn] = {
     //左侧alpha
     {-1.0, -1.0, 0.0, 1.0, 0.5, 1.0, 0.0, 1.0,
     -1.0, 1.0, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,
@@ -157,10 +157,10 @@ static const float kQuadVerticesConstants[kQuadVerticesConstantsRow][kQuadVertic
 - (void)setupConstants {
     //buffers
     const void *vertices = [self suitableQuadVertices];
-    NSUInteger allocationSize = kQuadVerticesConstantsColumn * sizeof(float);
+    NSUInteger allocationSize = kQGQuadVerticesConstantsColumn * sizeof(float);
     _vertexBuffer = [kQGHWDMetalRendererDevice newBufferWithBytes:vertices length:allocationSize options:kDefaultMTLResourceOption];
-    _vertexCount = kHWDVertexCount;
-    _currentColorConversionMatrix = kColorConversionMatrix601FullRangeDefault;
+    _vertexCount = kQGHWDVertexCount;
+    _currentColorConversionMatrix = kQGColorConversionMatrix601FullRangeDefault;
     struct ColorParameters yuvMatrixs[] = {{_currentColorConversionMatrix,{0.5, 0.5}}};
     NSUInteger yuvMatrixsDataSize = sizeof(struct ColorParameters);
     _yuvMatrixBuffer = [kQGHWDMetalRendererDevice newBufferWithBytes:yuvMatrixs length:yuvMatrixsDataSize options:kDefaultMTLResourceOption];
@@ -172,9 +172,9 @@ static const float kQuadVerticesConstants[kQuadVerticesConstantsRow][kQuadVertic
         return ;
     }
     CFTypeRef yCbCrMatrixType = CVBufferGetAttachment(pixelBuffer, kCVImageBufferYCbCrMatrixKey, NULL);
-    matrix_float3x3 matrix = kColorConversionMatrix601FullRangeDefault;
+    matrix_float3x3 matrix = kQGColorConversionMatrix601FullRangeDefault;
     if (CFStringCompare(yCbCrMatrixType, kCVImageBufferYCbCrMatrix_ITU_R_709_2, 0) == kCFCompareEqualTo) {
-        matrix = kColorConversionMatrix709FullRangeDefault;
+        matrix = kQGColorConversionMatrix709FullRangeDefault;
     }
     if (simd_equal(_currentColorConversionMatrix, matrix)) {
         return ;
@@ -188,8 +188,8 @@ static const float kQuadVerticesConstants[kQuadVerticesConstantsRow][kQuadVertic
 - (void)setupPipelineStatesWithMetalLayer:(CAMetalLayer *)metalLayer {
     
     self.shaderFuncLoader = [[QGVAPMetalShaderFunctionLoader alloc] initWithDevice:kQGHWDMetalRendererDevice];
-    id<MTLFunction> vertexProgram = [self.shaderFuncLoader loadFunctionWithName:kHWDVertexFunctionName];
-    id<MTLFunction> fragmentProgram = [self.shaderFuncLoader loadFunctionWithName:kHWDYUVFragmentFunctionName];
+    id<MTLFunction> vertexProgram = [self.shaderFuncLoader loadFunctionWithName:kQGHWDVertexFunctionName];
+    id<MTLFunction> fragmentProgram = [self.shaderFuncLoader loadFunctionWithName:kQGHWDYUVFragmentFunctionName];
     
     if (!vertexProgram || !fragmentProgram) {
         VAP_Error(kQGVAPModuleCommon, @"setupPipelineStatesWithMetalLayer fail! cuz: shader load fail");
@@ -304,17 +304,17 @@ static const float kQuadVerticesConstants[kQuadVerticesConstantsRow][kQuadVertic
     
     switch (self.blendMode) {
         case QGHWDTextureBlendMode_AlphaLeft:
-            return kQuadVerticesConstants[0];
+            return kQGQuadVerticesConstants[0];
         case QGHWDTextureBlendMode_AlphaRight:
-            return kQuadVerticesConstants[1];
+            return kQGQuadVerticesConstants[1];
         case QGHWDTextureBlendMode_AlphaTop:
-            return kQuadVerticesConstants[2];
+            return kQGQuadVerticesConstants[2];
         case QGHWDTextureBlendMode_AlphaBottom:
-            return kQuadVerticesConstants[3];
+            return kQGQuadVerticesConstants[3];
         default:
             break;
     }
-    return kQuadVerticesConstants[0];
+    return kQGQuadVerticesConstants[0];
 }
 
 @end

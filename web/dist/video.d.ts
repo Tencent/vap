@@ -1,27 +1,34 @@
-/// <reference types="node" />
-import { VapConfig } from "./type";
+import { VapConfig } from './type';
 export default class VapVideo {
-    constructor(options: any);
     options: VapConfig;
-    private fps;
-    requestAnim: Function;
+    requestAnim: (cb: any) => number;
     container: HTMLElement;
     video: HTMLVideoElement;
-    private events;
+    protected events: {
+        [key: string]: Array<(...info: any[]) => void>;
+    };
     private _drawFrame;
-    private animId;
+    protected animId: number;
+    protected useFrameCallback: boolean;
     private firstPlaying;
+    private setBegin;
+    private customEvent;
+    setOptions(options: VapConfig): this;
     precacheSource(source: any): Promise<string>;
     initVideo(): void;
-    drawFrame(): void;
+    drawFrame(_: any, _info: any): void;
     play(): void;
-    requestAnimFunc(): ((cb: any) => number) | ((cb: any) => NodeJS.Timeout);
+    pause(): void;
+    setTime(t: any): void;
+    requestAnimFunc(): (cb: any) => number;
     cancelRequestAnimation(): void;
-    destroy(): void;
     clear(): void;
-    on(event: any, callback: EventListenerObject): this;
+    destroy(): void;
+    on(event: any, callback: any): this;
+    once(event: any, callback: any): this;
+    trigger(eventName: any, ...e: any[]): void;
+    offAll(): this;
     onplaying(): void;
-    onpause(): void;
-    onended(): void;
+    oncanplay(): void;
     onerror(err: any): void;
 }

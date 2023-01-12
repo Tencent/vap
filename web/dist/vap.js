@@ -1,8 +1,55 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.howLongUntilLunch = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Vap = {}));
+}(this, (function (exports) { 'use strict';
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+
+  var arrayLikeToArray = _arrayLikeToArray;
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return arrayLikeToArray(arr);
+  }
+
+  var arrayWithoutHoles = _arrayWithoutHoles;
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  var iterableToArray = _iterableToArray;
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+  }
+
+  var unsupportedIterableToArray = _unsupportedIterableToArray;
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var nonIterableSpread = _nonIterableSpread;
+
+  function _toConsumableArray(arr) {
+    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+  }
+
+  var toConsumableArray = _toConsumableArray;
 
   function _arrayWithHoles(arr) {
     if (Array.isArray(arr)) return arr;
@@ -39,29 +86,6 @@
 
   var iterableToArrayLimit = _iterableToArrayLimit;
 
-  function _arrayLikeToArray(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-
-    for (var i = 0, arr2 = new Array(len); i < len; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  }
-
-  var arrayLikeToArray = _arrayLikeToArray;
-
-  function _unsupportedIterableToArray(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
-  }
-
-  var unsupportedIterableToArray = _unsupportedIterableToArray;
-
   function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
@@ -74,9 +98,182 @@
 
   var slicedToArray = _slicedToArray;
 
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  var classCallCheck = _classCallCheck;
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  var createClass = _createClass;
+
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
+
+  var getPrototypeOf = createCommonjsModule(function (module) {
+  function _getPrototypeOf(o) {
+    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  module.exports = _getPrototypeOf;
+  });
+
+  function _superPropBase(object, property) {
+    while (!Object.prototype.hasOwnProperty.call(object, property)) {
+      object = getPrototypeOf(object);
+      if (object === null) break;
+    }
+
+    return object;
+  }
+
+  var superPropBase = _superPropBase;
+
+  var get = createCommonjsModule(function (module) {
+  function _get(target, property, receiver) {
+    if (typeof Reflect !== "undefined" && Reflect.get) {
+      module.exports = _get = Reflect.get;
+    } else {
+      module.exports = _get = function _get(target, property, receiver) {
+        var base = superPropBase(target, property);
+        if (!base) return;
+        var desc = Object.getOwnPropertyDescriptor(base, property);
+
+        if (desc.get) {
+          return desc.get.call(receiver);
+        }
+
+        return desc.value;
+      };
+    }
+
+    return _get(target, property, receiver || target);
+  }
+
+  module.exports = _get;
+  });
+
+  var setPrototypeOf = createCommonjsModule(function (module) {
+  function _setPrototypeOf(o, p) {
+    module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+
+    return _setPrototypeOf(o, p);
+  }
+
+  module.exports = _setPrototypeOf;
+  });
+
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) setPrototypeOf(subClass, superClass);
+  }
+
+  var inherits = _inherits;
+
+  var _typeof_1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
+
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return self;
+  }
+
+  var assertThisInitialized = _assertThisInitialized;
+
+  function _possibleConstructorReturn(self, call) {
+    if (call && (_typeof_1(call) === "object" || typeof call === "function")) {
+      return call;
+    }
+
+    return assertThisInitialized(self);
+  }
+
+  var possibleConstructorReturn = _possibleConstructorReturn;
+
+  var getPrototypeOf$1 = createCommonjsModule(function (module) {
+  function _getPrototypeOf(o) {
+    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  module.exports = _getPrototypeOf;
+  });
+
+  var _typeof_1$1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
 
   var runtime_1 = createCommonjsModule(function (module) {
   /**
@@ -828,149 +1025,7 @@
   }
   });
 
-  var regenerator = runtime_1;
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var classCallCheck = _classCallCheck;
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    return Constructor;
-  }
-
-  var createClass = _createClass;
-
-  var getPrototypeOf = createCommonjsModule(function (module) {
-  function _getPrototypeOf(o) {
-    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-      return o.__proto__ || Object.getPrototypeOf(o);
-    };
-    return _getPrototypeOf(o);
-  }
-
-  module.exports = _getPrototypeOf;
-  });
-
-  function _superPropBase(object, property) {
-    while (!Object.prototype.hasOwnProperty.call(object, property)) {
-      object = getPrototypeOf(object);
-      if (object === null) break;
-    }
-
-    return object;
-  }
-
-  var superPropBase = _superPropBase;
-
-  var get = createCommonjsModule(function (module) {
-  function _get(target, property, receiver) {
-    if (typeof Reflect !== "undefined" && Reflect.get) {
-      module.exports = _get = Reflect.get;
-    } else {
-      module.exports = _get = function _get(target, property, receiver) {
-        var base = superPropBase(target, property);
-        if (!base) return;
-        var desc = Object.getOwnPropertyDescriptor(base, property);
-
-        if (desc.get) {
-          return desc.get.call(receiver);
-        }
-
-        return desc.value;
-      };
-    }
-
-    return _get(target, property, receiver || target);
-  }
-
-  module.exports = _get;
-  });
-
-  var setPrototypeOf = createCommonjsModule(function (module) {
-  function _setPrototypeOf(o, p) {
-    module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-      o.__proto__ = p;
-      return o;
-    };
-
-    return _setPrototypeOf(o, p);
-  }
-
-  module.exports = _setPrototypeOf;
-  });
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function");
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) setPrototypeOf(subClass, superClass);
-  }
-
-  var inherits = _inherits;
-
-  var _typeof_1 = createCommonjsModule(function (module) {
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      module.exports = _typeof = function _typeof(obj) {
-        return typeof obj;
-      };
-    } else {
-      module.exports = _typeof = function _typeof(obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
-  module.exports = _typeof;
-  });
-
-  function _assertThisInitialized(self) {
-    if (self === void 0) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return self;
-  }
-
-  var assertThisInitialized = _assertThisInitialized;
-
-  function _possibleConstructorReturn(self, call) {
-    if (call && (_typeof_1(call) === "object" || typeof call === "function")) {
-      return call;
-    }
-
-    return assertThisInitialized(self);
-  }
-
-  var possibleConstructorReturn = _possibleConstructorReturn;
+  var D__project_vapSource_web_node_modules__babel_runtime_regenerator = runtime_1;
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation.
@@ -1026,34 +1081,31 @@
     createClass(FrameParser, [{
       key: "init",
       value: function init() {
-        return __awaiter(this, void 0, void 0, /*#__PURE__*/regenerator.mark(function _callee() {
-          return regenerator.wrap(function _callee$(_context) {
+        return __awaiter(this, void 0, void 0, /*#__PURE__*/D__project_vapSource_web_node_modules__babel_runtime_regenerator.mark(function _callee() {
+          return D__project_vapSource_web_node_modules__babel_runtime_regenerator.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  this.initCanvas(); // 判断是url还是json对象
-
-                  if (!/\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]\.json$/.test(this.config)) {
-                    _context.next = 5;
+                  if (!/\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]\.json/.test(this.config)) {
+                    _context.next = 4;
                     break;
                   }
 
-                  _context.next = 4;
+                  _context.next = 3;
                   return this.getConfigBySrc(this.config);
 
-                case 4:
+                case 3:
                   this.config = _context.sent;
 
-                case 5:
-                  _context.next = 7;
+                case 4:
+                  _context.next = 6;
                   return this.parseSrc(this.config);
 
-                case 7:
-                  this.canvas.parentNode.removeChild(this.canvas);
+                case 6:
                   this.frame = this.config.frame || [];
                   return _context.abrupt("return", this);
 
-                case 10:
+                case 8:
                 case "end":
                   return _context.stop();
               }
@@ -1064,12 +1116,14 @@
     }, {
       key: "initCanvas",
       value: function initCanvas() {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
-        canvas.style.display = 'none';
-        document.body.appendChild(canvas);
-        this.ctx = ctx;
-        this.canvas = canvas;
+        if (!this.canvas) {
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          canvas.style.display = 'none';
+          document.body.appendChild(canvas);
+          this.ctx = ctx;
+          this.canvas = canvas;
+        }
       }
     }, {
       key: "loadImg",
@@ -1098,72 +1152,81 @@
 
         var src = this.srcData = {};
         return Promise.all((dataJson.src || []).map(function (item) {
-          return __awaiter(_this, void 0, void 0, /*#__PURE__*/regenerator.mark(function _callee2() {
+          return __awaiter(_this, void 0, void 0, /*#__PURE__*/D__project_vapSource_web_node_modules__babel_runtime_regenerator.mark(function _callee2() {
             var _this2 = this;
 
-            return regenerator.wrap(function _callee2$(_context2) {
+            return D__project_vapSource_web_node_modules__babel_runtime_regenerator.wrap(function _callee2$(_context2) {
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
                     item.img = null;
 
-                    if (this.headData[item.srcTag.slice(1, item.srcTag.length - 1)]) {
+                    if (!(!this.headData[item.srcTag.slice(1, item.srcTag.length - 1)] && !this.headData[item.srcTag])) {
                       _context2.next = 5;
                       break;
                     }
 
                     console.warn("vap: \u878D\u5408\u4FE1\u606F\u6CA1\u6709\u4F20\u5165\uFF1A".concat(item.srcTag));
-                    _context2.next = 21;
+                    _context2.next = 23;
                     break;
 
                   case 5:
                     if (!(item.srcType === 'txt')) {
-                      _context2.next = 10;
+                      _context2.next = 12;
                       break;
                     }
 
-                    item.textStr = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
+                    if (this.headData['fontStyle'] && !item['fontStyle']) {
+                      item['fontStyle'] = this.headData['fontStyle'];
+                    }
+
+                    item.textStr = this.headData[item.srcTag] || item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
                       return _this2.headData[$1];
                     });
+                    this.initCanvas();
                     item.img = this.makeTextImg(item);
-                    _context2.next = 20;
+                    _context2.next = 22;
                     break;
 
-                  case 10:
+                  case 12:
                     if (!(item.srcType === 'img')) {
-                      _context2.next = 20;
+                      _context2.next = 22;
                       break;
                     }
 
-                    item.imgUrl = item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
+                    item.imgUrl = this.headData[item.srcTag] || item.srcTag.replace(/\[(.*)\]/, function ($0, $1) {
                       return _this2.headData[$1];
                     });
-                    _context2.prev = 12;
-                    _context2.next = 15;
-                    return this.loadImg(item.imgUrl + '?t=' + Date.now());
+                    _context2.prev = 14;
+                    _context2.next = 17;
+                    return this.loadImg(item.imgUrl);
 
-                  case 15:
+                  case 17:
                     item.img = _context2.sent;
-                    _context2.next = 20;
+                    _context2.next = 22;
                     break;
-
-                  case 18:
-                    _context2.prev = 18;
-                    _context2.t0 = _context2["catch"](12);
 
                   case 20:
+                    _context2.prev = 20;
+                    _context2.t0 = _context2["catch"](14);
+
+                  case 22:
                     if (item.img) {
                       src[item.srcId] = item;
                     }
 
-                  case 21:
+                  case 23:
                   case "end":
                     return _context2.stop();
                 }
               }
-            }, _callee2, this, [[12, 18]]);
+            }, _callee2, this, [[14, 20]]);
           }));
-        }));
+        })).then(function () {
+          if (_this.canvas) {
+            _this.canvas.parentNode.removeChild(_this.canvas);
+          }
+        });
       }
       /**
        * 下载json文件
@@ -1176,15 +1239,15 @@
       value: function getConfigBySrc(jsonUrl) {
         return new Promise(function (resolve, reject) {
           var xhr = new XMLHttpRequest();
-          xhr.open("GET", jsonUrl, true);
-          xhr.responseType = "json";
+          xhr.open('GET', jsonUrl, true);
+          xhr.responseType = 'json';
 
           xhr.onload = function () {
             if (xhr.status === 200 || xhr.status === 304 && xhr.response) {
               var res = xhr.response;
               resolve(res);
             } else {
-              reject(new Error("http response invalid" + xhr.status));
+              reject(new Error('http response invalid' + xhr.status));
             }
           };
 
@@ -1193,32 +1256,51 @@
       }
       /**
        * 文字转换图片
-       * @param {*} param0
+       * @param item
        */
 
     }, {
       key: "makeTextImg",
-      value: function makeTextImg(_ref) {
-        var textStr = _ref.textStr,
-            w = _ref.w,
-            h = _ref.h,
-            color = _ref.color,
-            style = _ref.style;
+      value: function makeTextImg(item) {
+        var textStr = item.textStr,
+            w = item.w,
+            h = item.h,
+            color = item.color,
+            style = item.style,
+            fontStyle = item.fontStyle;
         var ctx = this.ctx;
         ctx.canvas.width = w;
         ctx.canvas.height = h;
-        var fontSize = Math.min(w / textStr.length, h - 8); // 需留一定间隙
-
-        var font = ["".concat(fontSize, "px"), 'Arial'];
-
-        if (style === 'b') {
-          font.unshift('bold');
-        }
-
-        ctx.font = font.join(' ');
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
-        ctx.fillStyle = color;
+
+        var getFontStyle = function getFontStyle() {
+          var fontSize = Math.min(w / textStr.length, h - 8); // 需留一定间隙
+
+          var font = ["".concat(fontSize, "px"), 'Arial'];
+
+          if (style === 'b') {
+            font.unshift('bold');
+          }
+
+          return font.join(' ');
+        };
+
+        if (!fontStyle) {
+          ctx.font = getFontStyle();
+          ctx.fillStyle = color;
+        } else if (typeof fontStyle == 'string') {
+          ctx.font = fontStyle;
+          ctx.fillStyle = color;
+        } else if (_typeof_1$1(fontStyle) == 'object') {
+          ctx.font = fontStyle['font'] || getFontStyle();
+          ctx.fillStyle = fontStyle['color'] || color;
+        } else if (typeof fontStyle == 'function') {
+          ctx.font = getFontStyle();
+          ctx.fillStyle = color;
+          fontStyle.call(null, ctx, item);
+        }
+
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillText(textStr, w / 2, h / 2); // console.log('frame : ' + textStr, ctx.canvas.toDataURL('image/png'))
 
@@ -1288,53 +1370,85 @@
 
     return texture;
   }
+  function cleanWebGL(gl, _ref) {
+    var _ref$shaders = _ref.shaders,
+        shaders = _ref$shaders === void 0 ? [] : _ref$shaders,
+        _ref$program = _ref.program,
+        program = _ref$program === void 0 ? null : _ref$program,
+        _ref$textures = _ref.textures,
+        textures = _ref$textures === void 0 ? [] : _ref$textures,
+        _ref$buffers = _ref.buffers,
+        buffers = _ref$buffers === void 0 ? [] : _ref$buffers;
+
+    try {
+      textures.forEach(function (t) {
+        gl.deleteTexture(t);
+      });
+      buffers.forEach(function (b) {
+        gl.deleteBuffer(b);
+      });
+
+      if (program) {
+        shaders.forEach(function (shader) {
+          gl.detachShader(program, shader);
+          gl.deleteShader(shader);
+        });
+        gl.deleteProgram(program);
+      }
+    } catch (e) {}
+  }
 
   var VapVideo = /*#__PURE__*/function () {
-    function VapVideo(options) {
+    function VapVideo() {
       classCallCheck(this, VapVideo);
 
-      if (!options.container || !options.src) {
-        console.warn('[Alpha video]: options container and src cannot be empty!');
-      }
-
-      this.options = Object.assign({
-        // 视频url
-        src: '',
-        // 循环播放
-        loop: false,
-        fps: 20,
-        // 视频宽度
-        width: 375,
-        // 视频高度
-        height: 375,
-        // 容器
-        container: null,
-        // 是否预加载视频资源
-        precache: false,
-        // 是否静音播放
-        mute: false,
-        config: ''
-      }, options);
-      this.fps = 20;
-      this.requestAnim = this.requestAnimFunc();
-      this.container = this.options.container;
-
-      if (!this.options.src || !this.options.config || !this.options.container) {
-        console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)');
-      } else {
-        // 创建video
-        this.initVideo();
-      }
+      this.events = {};
+      this.firstPlaying = true;
+      this.customEvent = ['frame', 'percentage', ''];
     }
 
     createClass(VapVideo, [{
+      key: "setOptions",
+      value: function setOptions(options) {
+        if (!options.container || !options.src) {
+          console.warn('[Alpha video]: options container and src cannot be empty!');
+        }
+
+        this.options = Object.assign({
+          // 视频url
+          src: '',
+          // 循环播放
+          loop: false,
+          fps: 20,
+          // 容器
+          container: null,
+          // 是否预加载视频资源
+          precache: false,
+          // 是否静音播放
+          mute: false,
+          config: '',
+          accurate: false,
+          // 帧偏移, 一般没用, 预留支持问题素材
+          offset: 0
+        }, options);
+        this.setBegin = true;
+        this.useFrameCallback = false;
+        this.container = this.options.container;
+
+        if (!this.options.src || !this.options.config || !this.options.container) {
+          console.error('参数出错：src(视频地址)、config(配置文件地址)、container(dom容器)');
+        }
+
+        return this;
+      }
+    }, {
       key: "precacheSource",
       value: function precacheSource(source) {
         var URL = window.webkitURL || window.URL;
         return new Promise(function (resolve, reject) {
           var xhr = new XMLHttpRequest();
-          xhr.open("GET", source, true);
-          xhr.responseType = "blob";
+          xhr.open('GET', source, true);
+          xhr.responseType = 'blob';
 
           xhr.onload = function () {
             if (xhr.status === 200 || xhr.status === 304) {
@@ -1345,7 +1459,7 @@
 
                 fileReader.onloadend = function () {
                   var resultStr = fileReader.result;
-                  var raw = atob(resultStr.slice(resultStr.indexOf(",") + 1));
+                  var raw = atob(resultStr.slice(resultStr.indexOf(',') + 1));
                   var buf = Array(raw.length);
 
                   for (var d = 0; d < raw.length; d++) {
@@ -1354,7 +1468,7 @@
 
                   var arr = new Uint8Array(buf);
                   var blob = new Blob([arr], {
-                    type: "video/mp4"
+                    type: 'video/mp4'
                   });
                   resolve(URL.createObjectURL(blob));
                 };
@@ -1364,7 +1478,7 @@
                 resolve(URL.createObjectURL(res));
               }
             } else {
-              reject(new Error("http response invalid" + xhr.status));
+              reject(new Error('http response invalid' + xhr.status));
             }
           };
 
@@ -1378,7 +1492,12 @@
 
         var options = this.options; // 创建video
 
-        var video = this.video = document.createElement('video');
+        var video = this.video;
+
+        if (!video) {
+          video = this.video = document.createElement('video');
+        }
+
         video.crossOrigin = 'anonymous';
         video.autoplay = false;
         video.preload = 'auto';
@@ -1395,7 +1514,7 @@
 
         if (options.precache) {
           this.precacheSource(options.src).then(function (blob) {
-            console.log("sample precached.");
+            console.log('sample precached.');
             video.src = blob;
             document.body.appendChild(video);
           })["catch"](function (e) {
@@ -1406,24 +1525,44 @@
 
           document.body.appendChild(this.video);
           video.load();
-        } // 绑定事件
+        }
 
+        this.firstPlaying = true;
 
-        this.events = {};
-        ['playing', 'pause', 'ended', 'error'].forEach(function (item) {
+        if ('requestVideoFrameCallback' in this.video) {
+          this.useFrameCallback = !!this.options.accurate;
+        }
+
+        this.cancelRequestAnimation(); // 绑定事件
+
+        this.offAll();
+        ['playing', 'error', 'canplay'].forEach(function (item) {
           _this.on(item, _this['on' + item].bind(_this));
         });
       }
     }, {
       key: "drawFrame",
-      value: function drawFrame() {
+      value: function drawFrame(_, _info) {
         this._drawFrame = this._drawFrame || this.drawFrame.bind(this);
-        this.animId = this.requestAnim(this._drawFrame);
+
+        if (this.useFrameCallback) {
+          // @ts-ignore
+          this.animId = this.video.requestVideoFrameCallback(this._drawFrame);
+        } else {
+          this.animId = this.requestAnim(this._drawFrame);
+        }
       }
     }, {
       key: "play",
       value: function play() {
         var _this2 = this;
+
+        if (this.useFrameCallback) {
+          // @ts-ignore
+          this.animId = this.video.requestVideoFrameCallback(this.drawFrame.bind(this));
+        } else {
+          this.requestAnim = this.requestAnimFunc();
+        }
 
         var prom = this.video && this.video.play();
 
@@ -1437,60 +1576,88 @@
             _this2.video.volume = 0;
 
             _this2.video.play()["catch"](function (e) {
-              (_this2.events.error || []).forEach(function (item) {
-                item(e);
-              });
+              _this2.trigger('error', e);
             });
           });
         }
       }
     }, {
+      key: "pause",
+      value: function pause() {
+        this.video && this.video.pause();
+      }
+    }, {
+      key: "setTime",
+      value: function setTime(t) {
+        if (this.video) {
+          this.video.currentTime = t;
+        }
+      }
+    }, {
       key: "requestAnimFunc",
       value: function requestAnimFunc() {
-        var me = this;
+        var _this3 = this;
+
+        var _this$options$fps = this.options.fps,
+            fps = _this$options$fps === void 0 ? 30 : _this$options$fps;
 
         if (window.requestAnimationFrame) {
           var index = -1;
           return function (cb) {
             index++;
             return requestAnimationFrame(function () {
-              if (!(index % (60 / me.fps))) {
+              if (!(index % (60 / fps))) {
                 return cb();
               }
 
-              me.animId = me.requestAnim(cb);
+              _this3.animId = _this3.requestAnim(cb);
             });
           };
         }
 
         return function (cb) {
-          return setTimeout(cb, 1000 / me.fps);
+          return window.setTimeout(cb, 1000 / fps);
         };
       }
     }, {
       key: "cancelRequestAnimation",
       value: function cancelRequestAnimation() {
-        if (window.cancelAnimationFrame) {
+        if (!this.animId) {
+          return;
+        }
+
+        if (this.useFrameCallback) {
+          try {
+            // @ts-ignore
+            this.video.cancelVideoFrameCallback(this.animId);
+          } catch (e) {
+            console.error(e);
+          }
+        } else if (window.cancelAnimationFrame) {
           cancelAnimationFrame(this.animId);
+        } else {
+          clearTimeout(this.animId);
         }
 
-        clearTimeout(this.animId);
-      }
-    }, {
-      key: "destroy",
-      value: function destroy() {
-        if (this.video) {
-          this.video.parentNode && this.video.parentNode.removeChild(this.video);
-          this.video = null;
-        }
-
-        this.cancelRequestAnimation();
-        this.options.onDestory && this.options.onDestory();
+        this.animId = 0;
       }
     }, {
       key: "clear",
       value: function clear() {
-        this.destroy();
+        this.cancelRequestAnimation();
+      }
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        this.cancelRequestAnimation();
+
+        if (this.video) {
+          this.offAll();
+          this.video.parentNode && this.video.parentNode.removeChild(this.video);
+          this.video = null;
+        }
+
+        this.options.onDestroy && this.options.onDestroy();
       }
     }, {
       key: "on",
@@ -1498,24 +1665,81 @@
         var cbs = this.events[event] || [];
         cbs.push(callback);
         this.events[event] = cbs;
-        this.video.addEventListener(event, callback);
+
+        if (this.customEvent.indexOf(event) === -1) {
+          this.video.addEventListener(event, callback);
+        }
+
+        return this;
+      }
+    }, {
+      key: "once",
+      value: function once(event, callback) {
+        var _this4 = this;
+
+        var once = function once() {
+          var cbs = _this4.events[event];
+          cbs.splice(cbs.indexOf(once), 1);
+
+          _this4.video.removeEventListener(event, once);
+
+          callback.apply(void 0, arguments);
+        };
+
+        return this.on(event, once);
+      }
+    }, {
+      key: "trigger",
+      value: function trigger(eventName) {
+        for (var _len = arguments.length, e = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          e[_key - 1] = arguments[_key];
+        }
+
+        try {
+          (this.events[eventName] || []).forEach(function (item) {
+            item.apply(void 0, e);
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }, {
+      key: "offAll",
+      value: function offAll() {
+        var _this5 = this;
+
+        Object.keys(this.events).forEach(function (name) {
+          var cbs = _this5.events[name];
+
+          if (cbs && cbs.length) {
+            cbs.forEach(function (cb) {
+              _this5.video.removeEventListener(name, cb);
+            });
+          }
+        });
+        this.events = {};
         return this;
       }
     }, {
       key: "onplaying",
       value: function onplaying() {
-        if (!this.firstPlaying) {
-          this.firstPlaying = true;
-          this.drawFrame();
+        if (this.firstPlaying) {
+          this.firstPlaying = false;
+
+          if (!this.useFrameCallback) {
+            this.drawFrame(null, null);
+          }
         }
       }
     }, {
-      key: "onpause",
-      value: function onpause() {}
-    }, {
-      key: "onended",
-      value: function onended() {
-        this.destroy();
+      key: "oncanplay",
+      value: function oncanplay() {
+        var begin = this.options.beginPoint;
+
+        if (begin && this.setBegin) {
+          this.setBegin = false;
+          this.video.currentTime = begin;
+        }
       }
     }, {
       key: "onerror",
@@ -1529,11 +1753,9 @@
     return VapVideo;
   }();
 
-  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
+  function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = getPrototypeOf$1(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = getPrototypeOf$1(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return possibleConstructorReturn(this, result); }; }
 
   function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-  var clearTimer = null;
-  var instances = {};
   var PER_SIZE = 9;
 
   function computeCoord(x, y, w, h, vw, vh) {
@@ -1551,124 +1773,111 @@
 
       classCallCheck(this, WebglRenderVap);
 
-      _this = _super.call(this, options);
-      _this.insType = _this.options.type;
-
-      if (instances[_this.insType]) {
-        _this.instance = instances[_this.insType];
-      } else {
-        _this.instance = instances[_this.insType] = {};
-      }
-
+      _this = _super.call(this);
       _this.textures = [];
-      _this.buffers = [];
-      _this.shaders = [];
 
-      _this.init();
+      if (options) {
+        _this.play(options);
+      }
 
       return _this;
     }
 
     createClass(WebglRenderVap, [{
-      key: "init",
-      value: function init() {
-        return __awaiter(this, void 0, void 0, /*#__PURE__*/regenerator.mark(function _callee() {
-          return regenerator.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  this.setCanvas();
+      key: "play",
+      value: function play(options) {
+        var _this2 = this;
 
-                  if (!this.options.config) {
-                    _context.next = 12;
-                    break;
-                  }
+        var _a;
 
-                  _context.prev = 2;
-                  _context.next = 5;
-                  return new FrameParser(this.options.config, this.options).init();
+        if (options) {
+          this.setOptions(options);
+        }
 
-                case 5:
-                  this.vapFrameParser = _context.sent;
-                  this.resources = this.vapFrameParser.srcData;
-                  _context.next = 12;
-                  break;
+        if (!((_a = this.options) === null || _a === void 0 ? void 0 : _a.config)) {
+          console.error("options.config cannot be empty.");
+          return this;
+        }
 
-                case 9:
-                  _context.prev = 9;
-                  _context.t0 = _context["catch"](2);
-                  console.error('[Alpha video] parse vap frame error.', _context.t0);
+        if (options) {
+          this.initVideo(); // 重新解析
 
-                case 12:
-                  this.resources = this.resources || {};
-                  this.initWebGL();
-                  this.play();
+          this.vapFrameParser = new FrameParser(this.options.config, this.options);
+          this.vapFrameParser.init().then(function () {
+            _this2.initWebGL();
 
-                case 15:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, this, [[2, 9]]);
-        }));
+            _this2.initTexture();
+
+            _this2.initVideoTexture();
+
+            _this2.options.fps = _this2.vapFrameParser.config.info.fps || 30;
+
+            get(getPrototypeOf$1(WebglRenderVap.prototype), "play", _this2).call(_this2);
+          })["catch"](function (e) {
+            _this2.vapFrameParser = null;
+            console.error('[Alpha video] parse vap frame error.', e);
+            return _this2;
+          });
+        } else {
+          get(getPrototypeOf$1(WebglRenderVap.prototype), "play", this).call(this);
+        }
+
+        return this;
       }
     }, {
-      key: "setCanvas",
-      value: function setCanvas() {
-        var canvas = this.instance.canvas;
+      key: "initWebGL",
+      value: function initWebGL() {
+        var canvas = this.canvas,
+            gl = this.gl,
+            vertexShader = this.vertexShader,
+            fragmentShader = this.fragmentShader,
+            program = this.program;
         var _this$options = this.options,
             width = _this$options.width,
             height = _this$options.height;
 
         if (!canvas) {
-          canvas = this.instance.canvas = document.createElement('canvas');
+          canvas = document.createElement('canvas');
         }
 
-        canvas.width = width;
-        canvas.height = height;
+        var vapFrameParser = this.vapFrameParser;
+        var _vapFrameParser$confi = vapFrameParser.config.info,
+            w = _vapFrameParser$confi.w,
+            h = _vapFrameParser$confi.h;
+        canvas.width = width || w;
+        canvas.height = height || h;
         this.container.appendChild(canvas);
-      }
-    }, {
-      key: "initWebGL",
-      value: function initWebGL() {
-        var canvas = this.instance.canvas;
-        var _this$instance = this.instance,
-            gl = _this$instance.gl,
-            vertexShader = _this$instance.vertexShader,
-            fragmentShader = _this$instance.fragmentShader,
-            program = _this$instance.program;
-
-        if (!canvas) {
-          return;
-        }
 
         if (!gl) {
-          this.instance.gl = gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-          gl.enable(gl.BLEND);
-          gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+          gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+          gl.disable(gl.BLEND);
+          gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
           gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         }
 
-        if (gl) {
-          gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.viewport(0, 0, canvas.width, canvas.height);
 
-          if (!vertexShader) {
-            vertexShader = this.instance.vertexShader = this.initVertexShader();
-          }
-
-          if (!fragmentShader) {
-            fragmentShader = this.instance.fragmentShader = this.initFragmentShader();
-          }
-
-          if (!program) {
-            program = this.instance.program = createProgram(gl, vertexShader, fragmentShader);
-          }
-
-          this.program = program;
-          this.initTexture();
-          this.initVideoTexture();
-          return gl;
+        if (!vertexShader) {
+          vertexShader = this.initVertexShader(gl);
         }
+
+        if (fragmentShader && program) {
+          cleanWebGL(gl, {
+            program: program,
+            shaders: [fragmentShader]
+          });
+        }
+
+        var srcData = vapFrameParser.srcData;
+        fragmentShader = this.initFragmentShader(gl, Object.keys(srcData).length);
+        program = createProgram(gl, vertexShader, fragmentShader);
+        this.canvas = canvas;
+        this.gl = gl;
+        this.vertexShader = vertexShader;
+        this.fragmentShader = fragmentShader;
+        this.program = program;
+        this.imagePosLoc = null;
+        return gl;
       }
       /**
        * 顶点着色器
@@ -1676,8 +1885,7 @@
 
     }, {
       key: "initVertexShader",
-      value: function initVertexShader() {
-        var gl = this.instance.gl;
+      value: function initVertexShader(gl) {
         return createShader(gl, gl.VERTEX_SHADER, "attribute vec2 a_position; // \u63A5\u53D7\u9876\u70B9\u5750\u6807\n             attribute vec2 a_texCoord; // \u63A5\u53D7\u7EB9\u7406\u5750\u6807\n             attribute vec2 a_alpha_texCoord; // \u63A5\u53D7\u7EB9\u7406\u5750\u6807\n             varying vec2 v_alpha_texCoord; // \u63A5\u53D7\u7EB9\u7406\u5750\u6807\n             varying   vec2 v_texcoord; // \u4F20\u9012\u7EB9\u7406\u5750\u6807\u7ED9\u7247\u5143\u7740\u8272\u5668\n             void main(void){\n                gl_Position = vec4(a_position, 0.0, 1.0); // \u8BBE\u7F6E\u5750\u6807\n                v_texcoord = a_texCoord; // \u8BBE\u7F6E\u7EB9\u7406\u5750\u6807\n                v_alpha_texCoord = a_alpha_texCoord; // \u8BBE\u7F6E\u7EB9\u7406\u5750\u6807\n             }");
       }
       /**
@@ -1686,73 +1894,80 @@
 
     }, {
       key: "initFragmentShader",
-      value: function initFragmentShader() {
-        var gl = this.instance.gl;
+      value: function initFragmentShader(gl, textureSize) {
         var bgColor = "vec4(texture2D(u_image_video, v_texcoord).rgb, texture2D(u_image_video,v_alpha_texCoord).r);";
-        var textureSize = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1; // const textureSize =0
-
         var sourceTexure = '';
         var sourceUniform = '';
 
         if (textureSize > 0) {
+          var bufferSize = textureSize * PER_SIZE;
           var imgColor = [];
           var samplers = [];
 
           for (var i = 0; i < textureSize; i++) {
-            imgColor.push("if(ndx == ".concat(i + 1, "){\n                        color = texture2D(u_image").concat(i + 1, ",uv);\n                    }"));
+            imgColor.push("if(ndx == ".concat(i + 1, "){\n                color = texture2D(u_image").concat(i + 1, ",uv);\n            }"));
             samplers.push("uniform sampler2D u_image".concat(i + 1, ";"));
           }
 
-          sourceUniform = "\n            ".concat(samplers.join('\n'), "\n            uniform float image_pos[").concat(textureSize * PER_SIZE, "];\n            vec4 getSampleFromArray(int ndx, vec2 uv) {\n                vec4 color;\n                ").concat(imgColor.join(' else '), "\n                return color;\n            }\n            ");
-          sourceTexure = "\n            vec4 srcColor,maskColor;\n            vec2 srcTexcoord,maskTexcoord;\n            int srcIndex;\n            float x1,x2,y1,y2,mx1,mx2,my1,my2; //\u663E\u793A\u7684\u533A\u57DF\n\n            for(int i=0;i<".concat(textureSize * PER_SIZE, ";i+= ").concat(PER_SIZE, "){\n                if ((int(image_pos[i]) > 0)) {\n                  srcIndex = int(image_pos[i]);\n    \n                    x1 = image_pos[i+1];\n                    x2 = image_pos[i+2];\n                    y1 = image_pos[i+3];\n                    y2 = image_pos[i+4];\n                    \n                    mx1 = image_pos[i+5];\n                    mx2 = image_pos[i+6];\n                    my1 = image_pos[i+7];\n                    my2 = image_pos[i+8];\n    \n    \n                    if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {\n                        srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));\n                         maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));\n                         srcColor = getSampleFromArray(srcIndex,srcTexcoord);\n                         maskColor = texture2D(u_image_video, maskTexcoord);\n                         srcColor.a = srcColor.a*(maskColor.r);\n                      \n                         bgColor = vec4(srcColor.rgb*srcColor.a,srcColor.a) + (1.0-srcColor.a)*bgColor;\n                      \n                    }   \n                }\n            }\n            ");
+          sourceUniform = "\n            ".concat(samplers.join('\n'), "\n            uniform float image_pos[").concat(bufferSize, "];\n            vec4 getSampleFromArray(int ndx, vec2 uv) {\n                vec4 color;\n                ").concat(imgColor.join(' else '), "\n                return color;\n            }\n            ");
+          sourceTexure = "\n            vec4 srcColor,maskColor;\n            vec2 srcTexcoord,maskTexcoord;\n            int srcIndex;\n            float x1,x2,y1,y2,mx1,mx2,my1,my2; //\u663E\u793A\u7684\u533A\u57DF\n\n            for(int i=0;i<".concat(bufferSize, ";i+= ").concat(PER_SIZE, "){\n                if ((int(image_pos[i]) > 0)) {\n                  srcIndex = int(image_pos[i]);\n    \n                    x1 = image_pos[i+1];\n                    x2 = image_pos[i+2];\n                    y1 = image_pos[i+3];\n                    y2 = image_pos[i+4];\n                    \n                    mx1 = image_pos[i+5];\n                    mx2 = image_pos[i+6];\n                    my1 = image_pos[i+7];\n                    my2 = image_pos[i+8];\n    \n    \n                    if (v_texcoord.s>x1 && v_texcoord.s<x2 && v_texcoord.t>y1 && v_texcoord.t<y2) {\n                        srcTexcoord = vec2((v_texcoord.s-x1)/(x2-x1),(v_texcoord.t-y1)/(y2-y1));\n                         maskTexcoord = vec2(mx1+srcTexcoord.s*(mx2-mx1),my1+srcTexcoord.t*(my2-my1));\n                         srcColor = getSampleFromArray(srcIndex,srcTexcoord);\n                         maskColor = texture2D(u_image_video, maskTexcoord);\n                         srcColor.a = srcColor.a*(maskColor.r);\n                      \n                         bgColor = vec4(srcColor.rgb*srcColor.a,srcColor.a) + (1.0-srcColor.a)*bgColor;\n                      \n                    }   \n                }\n            }\n            ");
         }
 
-        var fragmentSharder = "\n        precision lowp float;\n        varying vec2 v_texcoord;\n        varying vec2 v_alpha_texCoord;\n        uniform sampler2D u_image_video;\n        ".concat(sourceUniform, "\n        \n        void main(void) {\n            vec4 bgColor = ").concat(bgColor, "\n            ").concat(sourceTexure, "\n            // bgColor = texture2D(u_image[0], v_texcoord);\n            gl_FragColor = bgColor;\n        }\n        ");
-        return createShader(gl, gl.FRAGMENT_SHADER, fragmentSharder);
+        var fragmentShader = "\n        precision lowp float;\n        varying vec2 v_texcoord;\n        varying vec2 v_alpha_texCoord;\n        uniform sampler2D u_image_video;\n        ".concat(sourceUniform, "\n        \n        void main(void) {\n            vec4 bgColor = ").concat(bgColor, "\n            ").concat(sourceTexure, "\n            gl_FragColor = bgColor;\n        }\n        ");
+        return createShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
       }
     }, {
       key: "initTexture",
       value: function initTexture() {
-        var gl = this.instance.gl;
-        var i = 1;
+        var gl = this.gl,
+            vapFrameParser = this.vapFrameParser,
+            textures = this.textures;
 
-        if (!this.vapFrameParser || !this.vapFrameParser.srcData) {
+        if (!vapFrameParser || !vapFrameParser.srcData) {
           return;
         }
 
-        var resources = this.vapFrameParser.srcData;
+        var resources = vapFrameParser.srcData; // 0分配给video
+
+        var i = 1;
 
         for (var key in resources) {
           var resource = resources[key];
-          this.textures.push(createTexture(gl, i, resource.img));
+          var texture = textures[i - 1];
 
-          var _sampler = gl.getUniformLocation(this.program, "u_image".concat(i));
+          if (texture) {
+            // 复用
+            gl.activeTexture(gl.TEXTURE0 + i);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.img);
+          } else {
+            this.textures.push(createTexture(gl, i, resource.img));
+          }
 
-          gl.uniform1i(_sampler, i);
+          var sampler = gl.getUniformLocation(this.program, "u_image".concat(i));
+          gl.uniform1i(sampler, i);
           this.vapFrameParser.textureMap[resource.srcId] = i++;
         }
-
-        var dumpTexture = gl.createTexture();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, dumpTexture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-        this.videoTexture = createTexture(gl, i);
-        var sampler = gl.getUniformLocation(this.program, "u_image_video");
-        gl.uniform1i(sampler, i);
       }
     }, {
       key: "initVideoTexture",
       value: function initVideoTexture() {
-        var gl = this.instance.gl;
-        var vertexBuffer = gl.createBuffer();
-        this.buffers.push(vertexBuffer);
+        var gl = this.gl,
+            vapFrameParser = this.vapFrameParser,
+            program = this.program;
 
-        if (!this.vapFrameParser || !this.vapFrameParser.config || !this.vapFrameParser.config.info) {
+        if (!vapFrameParser || !vapFrameParser.config || !vapFrameParser.config.info) {
           return;
+        } // video texture
+
+
+        if (!this.videoTexture) {
+          this.videoTexture = createTexture(gl, 0);
         }
 
-        var info = this.vapFrameParser.config.info;
-        var ver = [];
+        var sampler = gl.getUniformLocation(program, "u_image_video");
+        gl.uniform1i(sampler, 0);
+        gl.activeTexture(gl.TEXTURE0);
+        var info = vapFrameParser.config.info;
         var vW = info.videoW,
             vH = info.videoH;
 
@@ -1770,53 +1985,62 @@
 
         var rgbCoord = computeCoord(rgbX, rgbY, rgbW, rgbH, vW, vH);
         var aCoord = computeCoord(aX, aY, aW, aH, vW, vH);
-        ver.push.apply(ver, [-1, 1, rgbCoord[0], rgbCoord[3], aCoord[0], aCoord[3]]);
-        ver.push.apply(ver, [1, 1, rgbCoord[1], rgbCoord[3], aCoord[1], aCoord[3]]);
-        ver.push.apply(ver, [-1, -1, rgbCoord[0], rgbCoord[2], aCoord[0], aCoord[2]]);
-        ver.push.apply(ver, [1, -1, rgbCoord[1], rgbCoord[2], aCoord[1], aCoord[2]]);
-        var view = new Float32Array(ver);
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, view, gl.STATIC_DRAW);
-        this.aPosition = gl.getAttribLocation(this.program, 'a_position');
-        gl.enableVertexAttribArray(this.aPosition);
-        this.aTexCoord = gl.getAttribLocation(this.program, 'a_texCoord');
-        gl.enableVertexAttribArray(this.aTexCoord);
-        this.aAlphaTexCoord = gl.getAttribLocation(this.program, 'a_alpha_texCoord');
-        gl.enableVertexAttribArray(this.aAlphaTexCoord); // 将缓冲区对象分配给a_position变量、a_texCoord变量
+        var view = new Float32Array([-1, 1, rgbCoord[0], rgbCoord[3], aCoord[0], aCoord[3]].concat([1, 1, rgbCoord[1], rgbCoord[3], aCoord[1], aCoord[3]], [-1, -1, rgbCoord[0], rgbCoord[2], aCoord[0], aCoord[2]], [1, -1, rgbCoord[1], rgbCoord[2], aCoord[1], aCoord[2]]));
+
+        if (!this.vertexBuffer) {
+          this.vertexBuffer = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        }
+
+        gl.bufferData(gl.ARRAY_BUFFER, view, gl.STATIC_DRAW); // 将缓冲区对象分配给a_position变量、a_texCoord变量
 
         var size = view.BYTES_PER_ELEMENT;
-        gl.vertexAttribPointer(this.aPosition, 2, gl.FLOAT, false, size * 6, 0); // 顶点着色器位置
+        var aPosition = gl.getAttribLocation(program, 'a_position');
+        gl.enableVertexAttribArray(aPosition);
+        gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, size * 6, 0); // 顶点着色器位置
 
-        gl.vertexAttribPointer(this.aTexCoord, 2, gl.FLOAT, false, size * 6, size * 2); // rgb像素位置
+        var aTexCoord = gl.getAttribLocation(program, 'a_texCoord');
+        gl.enableVertexAttribArray(aTexCoord);
+        gl.vertexAttribPointer(aTexCoord, 2, gl.FLOAT, false, size * 6, size * 2); // rgb像素位置
 
-        gl.vertexAttribPointer(this.aAlphaTexCoord, 2, gl.FLOAT, false, size * 6, size * 4); // rgb像素位置
+        var aAlphaTexCoord = gl.getAttribLocation(program, 'a_alpha_texCoord');
+        gl.enableVertexAttribArray(aAlphaTexCoord);
+        gl.vertexAttribPointer(aAlphaTexCoord, 2, gl.FLOAT, false, size * 6, size * 4); // rgb像素位置
       }
     }, {
       key: "drawFrame",
-      value: function drawFrame() {
-        var _this2 = this;
-
-        var gl = this.instance.gl;
+      value: function drawFrame(_, info) {
+        var gl = this.gl,
+            vapFrameParser = this.vapFrameParser,
+            video = this.video,
+            options = this.options;
 
         if (!gl) {
-          get(getPrototypeOf(WebglRenderVap.prototype), "drawFrame", this).call(this);
+          get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
 
           return;
         }
 
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        var frame = !options.loop && (info === null || info === void 0 ? void 0 : info.presentedFrames) > 0 ? info.presentedFrames - 1 : Math.round(video.currentTime * options.fps) + options.offset; // console.info('frame:', info.presentedFrames - 1, Math.round(this.video.currentTime * this.options.fps));
 
-        if (this.vapFrameParser) {
-          var frame = Math.floor(this.video.currentTime * this.options.fps);
-          var frameData = this.vapFrameParser.getFrame(frame);
+        var frameData = vapFrameParser.getFrame(frame);
+
+        if (frameData === null || frameData === void 0 ? void 0 : frameData.obj) {
           var posArr = [];
+          var _vapFrameParser$confi2 = vapFrameParser.config.info,
+              vW = _vapFrameParser$confi2.videoW,
+              vH = _vapFrameParser$confi2.videoH,
+              rgbFrame = _vapFrameParser$confi2.rgbFrame;
+          frameData.obj.forEach(function (frame) {
+            // 有可能用户没有传入src
+            var imgIndex = vapFrameParser.textureMap[frame.srcId];
 
-          if (frameData && frameData.obj) {
-            frameData.obj.forEach(function (frame, index) {
-              posArr[posArr.length] = +_this2.vapFrameParser.textureMap[frame.srcId];
-              var info = _this2.vapFrameParser.config.info;
-              var vW = info.videoW,
-                  vH = info.videoH;
+            if (imgIndex > 0) {
+              posArr[posArr.length] = imgIndex; // frame坐标是最终展示坐标，这里glsl中计算使用视频坐标
+
+              var _rgbFrame = slicedToArray(rgbFrame, 2),
+                  rgbX = _rgbFrame[0],
+                  rgbY = _rgbFrame[1];
 
               var _frame$frame = slicedToArray(frame.frame, 4),
                   x = _frame$frame[0],
@@ -1830,57 +2054,73 @@
                   mW = _frame$mFrame[2],
                   mH = _frame$mFrame[3];
 
-              var coord = computeCoord(x, y, w, h, vW, vH);
+              var coord = computeCoord(x + rgbX, y + rgbY, w, h, vW, vH);
               var mCoord = computeCoord(mX, mY, mW, mH, vW, vH);
               posArr = posArr.concat(coord).concat(mCoord);
-            });
-          } //
+            }
+          });
 
-
-          var size = (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS) - 1) * PER_SIZE;
-          posArr = posArr.concat(new Array(size - posArr.length).fill(0));
-          this._imagePos = this._imagePos || gl.getUniformLocation(this.program, 'image_pos');
-          gl.uniform1fv(this._imagePos, new Float32Array(posArr));
-        }
-
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.video); // 指定二维纹理方式
-
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-        get(getPrototypeOf(WebglRenderVap.prototype), "drawFrame", this).call(this);
-      }
-    }, {
-      key: "destroy",
-      value: function destroy() {
-        var _this$instance2 = this.instance,
-            canvas = _this$instance2.canvas,
-            gl = _this$instance2.gl;
-
-        if (this.textures && this.textures.length) {
-          for (var i = 0; i < this.textures.length; i++) {
-            gl.deleteTexture(this.textures[i]);
+          if (posArr.length) {
+            this.imagePosLoc = this.imagePosLoc || gl.getUniformLocation(this.program, 'image_pos');
+            gl.uniform1fv(this.imagePosLoc, new Float32Array(posArr));
           }
         }
 
+        this.trigger('frame', frame + 1, frameData, vapFrameParser.config);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video); // 指定二维纹理方式
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "drawFrame", this).call(this, _, info);
+      } // 清理数据,为下一次播放做准备
+
+    }, {
+      key: "clear",
+      value: function clear() {
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "clear", this).call(this);
+
+        var gl = this.gl; // 清除界面，解决连续播放时，第一帧是上一个mp4最后一帧的问题
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      } // 销毁,释放webgl资源,销毁后调用play,资源会重新初始化
+
+    }, {
+      key: "destroy",
+      value: function destroy() {
+        get(getPrototypeOf$1(WebglRenderVap.prototype), "destroy", this).call(this);
+
+        var canvas = this.canvas,
+            gl = this.gl,
+            vertexShader = this.vertexShader,
+            fragmentShader = this.fragmentShader,
+            program = this.program,
+            textures = this.textures,
+            videoTexture = this.videoTexture,
+            vertexBuffer = this.vertexBuffer;
+
         if (canvas) {
           canvas.parentNode && canvas.parentNode.removeChild(canvas);
-        } // glUtil.cleanWebGL(gl, this.shaders, this.program, this.textures, this.buffers)
-
-
-        get(getPrototypeOf(WebglRenderVap.prototype), "destroy", this).call(this);
-
-        this.clearMemoryCache();
-      }
-    }, {
-      key: "clearMemoryCache",
-      value: function clearMemoryCache() {
-        if (clearTimer) {
-          clearTimeout(clearTimer);
+          this.canvas = null;
         }
 
-        clearTimer = setTimeout(function () {
-          instances = {};
-        }, 30 * 60 * 1000);
+        if (gl) {
+          cleanWebGL(gl, {
+            program: program,
+            shaders: [vertexShader, fragmentShader],
+            textures: [].concat(toConsumableArray(textures), [videoTexture]),
+            buffers: [vertexBuffer]
+          });
+        }
+
+        this.gl = null;
+        this.vertexShader = null;
+        this.fragmentShader = null;
+        this.program = null;
+        this.imagePosLoc = null;
+        this.vertexBuffer = null;
+        this.videoTexture = null;
+        this.textures = [];
       }
     }]);
 
@@ -1896,12 +2136,11 @@
 
   function index (options) {
     if (canWebGL()) {
-      return new WebglRenderVap(Object.assign({}, options));
+      return new WebglRenderVap(options);
     } else {
       throw new Error('your browser not support webgl');
     }
   }
-
   function canWebGL() {
     if (typeof isCanWebGL !== 'undefined') {
       return isCanWebGL;
@@ -1924,6 +2163,9 @@
     return isCanWebGL;
   }
 
-  return index;
+  exports.canWebGL = canWebGL;
+  exports.default = index;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

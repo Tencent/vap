@@ -16,6 +16,7 @@
 package com.tencent.qgame.animplayer
 
 import android.media.*
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.MediaUtil
 import java.lang.RuntimeException
@@ -41,7 +42,7 @@ class AudioPlayer(val player: AnimPlayer) {
         return Decoder.createThread(decodeThread, "anim_audio_thread")
     }
 
-    fun start(fileContainer: FileContainer) {
+    fun start(fileContainer: IFileContainer) {
         isStopReq = false
         needDestroy = false
         if (!prepareThread()) return
@@ -63,7 +64,7 @@ class AudioPlayer(val player: AnimPlayer) {
         isStopReq = true
     }
 
-    private fun startPlay(fileContainer: FileContainer) {
+    private fun startPlay(fileContainer: IFileContainer) {
         val extractor = MediaUtil.getExtractor(fileContainer)
         this.extractor = extractor
         val audioIndex = MediaUtil.selectAudioTrack(extractor)
@@ -74,7 +75,14 @@ class AudioPlayer(val player: AnimPlayer) {
         }
         extractor.selectTrack(audioIndex)
         val format = extractor.getTrackFormat(audioIndex)
-        val mime =format.getString(MediaFormat.KEY_MIME) ?: ""
+        val mime = format.getString(MediaFormat.KEY_MIME) ?: ""
+        ALog.i(TAG, "audio mime=$mime")
+        if (!MediaUtil.checkSupportCodec(mime)) {
+            ALog.e(TAG, "mime=$mime not support")
+            release()
+            return
+        }
+
         val decoder = MediaCodec.createDecoderByType(mime).apply {
             configure(format, null, null, 0)
             start()
@@ -91,7 +99,7 @@ class AudioPlayer(val player: AnimPlayer) {
         val bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT)
         val audioTrack = AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM)
         this.audioTrack = audioTrack
-        val state = audioTrack.getState()
+        val state = audioTrack.state
         if (state != AudioTrack.STATE_INITIALIZED) {
             release()
             ALog.e(TAG, "init audio track failure")
@@ -120,7 +128,7 @@ class AudioPlayer(val player: AnimPlayer) {
             if (outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                 decodeOutputBuffers = decoder.outputBuffers
             }
-            if (outputIndex > 0) {
+            if (outputIndex >= 0) {
                 val outputBuffer = decodeOutputBuffers[outputIndex]
                 val chunkPCM = ByteArray(bufferInfo.size)
                 outputBuffer.get(chunkPCM)
@@ -172,8 +180,8 @@ class AudioPlayer(val player: AnimPlayer) {
     }
 
     fun destroy() {
-        needDestroy = true
         if (isRunning) {
+            needDestroy = true
             stop()
         } else {
             destroyInner()

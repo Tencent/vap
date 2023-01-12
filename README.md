@@ -2,6 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
 
+简体中文 | [English](./README_en.md)
+
 VAP（Video Animation Player）是企鹅电竞开发，用于播放酷炫动画的实现方案。
 
 * 相比Webp, Apng动图方案，具有高压缩率(素材更小)、硬件解码(解码更快)的优点
@@ -43,15 +45,28 @@ VAP|***1.5M***|***硬解***|***全支持***
 
 支持：[Android](./Android), [iOS](./iOS), [web](./web). 接入说明在对应平台目录中
 
-为大家更方便的使用组件，还有配套的素材制作工具[tool](./tool) 
+素材制作工具：[VapTool](./tool) (工具使用说明在tool目录下)
 
+播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_mac_1.2.0.zip), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_1.2.0.exe)
 
 
 ## QQ交流群
+
 遇到任何问题或者有好的建议，欢迎提issues，或者加入QQ群交流
 
-![](./images/qq_group.png)
+VAP交流群：719738292
 
+
+## FAQ
+
+[常见问题解答](https://github.com/Tencent/vap/wiki/FAQ)
+
+
+## 已接入APP
+
+![VAP接入APP](https://user-images.githubusercontent.com/3285051/211699577-58c70501-02c4-440a-a3a8-2ba7cbec6da7.png)
+
+需要显示自己App图标，可以加入QQ群，群公告里有App图标加入说明
 
 ## License
 

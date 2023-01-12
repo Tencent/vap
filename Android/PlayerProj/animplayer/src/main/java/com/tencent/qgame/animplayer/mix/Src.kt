@@ -51,15 +51,21 @@ class Src {
     var srcId = ""
     var w = 0
     var h = 0
+    var drawWidth = 0
+    var drawHeight = 0
     var srcType = SrcType.UNKNOWN
     var loadType = LoadType.UNKNOWN
     var srcTag = ""
-    var bitmap: Bitmap? = null
     var txt = ""
     var style = Style.DEFAULT
     var color: Int = 0
     var fitType = FitType.FIT_XY
     var srcTextureId = 0
+    var bitmap: Bitmap? = null
+        set(value) {
+            field = value
+            genDrawSize(value)
+        }
 
     constructor(json: JSONObject) {
         srcId = json.getString("srcId")
@@ -97,6 +103,29 @@ class Src {
         ALog.i(TAG, "${toString()} color=$colorStr")
     }
 
+
+    private fun genDrawSize(bitmap: Bitmap?) {
+        val bw = bitmap?.width?: w
+        val bh = bitmap?.height?: h
+        drawWidth = bw
+        drawHeight = bh
+        if (fitType == FitType.CENTER_FULL) {
+            if (w == 0 || h == 0) {
+                return
+            }
+            // 按src w h进行centerCrop处理
+            val srcRate = w.toFloat() / h.toFloat()
+            val bitmapRate = bw.toFloat() / bh.toFloat()
+
+            if (bitmapRate >= srcRate) {
+                drawHeight = h
+                drawWidth = (h * bitmapRate).toInt()
+            } else {
+                drawWidth = w
+                drawHeight = (w / bitmapRate).toInt()
+            }
+        }
+    }
 
 
     override fun toString(): String {

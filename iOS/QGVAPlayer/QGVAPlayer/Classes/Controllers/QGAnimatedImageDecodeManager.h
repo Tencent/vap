@@ -31,6 +31,7 @@
 
 @optional
 
+- (BOOL)shouldSetupAudioPlayer;
 /**
  到文件末尾时被调用
 
@@ -53,5 +54,9 @@
 - (QGBaseAnimatedImageFrame *)consumeDecodedFrame:(NSInteger)frameIndex;
 
 - (void)tryToStartAudioPlay;
+- (void)tryToStopAudioPlay;
+- (void)tryToPauseAudioPlay;
+- (void)tryToResumeAudioPlay;
+- (BOOL)containsThisDeocder:(id)decoder;
 
 @end

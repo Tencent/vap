@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function createShader(gl, type, source) {
+export function createShader(gl: WebGLRenderingContext, type: number, source: string) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
@@ -23,7 +23,7 @@ export function createShader(gl, type, source) {
   return shader;
 }
 
-export function createProgram(gl, vertexShader, fragmentShader) {
+export function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
   const program = gl.createProgram();
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
@@ -35,7 +35,7 @@ export function createProgram(gl, vertexShader, fragmentShader) {
   return program;
 }
 
-export function createTexture(gl, index:number, imgData?:TexImageSource) {
+export function createTexture(gl: WebGLRenderingContext, index: number, imgData?: TexImageSource) {
   const texture = gl.createTexture();
   const textrueIndex = gl.TEXTURE0 + index;
   gl.activeTexture(textrueIndex);
@@ -51,20 +51,20 @@ export function createTexture(gl, index:number, imgData?:TexImageSource) {
   return texture;
 }
 
-export function cleanWebGL(gl, shaders, program, textures, buffers) {
+export function cleanWebGL(gl: WebGLRenderingContext, { shaders = [], program = null, textures = [], buffers = [] }) {
   try {
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    textures.forEach(t => {
+    textures.forEach((t) => {
       gl.deleteTexture(t);
     });
-    buffers.forEach(b => {
+    buffers.forEach((b) => {
       gl.deleteBuffer(b);
     });
-    shaders.forEach(shader => {
-      gl.detachShader(program, shader);
-      gl.deleteShader(shader);
-    });
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.deleteProgram(program)
+    if (program) {
+      shaders.forEach((shader) => {
+        gl.detachShader(program, shader);
+        gl.deleteShader(shader);
+      });
+      gl.deleteProgram(program);
+    }
   } catch (e) {}
 }

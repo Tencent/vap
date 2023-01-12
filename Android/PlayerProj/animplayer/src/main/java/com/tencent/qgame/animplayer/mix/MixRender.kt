@@ -15,14 +15,11 @@
  */
 package com.tencent.qgame.animplayer.mix
 
-import android.graphics.Bitmap
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import android.opengl.GLUtils
 import com.tencent.qgame.animplayer.AnimConfig
 import com.tencent.qgame.animplayer.Constant
 import com.tencent.qgame.animplayer.PointRect
-import com.tencent.qgame.animplayer.RenderConstant
 import com.tencent.qgame.animplayer.util.*
 
 /**
@@ -63,7 +60,7 @@ class MixRender(private val mixAnimPlugin: MixAnimPlugin) {
         vertexArray.setVertexAttribPointer(shader.aPositionLocation)
 
         // src 纹理坐标
-        srcArray.setArray(genSrcCoordsArray(srcArray.array, frame.frame.w, frame.frame.h, src.w, src.h, src.fitType))
+        srcArray.setArray(genSrcCoordsArray(srcArray.array, frame.frame.w, frame.frame.h, src.drawWidth, src.drawHeight, src.fitType))
         srcArray.setVertexAttribPointer(shader.aTextureSrcCoordinatesLocation)
         // 绑定 src纹理
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
@@ -107,6 +104,9 @@ class MixRender(private val mixAnimPlugin: MixAnimPlugin) {
         }
     }
 
+    /**
+     * CENTER_FULL 并不是严格的centerCrop(centerCrop已经前置处理)，此处主要是为防抖动做处理，复杂遮罩情况下需要固定src大小进行绘制防止抖动
+     */
     private fun genSrcCoordsArray(array: FloatArray, fw: Int, fh: Int, sw: Int, sh: Int, fitType: Src.FitType): FloatArray {
         return if (fitType == Src.FitType.CENTER_FULL) {
             if (fw <= sw && fh <= sh) {

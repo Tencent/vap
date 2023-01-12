@@ -18,6 +18,8 @@
 
 NSInteger const kQGBoxSizeLengthInBytes = 4;
 NSInteger const kQGBoxTypeLengthInBytes = 4;
+NSInteger const kQGBoxLargeSizeLengthInBytes = 8;
+NSInteger const kQGBoxLargeSizeFlagLengthInBytes = 1;
 
 #pragma mark - boxes
 #pragma mark -- base box
@@ -257,6 +259,23 @@ NSInteger const kQGBoxTypeLengthInBytes = 4;
 
 @end
 
+@implementation QGMP4StssBox
+
+- (void)boxDidParsed:(QGMp4BoxDataFetcher)datablock {
+    if (!_syncSamples) {
+        _syncSamples = [NSMutableArray new];
+    }
+    NSData *stssData = datablock(self);
+    const char *bytes = stssData.bytes;
+    uint32_t sample_count = READ32BIT(&bytes[12]);
+    for (int i = 0; i < sample_count; i++) {
+        NSInteger index = READ32BIT(&bytes[16 + 4 * i]) - 1;
+        [_syncSamples addObject:[NSNumber numberWithInteger:index]];
+    }
+}
+
+@end
+
 /**
  Decoding Time to Sample Box
  用来计算dts
@@ -341,7 +360,6 @@ stts记录了sample的时间信息，⾥⾯有多个entry，每个entry⾥⾯的
         case QGMP4BoxType_url:
         case QGMP4BoxType_stbl:
         case QGMP4BoxType_avc1:
-        case QGMP4BoxType_stss:
         case QGMP4BoxType_udta:
         case QGMP4BoxType_meta:
         case QGMP4BoxType_ilst:
@@ -351,6 +369,8 @@ stts记录了sample的时间信息，⾥⾯有多个entry，每个entry⾥⾯的
         case QGMP4BoxType_loci:
         case QGMP4BoxType_smhd:
             return [QGMP4Box class];
+        case QGMP4BoxType_stss:
+            return [QGMP4StssBox class];
         case QGMP4BoxType_mdat:
             return [QGMP4MdatBox class];
         case QGMP4BoxType_avcC:

@@ -20,6 +20,8 @@
 
 extern NSInteger const kQGBoxSizeLengthInBytes;
 extern NSInteger const kQGBoxTypeLengthInBytes;
+extern NSInteger const kQGBoxLargeSizeLengthInBytes;
+extern NSInteger const kQGBoxLargeSizeFlagLengthInBytes;
 
 @class QGMP4Box;
 typedef NSData* (^QGMp4BoxDataFetcher)(QGMP4Box *box);
@@ -165,6 +167,12 @@ The table is compactly coded. Each entry gives the index of the first chunk of a
 
 @property (nonatomic, assign) uint32_t chunkCount;
 @property (nonatomic, strong) NSMutableArray<NSNumber *> *chunkOffsets;
+
+@end
+
+@interface QGMP4StssBox : QGMP4Box
+
+@property(nonatomic, strong) NSMutableArray<NSNumber *> *syncSamples;
 
 @end
 

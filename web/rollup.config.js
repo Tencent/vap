@@ -9,7 +9,7 @@ export default [
   {
     input: "src/index.ts",
     output: {
-      name: "howLongUntilLunch",
+      name: "Vap",
       file: "dist/vap.js",
       format: "umd"
     },

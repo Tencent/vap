@@ -86,6 +86,8 @@
     NSInteger _finishFrameIndex;
     NSError *_constructErr;
     QGMP4ParserProxy *_mp4Parser;
+    
+    int _invalidRetryCount;
 }
 
 @property (atomic, strong) dispatch_queue_t decodeQueue; //dispatch decode task
@@ -93,6 +95,8 @@
 @property (nonatomic, strong) NSData *spsData; //Sequence Parameter Set
 /** Video Parameter Set */
 @property (nonatomic, strong) NSData *vpsData;
+
+@property (atomic, assign) NSInteger lastDecodeFrame;
 
 @end
 
@@ -134,6 +138,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     
     if (self = [super initWith:fileInfo error:error]) {
         _decodeQueue = dispatch_queue_create("com.qgame.vap.decode", DISPATCH_QUEUE_SERIAL);
+        _lastDecodeFrame = -1;
         _mp4Parser = fileInfo.mp4Parser;
         BOOL isOpenSuccess = [self onInputStart];
         if (!isOpenSuccess) {
@@ -148,14 +153,11 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
 }
 
 - (void)registerNotification {
-    
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationWillResignActiveNotification object:nil];
+
 }
 
 - (void)hwd_didReceiveEnterBackgroundNotification:(NSNotification *)notification {
     
-    [self onInputEnd];
 }
 
 - (void)decodeFrame:(NSInteger)frameIndex buffers:(NSMutableArray *)buffers {
@@ -167,12 +169,15 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     self.currentDecodeFrame = frameIndex;
     _buffers = buffers;
     dispatch_async(self.decodeQueue, ^{
-        [self _decodeFrame:frameIndex];
+        if (frameIndex != self.lastDecodeFrame + 1) {
+            // 必须是依次增大，否则解出来的画面会异常
+            return;
+        }
+        [self _decodeFrame:frameIndex drop:NO];
     });
 }
 
-- (void)_decodeFrame:(NSInteger)frameIndex {
-    
+- (void)_decodeFrame:(NSInteger)frameIndex drop:(BOOL)dropFlag {
     if (_isFinish) {
         return ;
     }
@@ -190,7 +195,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     NSData *packetData = [_mp4Parser readPacketOfSample:frameIndex];
     if (!packetData.length) {
         _finishFrameIndex = frameIndex;
-        [self onInputEnd];
+        [self _onInputEnd];
         return;
     }
     
@@ -219,72 +224,116 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     if (blockBuffer) {
         CFRelease(blockBuffer);
     }
+    
     // 7. use VTDecompressionSessionDecodeFrame
     if (@available(iOS 9.0, *)) {
         __typeof(self) __weak weakSelf = self;
         VTDecodeFrameFlags flags = 0;
         VTDecodeInfoFlags flagOut = 0;
-        VTDecompressionSessionDecodeFrameWithOutputHandler(_mDecodeSession, sampleBuffer, flags, &flagOut, ^(OSStatus status, VTDecodeInfoFlags infoFlags, CVImageBufferRef  _Nullable imageBuffer, CMTime presentationTimeStamp, CMTime presentationDuration) {
-            CFRelease(sampleBuffer);
+        OSStatus status = VTDecompressionSessionDecodeFrameWithOutputHandler(_mDecodeSession, sampleBuffer, flags, &flagOut, ^(OSStatus status, VTDecodeInfoFlags infoFlags, CVImageBufferRef  _Nullable imageBuffer, CMTime presentationTimeStamp, CMTime presentationDuration) {
             __typeof(self) strongSelf = weakSelf;
             if (strongSelf == nil) {
                 return;
             }
             
-            if(status == kVTInvalidSessionErr) {
-                VAP_Error(kQGVAPModuleCommon, @"decompress fail! frame:%@ kVTInvalidSessionErr error:%@", @(frameIndex), @(status));
-            } else if(status == kVTVideoDecoderBadDataErr) {
-                VAP_Error(kQGVAPModuleCommon, @"decompress fail! frame:%@ kVTVideoDecoderBadDataErr error:%@", @(frameIndex), @(status));
-            } else if(status != noErr) {
-                VAP_Error(kQGVAPModuleCommon, @"decompress fail! frame:%@ error:%@", @(frameIndex), @(status));
+            [strongSelf handleDecodePixelBuffer:imageBuffer
+                                   sampleBuffer:sampleBuffer
+                                     frameIndex:frameIndex
+                                     currentPts:currentPts
+                                      startDate:startDate
+                                         status:status
+                                       needDrop:dropFlag];
+        });
+        
+        if (status == kVTInvalidSessionErr) {
+            CFRelease(sampleBuffer);
+            
+            // 防止陷入死循环
+            if (_invalidRetryCount >= 3) {
+                return;
             }
             
-            QGMP4AnimatedImageFrame *newFrame = [[QGMP4AnimatedImageFrame alloc] init];
-            // imagebuffer会在frame回收时释放
-            CVPixelBufferRetain(imageBuffer);
-            newFrame.pixelBuffer = imageBuffer;
-            newFrame.frameIndex = frameIndex; //dts顺序
-            NSTimeInterval decodeTime = [[NSDate date] timeIntervalSinceDate:startDate]*1000;
-            newFrame.decodeTime = decodeTime;
-            newFrame.defaultFps =(int) strongSelf->_mp4Parser.fps;
-            newFrame.pts = currentPts;
-            
-            // 8. insert into buffer
-            [strongSelf->_buffers addObject:newFrame];
-            
-            // 9. sort
-            [strongSelf->_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
-                return [@(obj1.pts) compare:@(obj2.pts)];
-            }];
-        });
+            [self resetDecoder];
+            // 从最近I帧一直解码到当前帧，中间帧丢弃
+            [self findKeyFrameAndDecodeToCurrent:frameIndex];
+        } else {
+            _invalidRetryCount = 0;
+        }
+        
     } else {
         // 7. use VTDecompressionSessionDecodeFrame
         VTDecodeFrameFlags flags = 0;
         VTDecodeInfoFlags flagOut = 0;
         _status = VTDecompressionSessionDecodeFrame(_mDecodeSession, sampleBuffer, flags, &outputPixelBuffer, &flagOut);
         
-        if(_status == kVTInvalidSessionErr) {
-        } else if(_status == kVTVideoDecoderBadDataErr) {
-        } else if(_status != noErr) {
+        if (_status == kVTInvalidSessionErr) {
+            CFRelease(sampleBuffer);
+            // 防止陷入死循环
+            if (_invalidRetryCount >= 3) {
+                return;
+            }
+            
+            [self resetDecoder];
+            // 从最近I帧一直解码到当前帧，中间帧丢弃
+            [self findKeyFrameAndDecodeToCurrent:frameIndex];
+            
+            return;
+        } else {
+            _invalidRetryCount = 0;
         }
-        CFRelease(sampleBuffer);
         
-        QGMP4AnimatedImageFrame *newFrame = [[QGMP4AnimatedImageFrame alloc] init];
-        // imagebuffer会在frame回收时释放
-        newFrame.pixelBuffer = outputPixelBuffer;
-        newFrame.frameIndex = frameIndex;
-        NSTimeInterval decodeTime = [[NSDate date] timeIntervalSinceDate:startDate]*1000;
-        newFrame.decodeTime = decodeTime;
-        newFrame.defaultFps = (int)_mp4Parser.fps;
+        [self handleDecodePixelBuffer:outputPixelBuffer
+                         sampleBuffer:sampleBuffer
+                           frameIndex:frameIndex
+                           currentPts:currentPts
+                            startDate:startDate
+                               status:_status
+                             needDrop:dropFlag];
         
-        // 8. insert into buffer
-        [_buffers addObject:newFrame];
-        
-        // 9. sort
-        [_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
-            return [@(obj1.pts) compare:@(obj2.pts)];
-        }];
     }
+}
+
+- (void)handleDecodePixelBuffer:(CVPixelBufferRef)pixelBuffer
+                   sampleBuffer:(CMSampleBufferRef)sampleBuffer
+                     frameIndex:(NSInteger)frameIndex
+                     currentPts:(uint64_t)currentPts
+                      startDate:(NSDate *)startDate
+                         status:(OSStatus)status
+                       needDrop:(BOOL)dropFlag {
+    
+    self.lastDecodeFrame = frameIndex;
+    
+    CFRelease(sampleBuffer);
+    
+    if(status == kVTInvalidSessionErr) {
+        VAP_Error(kQGVAPModuleCommon, @"decompress fail! frame:%@ kVTInvalidSessionErr error:%@", @(frameIndex), @(status));
+    } else if(status == kVTVideoDecoderBadDataErr) {
+        VAP_Error(kQGVAPModuleCommon, @"decompress fail! frame:%@ kVTVideoDecoderBadDataErr error:%@", @(frameIndex), @(status));
+    } else if(status != noErr) {
+        VAP_Error(kQGVAPModuleCommon, @"decompress fail! frame:%@ error:%@", @(frameIndex), @(status));
+    }
+    
+    if (dropFlag) {
+        return;
+    }
+    
+    QGMP4AnimatedImageFrame *newFrame = [[QGMP4AnimatedImageFrame alloc] init];
+    // imagebuffer会在frame回收时释放
+    CVPixelBufferRetain(pixelBuffer);
+    newFrame.pixelBuffer = pixelBuffer;
+    newFrame.frameIndex = frameIndex; //dts顺序
+    NSTimeInterval decodeTime = [[NSDate date] timeIntervalSinceDate:startDate]*1000;
+    newFrame.decodeTime = decodeTime;
+    newFrame.defaultFps = (int)_mp4Parser.fps;
+    newFrame.pts = currentPts;
+    
+    // 8. insert into buffer
+    [_buffers addObject:newFrame];
+    
+    // 9. sort
+    [_buffers sortUsingComparator:^NSComparisonResult(QGMP4AnimatedImageFrame * _Nonnull obj1, QGMP4AnimatedImageFrame * _Nonnull obj2) {
+        return [@(obj1.pts) compare:@(obj2.pts)];
+    }];
 }
 
 #pragma mark - override
@@ -391,6 +440,10 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     }
     
     // 3. create VTDecompressionSession
+    return [self createDecompressionSession];;
+}
+
+- (BOOL)createDecompressionSession {
     CFDictionaryRef attrs = NULL;
     const void *keys[] = {kCVPixelBufferPixelFormatTypeKey};
     //      kCVPixelFormatType_420YpCbCr8Planar is YUV420
@@ -431,6 +484,44 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
     return YES;
 }
 
+- (void)resetDecoder {
+    // delete
+    if (_mDecodeSession) {
+        VTDecompressionSessionWaitForAsynchronousFrames(_mDecodeSession);
+        VTDecompressionSessionInvalidate(_mDecodeSession);
+        CFRelease(_mDecodeSession);
+        _mDecodeSession = NULL;
+    }
+    
+    // recreate
+    [self createDecompressionSession];
+}
+
+- (void)findKeyFrameAndDecodeToCurrent:(NSInteger)frameIndex {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kQGVAPDecoderSeekStart object:self];
+    
+    NSArray<NSNumber *> *keyframeIndexes = [_mp4Parser videoSyncSampleIndexes];
+    NSInteger index = [[keyframeIndexes firstObject] integerValue];
+    for(NSNumber *number in keyframeIndexes) {
+        if(number.integerValue < frameIndex) {
+            index = number.integerValue;
+            continue;
+        } else {
+            break;
+        }
+    }
+    
+    // seek to last key frame
+    while (index < frameIndex) {
+        [self _decodeFrame:index drop:YES];
+        index++;
+    }
+    [self _decodeFrame:frameIndex drop:NO];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kQGVAPDecoderSeekFinish object:self];
+}
+
 - (void)_onInputEnd  {
     if (_isFinish) {
         return ;
@@ -469,7 +560,7 @@ NSString *const QGMP4HWDErrorDomain = @"QGMP4HWDErrorDomain";
 }
 
 //decode callback
-void didDecompress(void *decompressionOutputRefCon, void *sourceFrameRefCon, OSStatus status, VTDecodeInfoFlags infoFlags, CVImageBufferRef pixelBuffer, CMTime presentationTimeStamp, CMTime presentationDuration ){
+static void didDecompress(void *decompressionOutputRefCon, void *sourceFrameRefCon, OSStatus status, VTDecodeInfoFlags infoFlags, CVImageBufferRef pixelBuffer, CMTime presentationTimeStamp, CMTime presentationDuration ){
     
     CVPixelBufferRef *outputPixelBuffer = (CVPixelBufferRef *)sourceFrameRefCon;
     *outputPixelBuffer = CVPixelBufferRetain(pixelBuffer);

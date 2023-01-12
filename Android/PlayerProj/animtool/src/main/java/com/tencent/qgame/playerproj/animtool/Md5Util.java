@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 
 public class Md5Util {
+    public static final String MD5_FILE = "md5.txt";
     private char[] hexDigits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
@@ -48,7 +49,7 @@ public class Md5Util {
                 md5txt = bufferToHex(digest);
             }
             try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + "/md5.txt"));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + MD5_FILE));
                 writer.write(md5txt);
                 writer.flush();
                 writer.close();

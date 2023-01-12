@@ -1,52 +1,142 @@
-# VAPXTool 
+# VapTool
 
-## 简介
-vapxTool是专门为vap组件打造的素材生成工具
+版本: [tool2.0.6](https://github.com/Tencent/vap/releases/tag/tool2.0.6)
 
-Mac安装包下载：[download](https://github.com/Tencent/vap/releases/download/iOS1.0.3/VapxTool.dmg)
+Windows: [vaptool_win_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_win_v2.0.6.zip)(包含jre 可直接运行)
+Mac: [vaptool_mac_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_mac_v2.0.6.zip)(未含jre 但Mac基本自带java)
 
-Java版本(支持Windows & Mac): [VapTool_Java.md](./VapTool_Java.md)
 
-## 功能介绍
+播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_mac_1.2.0.zip), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_1.2.0.exe)
 
-### 基本操作
-![](./images/1.png)
 
-1. 版本号 - 默认为2，一般情况不需要改
-2. fps - 定义素材播放的帧率
-3. 码率 - 定义mp4中h.264 的码率 同一份素材，码率越高清晰度越高，文件大小也会越大
-4. alpha通道缩放 - 对素材中alpha数据进行压缩，以减少素材大小和显存占用。建议值0.5，数值越低质量越低
-5. 视频帧 - ！！！！重要！！！！特效的帧素材，命名必须以固定长度的数字递增例如（000.png, 001.png, ...）
-6. 音频文件 - 可选，特效素材可以支持音频播放
-7. 融合信息 - 可选，增加融合效果，可以对静态素材增加网络图片或者自定义文字等。详细见 增加融合信息。
-8. 生成按钮 -  点击开始生成
-9. 输出目录 - 点击打开输出文件，mp4文件即为vap文件，使用这个文件即可；vapc.json文件是给前端用的，实际上就是已经编码在mp4的vap配置信息
-10. 经典模式开关 - 为企鹅电竞旧版本所需的非融合素材提供的兼容模式，外部团队可以不需要关注。具体区别在于打开兼容模式后- (1).帧素材的长或宽必须是16的倍数，否则直接失败；(2).alpha通道不能缩放，系数锁定为1 (3).无法增加融合信息 (4).alpha和rgb纹理之间没有缝隙，紧密排布。
+测试素材下载：[test_demo.zip](https://github.com/Tencent/vap/releases/download/tool2.0.2/test_demo.zip)
 
--------- 如果不需要融合信息的话 不需要关注以下操作 ------------
+## Windows
 
-### 增加融合信息
-![](./images/2.png)
+双击此文件运行
 
-1. 占位符 - 用以标示该融合资源。例如图片的话建议命名为[img0],[img1],[img2],... 文字则建议命名为[txt0],[txt1],...；这都不固定，与开发约定好就可以了。
-2. 资源类型 - 目前支持1.网络图片 2.文字 两种类型
-3. 适配类型 - 铺满：资源会按照容器大小（在遮罩中指定）拉伸 等比适配 - 默认按资源尺寸展示，如果资源尺寸小于遮罩，则等比放大至可填满
-4. 宽高尺寸 - 宽高像素值，这里定义的是资源的宽高大小并不是最终展示的大小；影响像素质量。
-5. 上传遮罩 - ！！！！重要！！！！命名要求与视频帧一样！且可以不连续但是命名一定是对应的帧数值。例 003.png指的是第四帧对应的遮罩。以下补充遮罩文件的说明：
+```sh
+win_start.bat
+```
 
-#### 遮罩文件说明
+## Mac
+
+需要打开终端命令行，进入到工具目录执行以下命令
+
+检查 & 初始化工作
+```sh
+// 先检查是否已经安装java
+// 如未有版本信息输出，请先安装java
+java -version
+
+// 检查mac文件夹下 ffmpeg 与 mp4edit 工具是否有执行权限，没有权限请赋予运行权限
+./ffmpeg -version
+./mp4edit -v
+
+// 赋予脚本可执行权限（只需要执行一次）
+chmod +x mac_start.sh
+
+```
+
+启动工具
+```sh
+./mac_start.sh
+```
+
+### Mac App版
+
+如果不会使用命令行运行，可以下载Mac App版本：[vaptool_mac_app_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_mac_app_v2.0.6.zip)
+
+使用方法：
+1. 解压后双击VapToolMac运行
+2. 首次运行需要授权（会弹框提示无法打开）-> 系统偏好设置 -> 安全与隐私 -> 通用tab -> 点击"仍要打开"
+3. 授权后再次打开就能正常运行
+
+ps:建议使用命令行方式，Mac App版有些问题没解决，比如参数保存问题。
+
+
+
+## 工具说明
+
+![](images/vaptool_java_01.png)
+
+* codec: 编码类型(默认h264)
+ 	* h264: **优点**: 兼容性好，几乎所有机器都能播放；**缺点**: 压缩率没有h265高;
+	* h265: **优点**: 压缩率更高，画面更清晰；**缺点**: Android 4.x 版本无法播放，部分低端机器兼容性差; Web端浏览器可能不支持h265;
+
+* fps: 每秒播放多少帧;
+* quality: 清晰度参数选择，提供 bitrate/crf 两个选项 
+	* bitrate(default): 设置视频码率，默认2000k，数字越大越清晰，但文件也越大, 相比crf能更精确控制文件大小;
+	* crf: 画面质量参数，取值范围[0,51] 默认29 (0表示无损压缩，文件会非常大), 对清晰度要求比较高可以控制crf参数，设置一个较小的值能显著提高视频清晰度，但文件大小不好控制（文件会比较大）。
+* alpha scale: 视频alpha区域是否缩放(默认缩放0.5)，目前可选: 缩放0.5;不缩放1. 缩放视频能最终减小视频分辨率，提高兼容性;
+* frames path: 视频帧存放的位置
+	* 视频帧命名方法 **000.png 001.png ... 099.png**。第一帧一定是**000.png**不然无法正常生成，可以参考"simple_demo";
+	* 点击"choose"弹窗是文件夹选择器，目的是选择视频帧所在文件夹路径
+* audio: 需要集成到视频里的声音文件(目前支持mp3文件).
+
+普通VAP视频完成以上配置即可.
+ 
+点击"create VAP" 开始生成视频.
+
+
+### 文件输出
+* video.mp4: 最终生成的视频文件
+* vapc.json: web端配置文件
+* md5.txt: video.mp4的md5，可以做文件校验
+* frames: 临时图片文件
+
+## 进阶：融合动画
+ps：普通动画不需要此设置
+
+![](images/vaptool_java_02.png)
+
+* 点击"add"按钮添加融合动画遮罩信息
+
+* (1) source tag: 占位符标示，相当于当前资源的一个字符串标志，播放融合动画时，根据不同的tag 返回不同 bitmap 用于显示;
+
+* (2) source type: 表示属性类型，目前支持两种 image(图片), text(文字);
+
+* (3) fit type: 图片显示时的方式，目前支持两种 fitXY(图片平铺 default), centerCrop(比例缩放)，这几个概念与Android里图片对齐方式概念相同;
+
+* (4) mask path: 遮罩图片路径;
+
+* (5) text color: 如果是文字类型，设置文字颜色，格式: #000000
+
+* (6) text Bold: 如果是文字类型，设置文字是否为粗体
+
+注意：使用融合动画 alpha scale 会强制设置为 0.5 因为需要给遮罩预留空间
+
+### 遮罩图片说明
 例：
-![](./images/3.png)
-图中 1 2标示两组遮罩（1是头像遮罩 2.标示文字遮罩）中的150帧的遮罩，3表示对应的视频帧内容
-注意点：
-1. 遮罩帧的尺寸必须与视频帧一致
-2. 黑色表示显示，红色表示遮挡；
 
-效果图：
+![](./images/3.png)
+
+图中 1 2标示两组遮罩（1是头像遮罩 2.标示文字遮罩）中的150帧的遮罩，3表示对应的视频帧内容
+注意点:
+
+1. 遮罩文件命名规则，与视频帧相同**000.png 001.png ... 099.png**，文件名表示当前遮罩属于哪一帧;
+
+2. 遮罩帧的尺寸必须与视频帧一致;
+
+3. 遮罩内容: 黑色区域表示图片(文字)需要显示的位置，其它区域透明度必须为0 (黑色区域内的红色表示遮挡区域);
+
+可以参考"vapx_demo"
+
+效果图:
+
 ![](./images/4.png)
 
+## 其它说明
 
+欢迎大家一起来完善Java版本功能. 
 
-### 额外说明
-1. 为了提高在Android设备上的兼容性，对生成的素材长宽进行16倍率处理，即生成的素材长宽必然是16整数倍
-2. 为了消除视频编码算法对遮罩/原视频边缘的影响，遮罩/原视频周边会预留4像素，即遮罩/原视频与边缘间隔4像素，遮罩/原视频与遮罩/原视频间隔8像素；特别地，当遮罩/原视频宽度不小于最大长度（1504）时左右间距为0；当遮罩/原视频高度不小于最大长度(1504)时上下间距为0
+Java工具源码路径:Android/PlayerProj  项目：[animtool](https://github.com/Tencent/vap/tree/master/Android/PlayerProj)
+
+原Mac工具说明[Mac tool](./Mac_Tool.md)
+
+VAP json配置信息字段说明[JsonDesc](https://github.com/Tencent/vap/blob/master/tool/JsonDesc.md).
+
+## FAQ
+
+[常见问题说明](https://github.com/Tencent/vap/wiki/FAQ)
+

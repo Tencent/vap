@@ -28,9 +28,3 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(":animplayer")
 }
-
-project.afterEvaluate {
-    def assembleDebugTask = project.tasks.find { it.name == 'assembleDebug' }
-    def lintTask = project.tasks.find { it.name == 'lintDebug' }
-    assembleDebugTask.dependsOn(lintTask)
-}

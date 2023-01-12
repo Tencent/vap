@@ -15,12 +15,13 @@
  */
 package com.tencent.qgame.animplayer
 
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.mask.MaskConfig
 import com.tencent.qgame.animplayer.plugin.AnimPluginManager
 import com.tencent.qgame.animplayer.util.ALog
 
-class AnimPlayer(val animView: AnimView) {
+class AnimPlayer(val animView: IAnimView) {
 
     companion object {
         private const val TAG = "${Constant.TAG}.AnimPlayer"
@@ -34,6 +35,8 @@ class AnimPlayer(val animView: AnimView) {
             decoder?.fps = value
             field = value
         }
+    // 设置默认的fps <= 0 表示以vapc配置为准 > 0  表示以此设置为准
+    var defaultFps: Int = 0
     var playLoop: Int = 0
         set(value) {
             decoder?.playLoop = value
@@ -42,18 +45,22 @@ class AnimPlayer(val animView: AnimView) {
         }
     var supportMaskBoolean : Boolean = false
     var maskEdgeBlurBoolean : Boolean = false
+    // 是否兼容老版本 默认不兼容
+    var enableVersion1 : Boolean = false
     // 视频模式
     var videoMode: Int = Constant.VIDEO_MODE_SPLIT_HORIZONTAL
     var isDetachedFromWindow = false
     var isSurfaceAvailable = false
     var startRunnable: Runnable? = null
     var isStartRunning = false // 启动时运行状态
+    var isMute = false // 是否静音
 
     val configManager = AnimConfigManager(this)
     val pluginManager = AnimPluginManager(this)
 
     fun onSurfaceTextureDestroyed() {
         isSurfaceAvailable = false
+        isStartRunning = false
         decoder?.destroy()
         audioPlayer?.destroy()
     }
@@ -69,20 +76,22 @@ class AnimPlayer(val animView: AnimView) {
         decoder?.onSurfaceSizeChanged(width, height)
     }
 
-    fun startPlay(fileContainer: FileContainer) {
+    fun startPlay(fileContainer: IFileContainer) {
         isStartRunning = true
         prepareDecoder()
         if (decoder?.prepareThread() == false) {
-            decoder?.onFailed(Constant.REPORT_ERROR_TYPE_CREATE_THREAD, Constant.ERROR_MSG_CREATE_THREAD)
             isStartRunning = false
+            decoder?.onFailed(Constant.REPORT_ERROR_TYPE_CREATE_THREAD, Constant.ERROR_MSG_CREATE_THREAD)
+            decoder?.onVideoComplete()
             return
         }
         // 在线程中解析配置
         decoder?.renderThread?.handler?.post {
-            val result = configManager.parseConfig(fileContainer, videoMode, fps)
+            val result = configManager.parseConfig(fileContainer, enableVersion1, videoMode, defaultFps)
             if (result != Constant.OK) {
-                decoder?.onFailed(result, Constant.getErrorMsg(result))
                 isStartRunning = false
+                decoder?.onFailed(result, Constant.getErrorMsg(result))
+                decoder?.onVideoComplete()
                 return@post
             }
             ALog.i(TAG, "parse ${configManager.config}")
@@ -96,16 +105,18 @@ class AnimPlayer(val animView: AnimView) {
         }
     }
 
-    private fun innerStartPlay(fileContainer: FileContainer) {
+    private fun innerStartPlay(fileContainer: IFileContainer) {
         synchronized(AnimPlayer::class.java) {
             if (isSurfaceAvailable) {
                 isStartRunning = false
                 decoder?.start(fileContainer)
-                audioPlayer?.start(fileContainer)
+                if (!isMute) {
+                    audioPlayer?.start(fileContainer)
+                }
             } else {
                  startRunnable = Runnable {
                     innerStartPlay(fileContainer)
-                }
+                 }
                 animView.prepareTextureView()
             }
         }

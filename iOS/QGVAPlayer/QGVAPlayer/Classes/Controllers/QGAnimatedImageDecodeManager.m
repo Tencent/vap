@@ -46,7 +46,7 @@
         _decoderDelegate = delegate;
         [self createDecodersByConfig:config];
         _bufferManager = [[QGAnimatedImageBufferManager alloc] initWithConfig:config];
-        [self initializeBuffers];
+        [self initializeBuffersFromIndex:0];
         [self setupAudioPlayerIfNeed];
     }
     return self;
@@ -65,12 +65,26 @@
         if (frameIndex == 0 && _bufferManager.buffers.count < _config.bufferCount) {
             return nil;
         }
-        [self checkIfDecodeFinish:frameIndex];
+        BOOL decodeFinish = [self checkIfDecodeFinish:frameIndex];
         QGBaseAnimatedImageFrame *frame = [_bufferManager popVideoFrame];
         if (frame) {
             // pts顺序
             frame.frameIndex = frameIndex;
             [self decodeFrame:frameIndex+_config.bufferCount];
+        }
+        else if (!decodeFinish){
+            // buffer已经空了，但还没有结束（退后台时可能出现这种情况）
+            NSInteger decoderIndex = _decoders.count==1?0:frameIndex%_decoders.count;
+            QGBaseDecoder *decoder = _decoders[decoderIndex];
+            if ([decoder shouldStopDecode:frameIndex]) {
+                // 其实已经该结束了
+                if ([self.decoderDelegate respondsToSelector:@selector(decoderDidFinishDecode:)]) {
+                    [self.decoderDelegate decoderDidFinishDecode:decoder];
+                }
+                return nil;
+            }
+            
+            [self initializeBuffersFromIndex:frameIndex];
         }
         return frame;
     }
@@ -83,9 +97,32 @@
     [_audioPlayer play];
 }
 
+- (void)tryToStopAudioPlay {
+    if (!_audioPlayer) {
+        return;
+    }
+    // CoreAudio（AVAudioPlaeyrCpp）回调audioPlayerDidFinishPlaying:successfully:时在子线程，恰巧此时释放将可能导致野指针问题
+    // 如果只是stop不能解决，可以考虑产生循环持有并延迟释放_audioPlayer
+    [_audioPlayer stop];
+}
+
+- (void)tryToPauseAudioPlay {
+    if (!_audioPlayer) {
+        return;
+    }
+    [_audioPlayer pause];
+}
+
+- (void)tryToResumeAudioPlay {
+    if (!_audioPlayer) {
+        return;
+    }
+    [_audioPlayer play];
+}
+
 #pragma mark - private methods
 
-- (void)checkIfDecodeFinish:(NSInteger)frameIndex {
+- (BOOL)checkIfDecodeFinish:(NSInteger)frameIndex {
     
     NSInteger decoderIndex = _decoders.count==1?0:frameIndex%_decoders.count;
     QGBaseDecoder *decoder = _decoders[decoderIndex];
@@ -93,7 +130,9 @@
         if ([self.decoderDelegate respondsToSelector:@selector(decoderDidFinishDecode:)]) {
             [self.decoderDelegate decoderDidFinishDecode:decoder];
         }
+        return YES;
     }
+    return NO;
 }
 
 - (void)decodeFrame:(NSInteger)frameIndex {
@@ -134,14 +173,20 @@
     }
 }
 
-- (void)initializeBuffers {
+- (void)initializeBuffersFromIndex:(NSInteger)start {
     
     for (int i = 0; i < _config.bufferCount; i++) {
-        [self decodeFrame:i];
+        [self decodeFrame:start+i];
     }
 }
 
 - (void)setupAudioPlayerIfNeed {
+    if ([_decoderDelegate respondsToSelector:@selector(shouldSetupAudioPlayer)]) {
+        BOOL should = [_decoderDelegate shouldSetupAudioPlayer];
+        if (!should) {
+            return;
+        }
+    }
     
     if ([_fileInfo isKindOfClass:[QGMP4HWDFileInfo class]]) {
         QGMP4ParserProxy *mp4Parser = [(QGMP4HWDFileInfo *)_fileInfo mp4Parser];
@@ -156,6 +201,15 @@
 
 - (void)dealloc {
 
+}
+
+- (BOOL)containsThisDeocder:(id)decoder {
+    for (id d in _decoders) {
+        if (d == decoder) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

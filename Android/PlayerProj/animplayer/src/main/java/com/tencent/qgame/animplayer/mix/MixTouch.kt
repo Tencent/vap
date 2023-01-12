@@ -24,8 +24,7 @@ import com.tencent.qgame.animplayer.PointRect
 class MixTouch(private val mixAnimPlugin: MixAnimPlugin) {
 
     fun onTouchEvent(ev: MotionEvent): Resource? {
-        val viewWith = mixAnimPlugin.player.animView.width
-        val viewHeight = mixAnimPlugin.player.animView.height
+        val (viewWith, viewHeight) = mixAnimPlugin.player.animView.getRealSize()
         val videoWith = mixAnimPlugin.player.configManager.config?.width ?: return null
         val videoHeight = mixAnimPlugin.player.configManager.config?.height ?: return null
 
@@ -33,13 +32,15 @@ class MixTouch(private val mixAnimPlugin: MixAnimPlugin) {
 
         when(ev.action) {
             MotionEvent.ACTION_UP -> {
-                val x = ev.rawX * videoWith / viewWith
-                val y = ev.rawY * videoHeight / viewHeight
+                val x = ev.x * videoWith / viewWith.toFloat()
+                val y = ev.y * videoHeight / viewHeight.toFloat()
                 val list = mixAnimPlugin.frameAll?.map?.get(mixAnimPlugin.curFrameIndex)?.list
                 list?.forEach {frame ->
                     val src = mixAnimPlugin.srcMap?.map?.get(frame.srcId) ?: return@forEach
                     if (calClick(x.toInt(), y.toInt(), frame.frame)) {
-                        return Resource(src)
+                        return Resource(src).apply {
+                            curPoint = frame.frame
+                        }
                     }
                 }
             }

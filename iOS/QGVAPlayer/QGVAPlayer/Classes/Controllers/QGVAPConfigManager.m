@@ -45,6 +45,7 @@
     QGMP4Box *vapc = [_fileInfo.mp4Parser.rootBox subBoxOfType:QGMP4BoxType_vapc];
     if (!vapc) {
         self.hasValidConfig = NO;
+        VAP_Error(kQGVAPModuleCommon, @"config can not find vapc box");
         return ;
     }
     self.hasValidConfig = YES;
@@ -166,7 +167,8 @@
     commonInfo.alphaAreaRect = a_frame ? [a_frame hwd_rectValue] : CGRectZero;
     commonInfo.rgbAreaRect = rgb_frame ? [rgb_frame hwd_rectValue] : CGRectZero;
     configModel.info = commonInfo;
-    
+    //更新parser的fps信息
+    _fileInfo.mp4Parser.fps = fps;
     if (!sourcesArr) {
         VAP_Error(kQGVAPModuleCommon, @"has no sourcesArr:%@", configDic);
         return ;

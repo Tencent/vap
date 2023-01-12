@@ -17,13 +17,13 @@
 #import <Metal/Metal.h>
 #import "VAPMacros.h"
 
-UIKIT_EXTERN NSString *const kHWDVertexFunctionName;
-UIKIT_EXTERN NSString *const kHWDYUVFragmentFunctionName;
-extern matrix_float3x3 const kColorConversionMatrix601Default;
-extern matrix_float3x3 const kColorConversionMatrix601FullRangeDefault;
-extern matrix_float3x3 const kColorConversionMatrix709Default;
-extern matrix_float3x3 const kColorConversionMatrix709FullRangeDefault;
-extern matrix_float3x3 const kBlurWeightMatrixDefault;
+UIKIT_EXTERN NSString *const kQGHWDVertexFunctionName;
+UIKIT_EXTERN NSString *const kQGHWDYUVFragmentFunctionName;
+extern matrix_float3x3 const kQGColorConversionMatrix601Default;
+extern matrix_float3x3 const kQGColorConversionMatrix601FullRangeDefault;
+extern matrix_float3x3 const kQGColorConversionMatrix709Default;
+extern matrix_float3x3 const kQGColorConversionMatrix709FullRangeDefault;
+extern matrix_float3x3 const kQGBlurWeightMatrixDefault;
 extern id<MTLDevice> kQGHWDMetalRendererDevice;
 
 #if TARGET_OS_SIMULATOR//模拟器

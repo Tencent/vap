@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIkit.h>
+#import <UIKit/UIKit.h>
 #import <Metal/Metal.h>
 
 typedef NS_ENUM(NSInteger, QGVAPOrientation){

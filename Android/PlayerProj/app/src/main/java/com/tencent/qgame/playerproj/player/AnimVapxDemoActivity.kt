@@ -34,6 +34,7 @@ import com.tencent.qgame.animplayer.inter.OnResourceClickListener
 import com.tencent.qgame.animplayer.mix.Resource
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IALog
+import com.tencent.qgame.animplayer.util.ScaleType
 import com.tencent.qgame.playerproj.R
 import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
 import java.io.File
@@ -69,6 +70,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         Handler(Looper.getMainLooper())
     }
 
+    private var lastToast: Toast? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anim_simple_demo)
@@ -83,6 +86,8 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         initTestView()
         // 获取动画view
         animView = playerView
+        // 居中（根据父布局按比例居中并裁剪）
+        animView.setScaleType(ScaleType.CENTER_CROP)
         /**
          * 注册资源获取类
          */
@@ -98,8 +103,7 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
                  * 比如：一个素材里需要显示多个头像，则需要定义多个不同的tag，表示不同位置，需要显示不同的头像，文字类似
                  */
                 val srcTag = resource.tag
-
-                if (srcTag == "[sImg1]") { // 此tag是已经写入到动画配置中的tag
+                if (srcTag.isNotEmpty()) {
                     val drawableId = if (head1Img) R.drawable.head1 else R.drawable.head2
                     head1Img = !head1Img
                     val options = BitmapFactory.Options()
@@ -116,8 +120,7 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
             override fun fetchText(resource: Resource, result: (String?) -> Unit) {
                 val str = "恭喜 No.${1000 + Random().nextInt(8999)}用户 升神"
                 val srcTag = resource.tag
-
-                if (srcTag == "[sTxt1]") { // 此tag是已经写入到动画配置中的tag
+                if (srcTag.isNotEmpty()) { // 此tag是已经写入到动画配置中的tag
                     result(str)
                 } else {
                     result(null)
@@ -137,11 +140,13 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
         // 注册点击事件监听
         animView.setOnResourceClickListener(object : OnResourceClickListener {
             override fun onClick(resource: Resource) {
-                Toast.makeText(
+                lastToast?.cancel()
+                lastToast = Toast.makeText(
                     this@AnimVapxDemoActivity,
-                    "srcTag=${resource.tag} onClick",
+                    "srcTag=${resource.tag} onClick ${resource.curPoint}",
                     Toast.LENGTH_LONG
-                ).show()
+                )
+                lastToast?.show()
             }
         })
 
@@ -175,13 +180,6 @@ class AnimVapxDemoActivity : Activity(), IAnimListener {
      * @return true 继续播放 false 停止播放
      */
     override fun onVideoConfigReady(config: AnimConfig): Boolean {
-        uiHandler.post {
-            val w = window.decorView.width
-            val lp = animView.layoutParams
-            lp.width = if (w == 0) dp2px(this, 400f).toInt() else w
-            lp.height = (w * config.height * 1f / config.width).toInt()
-            animView.layoutParams = lp
-        }
         return true
     }
 

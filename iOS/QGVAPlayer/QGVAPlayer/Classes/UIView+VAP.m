@@ -48,14 +48,16 @@ NSInteger const VapMaxCompatibleVersion = 2;
 @property (nonatomic, strong) QGAnimatedImageDecodeConfig   *hwd_decodeConfig;          //线程数与buffer数
 @property (nonatomic, strong) NSOperationQueue              *hwd_callbackQueue;         //回调执行队列
 @property (nonatomic, assign) BOOL                          hwd_onPause;                //标记是否暂停中
+@property (nonatomic, assign) BOOL                          hwd_onSeek;                 //正在seek当中，此时继续播放会导致时序混乱
 @property (nonatomic, strong) QGHWDMP4OpenGLView            *hwd_openGLView;            //opengl绘制图层
 @property (nonatomic, strong) QGHWDMetalView                *hwd_metalView;             //metal绘制图层
 @property (nonatomic, strong) QGVAPMetalView                *vap_metalView;             //vap格式mp4渲染图层
 @property (nonatomic, assign) BOOL                          hwd_isFinish;               //标记是否结束
 @property (nonatomic, assign) NSInteger                     hwd_repeatCount;            //播放次数；-1 表示无限循环
-@property (nonatomic, strong) QGVAPConfigManager            *hwd_configManager;             //额外的配置信息
-@property (nonatomic, strong) dispatch_queue_t              vap_renderQueue;                //播放队列
-
+@property (nonatomic, strong) QGVAPConfigManager            *hwd_configManager;         //额外的配置信息
+@property (nonatomic, strong) dispatch_queue_t              vap_renderQueue;            //播放队列
+@property (nonatomic, assign) BOOL                          vap_enableOldVersion;       //标记是否兼容不含vapc box的素材播放
+@property (nonatomic, assign) BOOL                          vap_isMute;                 //标记是否禁止音频播放
 @end
 
 @implementation UIView (VAP)
@@ -65,13 +67,47 @@ NSInteger const VapMaxCompatibleVersion = 2;
 - (void)hwd_registerNotification {
     
     [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveEnterBackgroundNotification:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillEnterForegroundNotification:) name:UIApplicationWillEnterForegroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveWillEnterForegroundNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveSeekStartNotification:) name:kQGVAPDecoderSeekStart object:nil];
+    [[NSNotificationCenter defaultCenter] hwd_addSafeObserver:self selector:@selector(hwd_didReceiveSeekFinishNotification:) name:kQGVAPDecoderSeekFinish object:nil];
 }
 
 - (void)hwd_didReceiveEnterBackgroundNotification:(NSNotification *)notification {
-    [self hwd_stopHWDMP4];
+    switch (self.hwd_enterBackgroundOP) {
+        case HWDMP4EBOperationTypePauseAndResume:
+            [self pauseHWDMP4];
+            break;
+        case HWDMP4EBOperationTypeDoNothing:
+            break;
+            
+        default:
+            [self stopHWDMP4];
+    }
+}
+
+- (void)hwd_didReceiveWillEnterForegroundNotification:(NSNotification *)notification {
+    switch (self.hwd_enterBackgroundOP) {
+        case HWDMP4EBOperationTypePauseAndResume:
+            [self resumeHWDMP4];
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+- (void)hwd_didReceiveSeekStartNotification:(NSNotification *)notification {
+    if ([self.hwd_decodeManager containsThisDeocder:notification.object]) {
+        self.hwd_onSeek = YES;
+    }
+}
+
+- (void)hwd_didReceiveSeekFinishNotification:(NSNotification *)notification {
+    if ([self.hwd_decodeManager containsThisDeocder:notification.object]) {
+        self.hwd_onSeek = NO;
+    }
 }
 
 //结束播放
@@ -99,6 +135,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
     if (self.vap_metalView) {
         [self.vap_metalView dispose];
     }
+    [self.hwd_decodeManager tryToStopAudioPlay];
     [self.hwd_callbackQueue addOperationWithBlock:^{
         //此处必须延迟释放，避免野指针
         if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
@@ -134,10 +171,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
         return ;
     }
     [self hwd_stopHWDMP4];
-}
-
-- (void)hwd_didReceiveWillEnterForegroundNotification:(NSNotification *)notification {
-    [self resumeHWDMP4];
 }
 
 - (void)hwd_loadMetalViewIfNeed:(QGHWDTextureBlendMode)mode {
@@ -307,6 +340,11 @@ NSInteger const VapMaxCompatibleVersion = 2;
         return ;
     }
     
+    if (!configManager.hasValidConfig && !self.vap_enableOldVersion) {
+        VAP_Error(kQGVAPModuleCommon, @"playHWDMP4 error! don't has vapc box and enableOldVersion is false!");
+        [self stopHWDMP4];
+        return ;
+    }
     //reset
     self.hwd_currentFrameInstance = nil;
     self.hwd_decodeManager = nil;
@@ -349,8 +387,13 @@ NSInteger const VapMaxCompatibleVersion = 2;
         //不能将self.hwd_onPause判断加到while语句中！会导致releasepool不断上涨
         while (YES) {
             @autoreleasepool {
-                if (self.hwd_onPause || self.hwd_isFinish) {
+                if (self.hwd_isFinish) {
                     break ;
+                }
+                if (self.hwd_onPause || self.hwd_onSeek) {
+                    lastRenderingInterval = NSDate.timeIntervalSinceReferenceDate;
+                    [NSThread sleepForTimeInterval:durationForWaitingFrame];
+                    continue;
                 }
                 __block QGMP4AnimatedImageFrame *nextFrame = nil;
                 dispatch_sync(dispatch_get_main_queue(), ^{
@@ -425,12 +468,14 @@ NSInteger const VapMaxCompatibleVersion = 2;
     
     VAP_Info(kQGVAPModuleCommon, @"pauseHWDMP4");
     self.hwd_onPause = YES;
-    [self.hwd_callbackQueue addOperationWithBlock:^{
-        //此处必须延迟释放，避免野指针
-        if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
-            [self.hwd_Delegate viewDidStopPlayMP4:self.hwd_currentFrame.frameIndex view:self];
-        }
-    }];
+    [self.hwd_decodeManager tryToPauseAudioPlay];
+// pause回调stop会导致一般使用场景将view移除，无法resume，因此暂时去掉该回调触发
+//    [self.hwd_callbackQueue addOperationWithBlock:^{
+//        //此处必须延迟释放，避免野指针
+//        if ([self.hwd_Delegate respondsToSelector:@selector(viewDidStopPlayMP4:view:)]) {
+//            [self.hwd_Delegate viewDidStopPlayMP4:self.hwd_currentFrame.frameIndex view:self];
+//        }
+//    }];
 }
 
 - (void)resumeHWDMP4 {
@@ -438,12 +483,21 @@ NSInteger const VapMaxCompatibleVersion = 2;
     VAP_Info(kQGVAPModuleCommon, @"resumeHWDMP4");
     self.hwd_onPause = NO;
     self.hwd_openGLView.pause = NO;
+    // 目前音频和视频没有同步逻辑，多次暂停恢复会使音视频差距越来越大
+    [self.hwd_decodeManager tryToResumeAudioPlay];
 }
 
 + (void)registerHWDLog:(QGVAPLoggerFunc)logger {
     [QGVAPLogger registerExternalLog:logger];
 }
 
+- (void)enableOldVersion:(BOOL)enable {
+    self.vap_enableOldVersion = enable;
+}
+
+- (void)setMute:(BOOL)isMute {
+    self.vap_isMute = isMute;
+}
 #pragma mark - delegate
 
 #pragma clang diagnostic push
@@ -451,6 +505,10 @@ NSInteger const VapMaxCompatibleVersion = 2;
 //decoder
 - (Class)decoderClassForManager:(QGAnimatedImageDecodeManager *)manager {
     return [QGMP4FrameHWDecoder class];
+}
+
+- (BOOL)shouldSetupAudioPlayer {
+    return !self.vap_isMute;
 }
 
 - (void)decoderDidFinishDecode:(QGBaseDecoder *)decoder {
@@ -540,6 +598,8 @@ NSInteger const VapMaxCompatibleVersion = 2;
 
 //category methods
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_onPause, setHwd_onPause, BOOL)
+HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_onSeek, setHwd_onSeek, BOOL)
+HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_enterBackgroundOP, setHwd_enterBackgroundOP, HWDMP4EBOperationType)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_renderByOpenGL, setHwd_renderByOpenGL, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_isFinish, setHwd_isFinish, BOOL)
 HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(hwd_fps, setHwd_fps, NSInteger)
@@ -557,7 +617,8 @@ HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(vap_metalView, setVap_metalView, OBJC_ASSOCIATI
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(hwd_attachmentsModel, setHwd_attachmentsModel, OBJC_ASSOCIATION_RETAIN)
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(hwd_configManager, setHwd_configManager, OBJC_ASSOCIATION_RETAIN)
 HWDSYNTH_DYNAMIC_PROPERTY_OBJECT(vap_renderQueue, setVap_renderQueue, OBJC_ASSOCIATION_RETAIN)
-
+HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(vap_enableOldVersion, setVap_enableOldVersion, BOOL)
+HWDSYNTH_DYNAMIC_PROPERTY_CTYPE(vap_isMute, setVap_isMute, BOOL)
 @end
 
 

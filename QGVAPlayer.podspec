@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "QGVAPlayer"
-  spec.version      = "iOS1.0.3"
+  spec.version      = "1.0.19"
   spec.summary      = "video animation player."
   spec.platform     = :ios, "8.0"
 
@@ -60,8 +60,8 @@ Pod::Spec.new do |spec|
   #  profile URL.
   #
 
-  spec.author             = { "mlzhangyu" => "mlzhangyu@gmail.com" }
-  # Or just: spec.author    = "mlzhangyu"
+  spec.author             = { "tencent" => "tencent@gmail.com" }
+  # Or just: spec.author    = "tencent"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -85,7 +85,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/Tencent/vap.git", :tag => "#{spec.version}"}
+  spec.source       = { :git => "https://github.com/Tencent/vap.git", :tag => "iOS#{spec.version}"}
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -96,7 +96,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files = 'iOS/QGVAPlayer/QGVAPlayer/**/*.{h,m}'
+  spec.source_files = 'iOS/QGVAPlayer/QGVAPlayer/**/*.{h,m}', 'iOS/QGVAPlayer/QGVAPlayer/Shaders/QGHWDShaders.metal'
 
   # spec.subspec 'Shaders' do |ss|
   #   ss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Shaders/**/*.{h,m}'
@@ -120,6 +120,7 @@ Pod::Spec.new do |spec|
   #       sss.source_files = 'iOS/QGVAPlayer/QGVAPlayer/Classes/Utils/**/*.{h,m}'
   #     end
   # end
+
 
 
   # spec.exclude_files = "Classes/Exclude"
@@ -148,7 +149,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.framework  = "SomeFramework"
-  # spec.frameworks = "SomeFramework", "AnotherFramework"
+  spec.frameworks = "Metal", "MetalKit"
 
   # spec.library   = "iconv"
   # spec.libraries = "iconv", "xml2"

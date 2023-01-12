@@ -15,6 +15,8 @@ IAnimListener 视频播放过程中的回调方法
 private fun init() {
     // 获取视频播放 AnimView
     animView = (AnimView) findViewById(R.id.player);
+    // 可选: 设置视频对齐方式（默认FIT_XY，支持自定义）
+    animView.setScaleType(ScaleType.FIT_XY)
     // 开始播放动画文件
     animView.startPlay(file)
 }
@@ -93,6 +95,9 @@ interface OnResourceClickListener {
 }
 ```
 
+### 老版本兼容
+
+老版本动画播放可以参考: AnimSpecialSizeDemoActivity
 
 ### 引入方式
 
@@ -100,13 +105,15 @@ maven方式引入
 
 ```gradle
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    implementation "com.egame.vap:animplayer:2.0.10"
+    implementation "io.github.tencent:vap:2.0.28"
 }
 ```
+
+通知：由于jcenter将于2022年停止服务，VAP迁移到mavenCentral（从2.0.15版本开始）。如果需要低版本（低于2.0.15版本）需要自行切换到对应版本的release tag，打aar包的方式进行集成。
 
 aar引入
 

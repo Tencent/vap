@@ -17,6 +17,13 @@
 #import "VAPMacros.h"
 #import "QGVAPLogger.h"
 
+// 退后台时的行为
+typedef NS_ENUM(NSUInteger, HWDMP4EBOperationType) {
+    HWDMP4EBOperationTypeStop,              // 退后台时结束VAP播放
+    HWDMP4EBOperationTypePauseAndResume,    // 退后台时暂停、回到前台时自动恢复 （需要从关键帧解码到当前帧以解决VTSession失效问题，建议低端机型不要设置此选项，暂停时间较长、CPU占用较大）
+    HWDMP4EBOperationTypeDoNothing,         // VAP自身不进行控制，当外部进行控制时可以使用这个，仅用于防止覆盖外界的pause调用的问题
+};
+
 @class QGMP4AnimatedImageFrame,QGVAPConfigModel, QGVAPSourceInfo;
 /** 注意：回调方法会在子线程被执行。*/
 @protocol HWDMP4PlayDelegate <NSObject>
@@ -44,17 +51,24 @@
 @property (nonatomic, strong) NSString                  *hwd_MP4FilePath;
 @property (nonatomic, assign) NSInteger                 hwd_fps;         //fps for dipslay, each frame's duration would be set by fps value before display.
 @property (nonatomic, assign) BOOL                      hwd_renderByOpenGL;      //是否使用opengl渲染，默认使用metal
+@property (nonatomic, assign) HWDMP4EBOperationType     hwd_enterBackgroundOP;   // 在退后台时的行为，默认为结束
 
 - (void)playHWDMp4:(NSString *)filePath;
 - (void)playHWDMP4:(NSString *)filePath delegate:(id<HWDMP4PlayDelegate>)delegate;
 - (void)playHWDMP4:(NSString *)filePath repeatCount:(NSInteger)repeatCount delegate:(id<HWDMP4PlayDelegate>)delegate;
 
 - (void)stopHWDMP4;
+
 - (void)pauseHWDMP4;
 - (void)resumeHWDMP4;
 
 + (void)registerHWDLog:(QGVAPLoggerFunc)logger;
 
+//当素材不包含vapc box时，只有在播放素材前调用此接口设置enable才可播放素材，否则素材无法播放
+- (void)enableOldVersion:(BOOL)enable;
+
+//设置是否静音播放素材，注：在播放开始时进行设置，播放过程中设置无效，循环播放则设置后的下一次播放开始生效
+- (void)setMute:(BOOL)isMute;
 @end
 
 @interface UIView (VAPGesture)

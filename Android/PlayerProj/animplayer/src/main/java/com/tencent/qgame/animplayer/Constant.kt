@@ -25,9 +25,13 @@ object Constant {
 
     // 视频对齐方式 (兼容老版本视频模式)
     @Deprecated("Compatible older version mp4")
-    const val VIDEO_MODE_SPLIT_HORIZONTAL = 1 // 视频左右对齐
+    const val VIDEO_MODE_SPLIT_HORIZONTAL = 1 // 视频左右对齐（alpha左\rgb右）
     @Deprecated("Compatible older version mp4")
-    const val VIDEO_MODE_SPLIT_VERTICAL = 2 // 视频上下对齐
+    const val VIDEO_MODE_SPLIT_VERTICAL = 2 // 视频上下对齐（alpha上\rgb下）
+    @Deprecated("Compatible older version mp4")
+    const val VIDEO_MODE_SPLIT_HORIZONTAL_REVERSE = 3 // 视频左右对齐（rgb左\alpha右）
+    @Deprecated("Compatible older version mp4")
+    const val VIDEO_MODE_SPLIT_VERTICAL_REVERSE = 4 // 视频上下对齐（rgb上\alpha下）
 
 
     const val OK = 0 // 成功
@@ -39,6 +43,7 @@ object Constant {
     const val REPORT_ERROR_TYPE_PARSE_CONFIG = 10005 // 配置解析失败
     const val REPORT_ERROR_TYPE_CONFIG_PLUGIN_MIX = 10006 // vapx融合动画资源获取失败
     const val REPORT_ERROR_TYPE_FILE_ERROR = 10007 // 文件无法读取
+    const val REPORT_ERROR_TYPE_HEVC_NOT_SUPPORT = 10008 // 不支持h265
 
     const val ERROR_MSG_EXTRACTOR_EXC = "0x1 MediaExtractor exception" // MediaExtractor exception
     const val ERROR_MSG_DECODE_EXC = "0x2 MediaCodec exception" // MediaCodec exception
@@ -47,6 +52,7 @@ object Constant {
     const val ERROR_MSG_PARSE_CONFIG = "0x5 parse config fail" // 配置解析失败
     const val ERROR_MSG_CONFIG_PLUGIN_MIX = "0x6 vapx fail" // vapx融合动画资源获取失败
     const val ERROR_MSG_FILE_ERROR = "0x7 file can't read" // 文件无法读取
+    const val ERROR_MSG_HEVC_NOT_SUPPORT = "0x8 hevc not support" // 不支持h265
 
 
     fun getErrorMsg(errorType: Int, errorMsg: String? = null): String {

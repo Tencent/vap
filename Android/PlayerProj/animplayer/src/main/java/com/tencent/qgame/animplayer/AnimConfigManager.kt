@@ -16,6 +16,7 @@
 package com.tencent.qgame.animplayer
 
 import android.os.SystemClock
+import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.util.ALog
 import org.json.JSONObject
 import java.nio.charset.Charset
@@ -36,14 +37,18 @@ class AnimConfigManager(val player: AnimPlayer) {
      * 解析配置
      * @return true 解析成功 false 解析失败
      */
-    fun parseConfig(fileContainer: FileContainer, defaultVideoMode: Int, defaultFps: Int): Int {
+    fun parseConfig(fileContainer: IFileContainer, enableVersion1: Boolean, defaultVideoMode: Int, defaultFps: Int): Int {
         try {
             isParsingConfig = true
             // 解析vapc
             val time = SystemClock.elapsedRealtime()
             val result = parse(fileContainer, defaultVideoMode, defaultFps)
-            ALog.i(TAG, "parseConfig cost=${SystemClock.elapsedRealtime() - time}ms")
+            ALog.i(TAG, "parseConfig cost=${SystemClock.elapsedRealtime() - time}ms enableVersion1=$enableVersion1 result=$result")
             if (!result) {
+                isParsingConfig = false
+                return Constant.REPORT_ERROR_TYPE_PARSE_CONFIG
+            }
+            if (config?.isDefaultConfig == true && !enableVersion1) {
                 isParsingConfig = false
                 return Constant.REPORT_ERROR_TYPE_PARSE_CONFIG
             }
@@ -68,22 +73,48 @@ class AnimConfigManager(val player: AnimPlayer) {
         config?.apply {
             videoWidth = _videoWidth
             videoHeight = _videoHeight
-            if (defaultVideoMode == Constant.VIDEO_MODE_SPLIT_VERTICAL) { // 上下对齐
-                width = _videoWidth
-                height = _videoHeight / 2
-                alphaPointRect = PointRect(0, 0, width, height)
-                rgbPointRect = PointRect(0, height, width, height)
-            } else { // 默认左右对齐
-                width = _videoWidth / 2
-                height = _videoHeight
-                alphaPointRect = PointRect(0, 0, width, height)
-                rgbPointRect = PointRect(width, 0, width, height)
+            when (defaultVideoMode) {
+                Constant.VIDEO_MODE_SPLIT_HORIZONTAL -> {
+                    // 视频左右对齐（alpha左\rgb右）
+                    width = _videoWidth / 2
+                    height = _videoHeight
+                    alphaPointRect = PointRect(0, 0, width, height)
+                    rgbPointRect = PointRect(width, 0, width, height)
+                }
+                Constant.VIDEO_MODE_SPLIT_VERTICAL -> {
+                    // 视频上下对齐（alpha上\rgb下）
+                    width = _videoWidth
+                    height = _videoHeight / 2
+                    alphaPointRect = PointRect(0, 0, width, height)
+                    rgbPointRect = PointRect(0, height, width, height)
+                }
+                Constant.VIDEO_MODE_SPLIT_HORIZONTAL_REVERSE -> {
+                    // 视频左右对齐（rgb左\alpha右）
+                    width = _videoWidth / 2
+                    height = _videoHeight
+                    rgbPointRect = PointRect(0, 0, width, height)
+                    alphaPointRect = PointRect(width, 0, width, height)
+                }
+                Constant.VIDEO_MODE_SPLIT_VERTICAL_REVERSE -> {
+                    // 视频上下对齐（rgb上\alpha下）
+                    width = _videoWidth
+                    height = _videoHeight / 2
+                    rgbPointRect = PointRect(0, 0, width, height)
+                    alphaPointRect = PointRect(0, height, width, height)
+                }
+                else -> {
+                    // 默认视频左右对齐（alpha左\rgb右）
+                    width = _videoWidth / 2
+                    height = _videoHeight
+                    alphaPointRect = PointRect(0, 0, width, height)
+                    rgbPointRect = PointRect(width, 0, width, height)
+                }
             }
         }
     }
 
 
-    private fun parse(fileContainer: FileContainer, defaultVideoMode: Int, defaultFps: Int): Boolean {
+    private fun parse(fileContainer: IFileContainer, defaultVideoMode: Int, defaultFps: Int): Boolean {
 
         val config = AnimConfig()
         this.config = config
@@ -113,6 +144,7 @@ class AnimConfigManager(val player: AnimPlayer) {
                 this.defaultVideoMode = defaultVideoMode
                 fps = defaultFps
             }
+            player.fps = config.fps
             return true
         }
 

@@ -38,14 +38,14 @@ enum {
 };
 
 // BT.709-HDTV.
-static const GLfloat kColorConversion709[] = {
+static const GLfloat kQGColorConversion709[] = {
     1.164,  1.164, 1.164,
     0.0, -0.213, 2.112,
     1.793, -0.533,   0.0,
 };
 
 // BT.601 full range-http://www.equasys.de/colorconversion.html
-const GLfloat kColorConversion601FullRange[] = {
+const GLfloat kQGColorConversion601FullRange[] = {
     1.0,    1.0,    1.0,
     0.0,    -0.343, 1.765,
     1.4,    -0.711, 0.0,
@@ -212,7 +212,7 @@ NSString *const kFragmentShaderSource = SHADER_STRING
     if (!_glContext || ![EAGLContext setCurrentContext:_glContext] || ![self loadShaders]) {
         return NO;
     }
-    _preferredConversion = kColorConversion709;
+    _preferredConversion = kQGColorConversion709;
     return YES;
 }
 
@@ -338,7 +338,7 @@ NSString *const kFragmentShaderSource = SHADER_STRING
         }
         [self cleanupTextures];
 
-        _preferredConversion = kColorConversion601FullRange;
+        _preferredConversion = kQGColorConversion601FullRange;
         
         //y
         glActiveTexture(GL_TEXTURE0);

@@ -40,7 +40,7 @@ class AnimPluginManager(val player: AnimPlayer) {
     // 当前渲染的帧
     private var frameIndex = 0
     // 当前解码的帧
-    private var decodeIndex = 1
+    private var decodeIndex = 0
     // 帧不相同的次数, 连续多次不同则直接使用decodeIndex
     private var frameDiffTimes = 0
 
@@ -66,6 +66,7 @@ class AnimPluginManager(val player: AnimPlayer) {
     fun onRenderCreate() {
         ALog.i(TAG, "onRenderCreate")
         frameIndex = 0
+        decodeIndex = 0
         plugins.forEach {
             it.onRenderCreate()
         }
@@ -79,8 +80,14 @@ class AnimPluginManager(val player: AnimPlayer) {
         }
     }
 
+    // 开始循环调用
+    fun onLoopStart() {
+        ALog.i(TAG, "onLoopStart")
+        frameIndex = 0
+        decodeIndex = 0
+    }
+
     fun onRendering() {
-        frameIndex++
         if (decodeIndex > frameIndex + 1 || frameDiffTimes >= DIFF_TIMES) {
             ALog.i(TAG, "jump frameIndex= $frameIndex,decodeIndex=$decodeIndex,frameDiffTimes=$frameDiffTimes")
             frameIndex = decodeIndex
@@ -92,8 +99,9 @@ class AnimPluginManager(val player: AnimPlayer) {
         }
         ALog.d(TAG, "onRendering frameIndex=$frameIndex")
         plugins.forEach {
-            it.onRendering(frameIndex - 1) // 第一帧算0
+            it.onRendering(frameIndex) // 第一帧 0
         }
+        frameIndex++
     }
 
     fun onRelease() {

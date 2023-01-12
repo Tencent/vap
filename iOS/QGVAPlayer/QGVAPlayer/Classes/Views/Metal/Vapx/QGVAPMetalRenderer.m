@@ -120,6 +120,7 @@
     }
     if (self.vertexBuffer == nil || self.yuvMatrixBuffer == nil) {
         VAP_Error(kQGVAPModuleCommon, @"quit rendering cuz vertexBuffer:%p or yuvMatrixBuffer:%p is nil!", self.vertexBuffer, self.yuvMatrixBuffer);
+        [renderEncoder endEncoding];
         return ;
     }
     
@@ -200,7 +201,7 @@
 - (void)setupRenderContext {
     
     //constants
-    _currentColorConversionMatrix = kColorConversionMatrix601FullRangeDefault;
+    _currentColorConversionMatrix = kQGColorConversionMatrix601FullRangeDefault;
     struct ColorParameters yuvMatrixs[] = {{_currentColorConversionMatrix,{0.5, 0.5}}};
     NSUInteger yuvMatrixsDataSize = sizeof(struct ColorParameters);
     _yuvMatrixBuffer = [kQGHWDMetalRendererDevice newBufferWithBytes:yuvMatrixs length:yuvMatrixsDataSize options:kDefaultMTLResourceOption];
@@ -261,7 +262,7 @@
 
 - (id<MTLBuffer>)maskBlurBuffer {
     if (!_maskBlurBuffer) {
-        struct MaskParameters parameters[] = {{kBlurWeightMatrixDefault, 3, 0.01}};
+        struct MaskParameters parameters[] = {{kQGBlurWeightMatrixDefault, 3, 0.01}};
         NSUInteger parametersSize = sizeof(struct MaskParameters);
         _maskBlurBuffer = [kQGHWDMetalRendererDevice newBufferWithBytes:parameters length:parametersSize options:kDefaultMTLResourceOption];
     }
@@ -369,9 +370,9 @@
         return ;
     }
     CFTypeRef yCbCrMatrixType = CVBufferGetAttachment(pixelBuffer, kCVImageBufferYCbCrMatrixKey, NULL);
-    matrix_float3x3 matrix = kColorConversionMatrix601FullRangeDefault;
+    matrix_float3x3 matrix = kQGColorConversionMatrix601FullRangeDefault;
     if (CFStringCompare(yCbCrMatrixType, kCVImageBufferYCbCrMatrix_ITU_R_709_2, 0) == kCFCompareEqualTo) {
-        matrix = kColorConversionMatrix709FullRangeDefault;
+        matrix = kQGColorConversionMatrix709FullRangeDefault;
     }
     if (simd_equal(_currentColorConversionMatrix, matrix)) {
         return ;
