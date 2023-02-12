@@ -149,10 +149,11 @@ class AnimPlayer(val animView: IAnimView) {
     }
 
     fun updateMaskConfig(maskConfig: MaskConfig?) {
-        configManager.config?.maskConfig = configManager.config?.maskConfig ?: MaskConfig()
-        configManager.config?.maskConfig?.safeSetMaskBitmapAndReleasePre(maskConfig?.alphaMaskBitmap)
-        configManager.config?.maskConfig?.maskPositionPair = maskConfig?.maskPositionPair
-        configManager.config?.maskConfig?.maskTexPair = maskConfig?.maskTexPair
+        val config = configManager.config?.maskConfig ?: MaskConfig()
+        configManager.config?.maskConfig = config
+        config.safeSetMaskBitmapAndReleasePre(maskConfig?.alphaMaskBitmap)
+        config.maskPositionPair = maskConfig?.maskPositionPair
+        config.maskTexPair = maskConfig?.maskTexPair
     }
 
 }

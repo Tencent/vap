@@ -15,8 +15,6 @@
  */
 package com.tencent.qgame.animplayer
 
-import android.graphics.Bitmap
-import android.graphics.MaskFilter
 import com.tencent.qgame.animplayer.mask.MaskConfig
 import com.tencent.qgame.animplayer.util.ALog
 import org.json.JSONException
