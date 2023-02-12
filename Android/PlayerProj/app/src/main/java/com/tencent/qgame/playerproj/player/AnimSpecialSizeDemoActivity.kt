@@ -30,8 +30,7 @@ import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IALog
 import com.tencent.qgame.animplayer.util.ScaleType
-import com.tencent.qgame.playerproj.R
-import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
+import com.tencent.qgame.playerproj.databinding.ActivityAnimSimpleDemoBinding
 import java.io.File
 
 /**
@@ -63,18 +62,19 @@ class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_anim_simple_demo)
+        val inflate = ActivityAnimSimpleDemoBinding.inflate(layoutInflater, null, false)
+        setContentView(inflate.root)
         // 文件加载完成后会调用init方法
-        loadFile()
+        loadFile(inflate)
     }
 
-    private fun init() {
+    private fun init(inflate: ActivityAnimSimpleDemoBinding) {
         // 初始化日志
         initLog()
         // 初始化调试开关
-        initTestView()
+        initTestView(inflate)
         // 获取动画view
-        animView = playerView
+        animView = inflate.playerView
         // 视频左右对齐（rgb左\alpha右）
         animView.setVideoMode(Constant.VIDEO_MODE_SPLIT_HORIZONTAL_REVERSE)
         // 兼容老版本视频资源
@@ -191,29 +191,29 @@ class AnimSpecialSizeDemoActivity : Activity(), IAnimListener {
     }
 
 
-    private fun initTestView() {
-        btnLayout.visibility = View.VISIBLE
+    private fun initTestView(inflate: ActivityAnimSimpleDemoBinding) {
+        inflate.btnLayout.visibility = View.VISIBLE
         /**
          * 开始播放按钮
          */
-        btnPlay.setOnClickListener {
+        inflate.btnPlay.setOnClickListener {
             play(videoInfo)
         }
         /**
          * 结束视频按钮
          */
-        btnStop.setOnClickListener {
+        inflate.btnStop.setOnClickListener {
             animView.stopPlay()
         }
     }
 
-    private fun loadFile() {
+    private fun loadFile(inflate: ActivityAnimSimpleDemoBinding) {
         val files = Array(1) {
             videoInfo.fileName
         }
         FileUtil.copyAssetsToStorage(this, dir, files) {
             uiHandler.post {
-                init()
+                init(inflate)
             }
         }
     }
