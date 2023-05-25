@@ -62,12 +62,6 @@ VAP交流群：719738292
 [常见问题解答](https://github.com/Tencent/vap/wiki/FAQ)
 
 
-## 已接入APP
-
-![VAP接入APP](https://user-images.githubusercontent.com/3285051/211699577-58c70501-02c4-440a-a3a8-2ba7cbec6da7.png)
-
-需要显示自己App图标，可以加入QQ群，群公告里有App图标加入说明
-
 ## License
 
 VAP is under the MIT license. See the [LICENSE](./LICENSE.txt) file for details.
