@@ -50,11 +50,9 @@ VAP|***1.5M***|***硬解***|***全支持***
 播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_mac_1.2.0.zip), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_1.2.0.exe)
 
 
-## QQ交流群
+## 已接入APP
 
-遇到任何问题或者有好的建议，欢迎提issues，或者加入QQ群交流
-
-VAP交流群：719738292
+![app](https://github.com/Tencent/vap/assets/3285051/3e5c9ce1-f654-413e-8c5e-ecb2088ed3fe)
 
 
 ## FAQ
