@@ -53,6 +53,7 @@ Usage:
 1. Double-click VapToolMac to run after decompression
 2. Authorization is required for the first run (a prompt box will pop up indicating that it cannot be opened) -> System Preferences -> Security & Privacy -> General tab -> Click "Open Anyway"
 3. After authorization, it can be run normally
+
 PS: It is recommended to use the command line method. The Mac App version has some unresolved issues, such as parameter saving issues.
 
 
@@ -68,8 +69,8 @@ PS: It is recommended to use the command line method. The Mac App version has so
 
 * fps: How many frames to play per second;
 * quality: Select the clarity parameter, providing two options of bitrate/crf
-	* bitrate(default): Set the video bit rate, default is 2000k, the larger the number, the clearer the video, but the file is also larger. Compared with crf, it can more accurately control the file size;
-	* crf: icture quality parameter, value range [0,51] default 29 (0 means lossless compression, the file will be very large), if the clarity requirements are relatively high, you can control the crf parameter, setting a small value can significantly improve the video clarity, but the file size is not easy to control (the file will be larger).
+	* bitrate(default): Set the video bitrate, default is 2000k, the larger the number, the clearer the video, but the file is also larger. Compared with crf, it can more accurately control the file size;
+	* crf: picture quality parameter, value range [0,51] default 29 (0 means lossless compression, the file will be very large), if the clarity requirements are relatively high, you can control the crf parameter, setting a small value can significantly improve the video clarity, but the file size is not easy to control (the file will be larger).
 * alpha scale: Whether to scale the video alpha area (default scale 0.5), currently optional: scale 0.5; do not scale 1. Scaling the video can ultimately reduce the video resolution and improve compatibility;
 * frames path: The location where the video frames are stored
 	* The video frame naming method is 000.png 001.png ... 099.png. The first frame must be 000.png otherwise it cannot be generated normally. You can refer to "simple_demo";
@@ -87,7 +88,7 @@ Click "create VAP" to start generating the video.
 * md5.txt: The md5 of video.mp4, which can be used for file verification
 * frames: Temporary image files
 
-## Advanced: Fusion animation
+## Advanced: VAPX animation
 PS: Ordinary animations do not require this setting
 
 
