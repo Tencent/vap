@@ -1,5 +1,7 @@
 # VapTool
 
+中文｜[English](./README_en.md)
+
 版本: [tool2.0.6](https://github.com/Tencent/vap/releases/tag/tool2.0.6)
 
 Windows: [vaptool_win_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_win_v2.0.6.zip)(包含jre 可直接运行)
