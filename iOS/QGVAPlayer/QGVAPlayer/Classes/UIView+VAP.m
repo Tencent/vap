@@ -128,6 +128,7 @@ NSInteger const VapMaxCompatibleVersion = 2;
         }
         [self.hwd_openGLView dispose];
         glFinish();
+        [EAGLContext setCurrentContext:nil];
     }
     if (self.hwd_metalView) {
         [self.hwd_metalView dispose];
@@ -146,7 +147,6 @@ NSInteger const VapMaxCompatibleVersion = 2;
     self.hwd_decodeConfig = nil;
     self.hwd_currentFrameInstance = nil;
     self.hwd_fileInfo = nil;
-    [EAGLContext setCurrentContext:nil];
 }
 
 //播放完成
