@@ -15,8 +15,8 @@ import javax.swing.JTextArea;
 
 class OpenSourceUI {
 
-    private final int WIDTH = 600;
-    private final int HEIGHT = 800;
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 800;
 
     public void createUI() {
         JFrame frame = new JFrame("open source software");

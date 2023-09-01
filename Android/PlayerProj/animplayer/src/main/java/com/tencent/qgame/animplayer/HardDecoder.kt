@@ -49,6 +49,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     // 动画是否需要走YUV渲染逻辑的标志位
     private var needYUV = false
     private var outputFormat: MediaFormat? = null
+    var autoDismiss = true
 
     override fun start(fileContainer: IFileContainer) {
         isStopReq = false
@@ -95,7 +96,6 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
             extractor.selectTrack(trackIndex)
             format = extractor.getTrackFormat(trackIndex)
-            if (format == null) throw RuntimeException("format is null")
 
             // 是否支持h265
             if (MediaUtil.checkIsHevc(format)) {
@@ -185,7 +185,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     }
 
     private fun startDecode(extractor: MediaExtractor ,decoder: MediaCodec) {
-        val TIMEOUT_USEC = 10000L
+        val timeout = 10000L
         var inputChunk = 0
         var outputDone = false
         var inputDone = false
@@ -202,7 +202,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
 
             if (!inputDone) {
-                val inputBufIndex = decoder.dequeueInputBuffer(TIMEOUT_USEC)
+                val inputBufIndex = decoder.dequeueInputBuffer(timeout)
                 if (inputBufIndex >= 0) {
                     val inputBuf = decoderInputBuffers[inputBufIndex]
                     val chunkSize = extractor.readSampleData(inputBuf, 0)
@@ -223,7 +223,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             }
 
             if (!outputDone) {
-                val decoderStatus = decoder.dequeueOutputBuffer(bufferInfo, TIMEOUT_USEC)
+                val decoderStatus = decoder.dequeueOutputBuffer(bufferInfo, timeout)
                 when {
                     decoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER -> ALog.d(TAG, "no output from decoder available")
                     decoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED -> ALog.d(TAG, "decoder output buffers changed")
@@ -250,9 +250,8 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                     else -> {
                         var loop = 0
                         if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
-                            loop = --playLoop
-                            player.playLoop = playLoop // 消耗loop次数 自动恢复后能有正确的loop次数
-                            outputDone = playLoop <= 0
+                            loop = --player.playLoop
+                            outputDone = player.playLoop <= 0
                         }
                         val doRender = !outputDone
                         if (doRender) {
@@ -285,7 +284,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
                             isLoop = true
                         }
                         if (outputDone) {
-                            release(decoder, extractor)
+                            release(decoder, extractor, true)
                         }
                     }
                 }
@@ -306,17 +305,33 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             outputBuffer.get(yuvData)
 
             if (yuvData.isNotEmpty()) {
-                var yData = ByteArray(videoWidth * videoHeight)
-                var uData = ByteArray(videoWidth * videoHeight / 4)
-                var vData = ByteArray(videoWidth * videoHeight / 4)
+                val yData = ByteArray(videoWidth * videoHeight)
+                val uData = ByteArray(videoWidth * videoHeight / 4)
+                val vData = ByteArray(videoWidth * videoHeight / 4)
 
                 if (outputFormat?.getInteger(MediaFormat.KEY_COLOR_FORMAT) == MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar) {
                     yuvData = yuv420spTop(yuvData)
                 }
 
                 yuvCopy(yuvData, 0, alignWidth, alignHeight, yData, videoWidth, videoHeight)
-                yuvCopy(yuvData, alignWidth * alignHeight, alignWidth / 2, alignHeight / 2, uData, videoWidth / 2, videoHeight / 2)
-                yuvCopy(yuvData, alignWidth * alignHeight * 5 / 4, alignWidth / 2, alignHeight / 2, vData, videoWidth / 2, videoHeight / 2)
+                yuvCopy(
+                    yuvData,
+                    alignWidth * alignHeight,
+                    alignWidth / 2,
+                    alignHeight / 2,
+                    uData,
+                    videoWidth / 2,
+                    videoHeight / 2
+                )
+                yuvCopy(
+                    yuvData,
+                    alignWidth * alignHeight * 5 / 4,
+                    alignWidth / 2,
+                    alignHeight / 2,
+                    vData,
+                    videoWidth / 2,
+                    videoHeight / 2
+                )
 
                 render?.setYUVData(videoWidth, videoHeight, yData, uData, vData)
                 renderData()
@@ -347,9 +362,10 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
         }
     }
 
-    private fun release(decoder: MediaCodec?, extractor: MediaExtractor?) {
+    private fun release(decoder: MediaCodec?, extractor: MediaExtractor?, isDone: Boolean = false) {
         renderThread.handler?.post {
-            render?.clearFrame()
+            if (autoDismiss || !isDone)
+                render?.clearFrame()
             try {
                 ALog.i(TAG, "release")
                 decoder?.apply {
@@ -387,6 +403,7 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     private fun destroyInner() {
         ALog.i(TAG, "destroyInner")
         renderThread.handler?.post {
+            render?.clearFrame()
             player.pluginManager.onDestroy()
             render?.destroyRender()
             render = null

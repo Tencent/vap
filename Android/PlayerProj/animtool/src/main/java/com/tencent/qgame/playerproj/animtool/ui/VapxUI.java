@@ -35,7 +35,7 @@ public class VapxUI {
     private final JPanel controlPanel = new JPanel();
     private final List<MaskUI> maskUiList = new ArrayList<>();
     private int index = 0;
-    private ToolUI toolUI;
+    private final ToolUI toolUI;
     private final IMaskUIListener listener = new IMaskUIListener() {
         @Override
         public void onDelete(MaskUI maskUI) {
@@ -108,7 +108,7 @@ public class VapxUI {
     }
 
     private static class MaskUI {
-        private ToolUI toolUI;
+        private final ToolUI toolUI;
         public IMaskUIListener listener;
         public int index;
         public String maskPath;

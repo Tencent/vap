@@ -174,7 +174,7 @@ public class ToolUI {
         commonArg.ffmpegCmd = "ffmpeg";
         commonArg.mp4editCmd = "mp4edit";
 
-        if (os != null && !"".equals(os)) {
+        if (!"".equals(os)) {
             if (os.contains("mac") && new File("mac").exists()) {
                 commonArg.ffmpegCmd = "mac/ffmpeg";
                 commonArg.mp4editCmd = "mac/mp4edit";

@@ -4,6 +4,7 @@ import com.tencent.qgame.playerproj.animtool.vapx.SrcSet;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -155,7 +156,7 @@ class CommonArgTool {
         // 获取总帧数
         commonArg.totalFrame = 0;
         for (int i=0; i<=999; i++) {
-            File frameFile = new File(commonArg.inputPath + String.format("%03d", i) + ".png");
+            File frameFile = new File(String.format("%s%s.png", commonArg.inputPath, String.format(Locale.getDefault(), "%03d", i)));
             // 顺序检查
             if (!frameFile.exists()) {
                 break;

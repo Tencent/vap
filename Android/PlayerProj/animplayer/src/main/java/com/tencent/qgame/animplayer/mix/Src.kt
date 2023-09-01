@@ -21,7 +21,10 @@ import com.tencent.qgame.animplayer.Constant
 import com.tencent.qgame.animplayer.util.ALog
 import org.json.JSONObject
 
-class Src {
+class Src// 可选
+
+// 可选
+    (json: JSONObject) {
     companion object {
         private const val TAG = "${Constant.TAG}.Src"
     }
@@ -67,11 +70,10 @@ class Src {
             genDrawSize(value)
         }
 
-    constructor(json: JSONObject) {
+    init {
         srcId = json.getString("srcId")
         w = json.getInt("w")
         h = json.getInt("h")
-        // 可选
         var colorStr = json.optString("color", "#000000")
         if (colorStr.isEmpty()) {
             colorStr = "#000000"
@@ -79,7 +81,6 @@ class Src {
         color = Color.parseColor(colorStr)
         srcTag = json.getString("srcTag")
         txt = srcTag
-
         srcType = when(json.getString("srcType")) {
             SrcType.IMG.type -> SrcType.IMG
             SrcType.TXT.type -> SrcType.TXT
@@ -94,8 +95,6 @@ class Src {
             FitType.CENTER_FULL.type -> FitType.CENTER_FULL
             else -> FitType.FIT_XY
         }
-
-        // 可选
         style = when(json.optString("style", "")) {
             Style.BOLD.style -> Style.BOLD
             else -> Style.DEFAULT
@@ -140,9 +139,9 @@ class SrcMap(json: JSONObject) {
 
     init {
         val srcJsonArray = json.getJSONArray("src")
-        val srcLen = srcJsonArray?.length() ?: 0
+        val srcLen = srcJsonArray.length()
         for (i in 0 until srcLen) {
-            val srcJson = srcJsonArray?.getJSONObject(i) ?: continue
+            val srcJson = srcJsonArray.getJSONObject(i) ?: continue
             val src = Src(srcJson)
             if (src.srcType != Src.SrcType.UNKNOWN) { // 不认识的srcType丢弃
                 map[src.srcId] = src
