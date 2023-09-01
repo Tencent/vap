@@ -12,6 +12,6 @@ export interface VapConfig {
   // 使用requestVideoFrameCallback对齐帧数据
   accurate: boolean;
   onLoadError?: (e: ErrorEvent) => void;
-  onDestory?: () => void;
+  onDestroy?: () => void;
   [key: string]: any;
 }
