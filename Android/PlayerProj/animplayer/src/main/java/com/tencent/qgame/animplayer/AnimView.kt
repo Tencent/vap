@@ -47,6 +47,12 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     companion object {
         private const val TAG = "${Constant.TAG}.AnimView"
     }
+
+    //标记正在销毁的状态
+    private var isDetaching: Boolean = false
+
+    //标记detach后立即attach的状态
+    private var delayAttach: Boolean = false
     private lateinit var player: AnimPlayer
 
     private val uiHandler by lazy { Handler(Looper.getMainLooper()) }
@@ -74,12 +80,12 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             }
 
             override fun onVideoComplete() {
-                hide()
+                hide(false)
                 animListener?.onVideoComplete()
             }
 
             override fun onVideoDestroy() {
-                hide()
+                hide(true)
                 animListener?.onVideoDestroy()
             }
 
@@ -106,7 +112,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
 
 
     init {
-        hide()
+        hide(false)
         player = AnimPlayer(this)
         player.animListener = animProxyListener
     }
@@ -137,9 +143,9 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         ALog.i(TAG, "onSurfaceTextureDestroyed")
         this.surface = null
         player.onSurfaceTextureDestroyed()
+        innerTextureView?.surfaceTextureListener = null
+        innerTextureView = null
         uiHandler.post {
-            innerTextureView?.surfaceTextureListener = null
-            innerTextureView = null
             removeAllViews()
         }
         return true
@@ -166,8 +172,16 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun onAttachedToWindow() {
         ALog.i(TAG, "onAttachedToWindow")
         super.onAttachedToWindow()
+        if (isDetaching) {
+            delayAttach = true
+            return
+        }
+        restart()
+    }
+
+    private fun restart() {
         player.isDetachedFromWindow = false
-        // 自动恢复播放
+        /* 自动恢复播放 */
         if (player.playLoop > 0) {
             lastFile?.apply {
                 startPlay(this)
@@ -176,10 +190,20 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun onDetachedFromWindow() {
+        isDetaching = true
         ALog.i(TAG, "onDetachedFromWindow")
         super.onDetachedFromWindow()
         player.isDetachedFromWindow = true
         player.onSurfaceTextureDestroyed()
+    }
+
+    private fun checkDetaching() {
+        if (isDetaching) {
+            isDetaching = false
+            if (delayAttach) {
+                restart()
+            }
+        }
     }
 
 
@@ -275,6 +299,10 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
                 ALog.e(TAG, "AnimView is GONE, can't play")
                 return@ui
             }
+            if (isDetaching) {
+                ALog.e(TAG, "AnimView is detaching, can't play")
+                return@ui
+            }
             if (!player.isRunning()) {
                 lastFile = fileContainer
                 player.startPlay(fileContainer)
@@ -297,10 +325,13 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
         return scaleTypeUtil.getRealSize()
     }
 
-    private fun hide() {
+    private fun hide(isDestroy: Boolean) {
         lastFile?.close()
         ui {
             removeAllViews()
+            if (isDestroy) {
+                checkDetaching()
+            }
         }
     }
 
