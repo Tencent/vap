@@ -1,0 +1,9 @@
+{
+  "name": "vap_module",
+  "version": "1.0.0",
+  "description": "A cool video animation playback solution.",
+  "main": "Index.ets",
+  "author": "MaShuai/LiuTianyi",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}
