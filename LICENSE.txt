@@ -1,6 +1,6 @@
 Tencent is pleased to support the open source community by making VAP available. 
 
-Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+Copyright (C) 2025 THL A29 Limited, a Tencent company.  All rights reserved.
 
 VAP is licensed under the the MIT except for the third-party components listed below. 
 
@@ -450,7 +450,7 @@ Public License instead of this License.
  GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
- Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+ Copyright (C) 2025 Free Software Foundation, Inc. <http://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
@@ -629,7 +629,6 @@ makes it unnecessary.
 
   No covered work shall be deemed part of an effective technological
 measure under any applicable law fulfilling obligations under article
-11 of the WIPO copyright treaty adopted on 20 December 1996, or
 similar laws prohibiting or restricting circumvention of such
 measures.
 
