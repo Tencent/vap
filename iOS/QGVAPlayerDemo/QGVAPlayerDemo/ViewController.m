@@ -17,7 +17,8 @@
 #import "ViewController.h"
 #import "UIView+VAP.h"
 #import "QGVAPWrapView.h"
-
+#import "QGBaseAnimatedImageFrame.h"
+#import "QGMP4AnimatedImageFrame.h"
 #import <AVFoundation/AVFoundation.h>
 
 @interface ViewController () <HWDMP4PlayDelegate, VAPWrapViewDelegate>
@@ -146,14 +147,14 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     QGVAPWrapView *wrapView = [[QGVAPWrapView alloc] initWithFrame:self.view.bounds];
     wrapView.center = self.view.center;
     wrapView.contentMode = QGVAPWrapViewContentModeAspectFill;
-    wrapView.autoDestoryAfterFinish = YES;
+    wrapView.autoDestoryAfterFinish = NO;
     [self.view addSubview:wrapView];
     [wrapView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.top.right.bottom.mas_equalTo(0);
     }];
     NSString *resPath = [NSString stringWithFormat:@"%@/Resource/vap.mp4", [[NSBundle mainBundle] resourcePath]];
-    [wrapView setMute:YES];
-    [wrapView playHWDMP4:resPath repeatCount:-1 delegate:self];
+    [wrapView setMute:NO];
+    [wrapView playHWDMP4:resPath repeatCount:0 delegate:self];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doNothingonImageviewTap:)];
     
     __weak __typeof(wrapView) weakWrapView = wrapView;
@@ -175,14 +176,17 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 
 - (void)viewDidFinishPlayMP4:(NSInteger)totalFrameCount view:(UIView *)container {
     //note:在子线程被调用
+    NSLog(@"totalFrameCount -- %ld",totalFrameCount);
 }
 
 - (void)viewDidPlayMP4AtFrame:(QGMP4AnimatedImageFrame *)frame view:(UIView *)container {
     //note:在子线程被调用
+    NSLog(@"frame -- %@",frame);
 }
 
 - (void)viewDidStopPlayMP4:(NSInteger)lastFrameIndex view:(UIView *)container {
     //note:在子线程被调用
+    NSLog(@"lastFrameIndex -- %ld",lastFrameIndex);
     dispatch_async(dispatch_get_main_queue(), ^{
         [container removeFromSuperview];
     });
@@ -195,6 +199,9 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
 - (void)viewDidFailPlayMP4:(NSError *)error {
     NSLog(@"%@", error.userInfo);
 }
+
+
+
 
 #pragma mark -- 融合特效的接口 vapx
 
@@ -248,4 +255,29 @@ void qg_VAP_Logger_handler(VAPLogLevel level, const char* file, int line, const 
     });
 }
 
+
+- (void)vapWrap_viewDidStartPlayMP4:(VAPView *)container {
+    
+}
+- (void)vapWrap_viewDidPlayMP4AtFrame:(QGMP4AnimatedImageFrame*)frame view:(VAPView *)container {
+    QGMP4AnimatedImageFrame * frameModel = frame;
+    
+    NSLog(@"frame.frameIndex -- %ld",frameModel.frameIndex);
+    NSLog(@"frame.duration -- %d",frameModel.duration);
+    if (frameModel.frameIndex >= 150) {
+        [container pauseHWDMP4];
+    }
+    
+}
+- (void)vapWrap_viewDidStopPlayMP4:(NSInteger)lastFrameIndex view:(VAPView *)container {
+    //note:在子线程被调用
+    NSLog(@"lastFrameIndex -- %ld",lastFrameIndex);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [container removeFromSuperview];
+    });
+}
+- (void)vapWrap_viewDidFinishPlayMP4:(NSInteger)totalFrameCount view:(VAPView *)container {
+    NSLog(@"totalFrameCount -- %ld",totalFrameCount);
+    
+}
 @end
