@@ -328,7 +328,7 @@ public class AnimTool {
                         "-profile:v", "main",
                         "-level", "4.0",
                         "-tag:v", "hvc1",
-                        "-bufsize", "2000k",
+                        "-bufsize", "4000k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
             } else {
                 cmd = new String[] {commonArg.ffmpegCmd, "-framerate", String.valueOf(commonArg.fps),
@@ -339,7 +339,7 @@ public class AnimTool {
                         "-profile:v", "main",
                         "-level", "4.0",
                         "-tag:v", "hvc1",
-                        "-bufsize", "2000k",
+                        "-bufsize", Integer.toString(commonArg.bitrate * 2) + "k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
             }
 
@@ -353,7 +353,7 @@ public class AnimTool {
                         "-profile:v", "main",
                         "-level", "4.0",
                         "-bf", "0",
-                        "-bufsize", "2000k",
+                        "-bufsize", "4000k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
             } else {
                 cmd = new String[]{commonArg.ffmpegCmd, "-framerate", String.valueOf(commonArg.fps),
@@ -364,7 +364,7 @@ public class AnimTool {
                         "-profile:v", "main",
                         "-level", "4.0",
                         "-bf", "0",
-                        "-bufsize", "2000k",
+                        "-bufsize", Integer.toString(commonArg.bitrate * 2) + "k",
                         "-y", videoPath + TEMP_VIDEO_FILE};
             }
 
