@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "vap_module",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}
