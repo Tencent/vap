@@ -27,6 +27,7 @@ class AnimPlayer(val animView: IAnimView) {
         private const val TAG = "${Constant.TAG}.AnimPlayer"
     }
 
+    var autoDismiss = true
     var animListener: IAnimListener? = null
     var decoder: Decoder? = null
     var audioPlayer: AudioPlayer? = null
@@ -39,7 +40,6 @@ class AnimPlayer(val animView: IAnimView) {
     var defaultFps: Int = 0
     var playLoop: Int = 0
         set(value) {
-            decoder?.playLoop = value
             audioPlayer?.playLoop = value
             field = value
         }
@@ -136,6 +136,7 @@ class AnimPlayer(val animView: IAnimView) {
     private fun prepareDecoder() {
         if (decoder == null) {
             decoder = HardDecoder(this).apply {
+                autoDismiss = this@AnimPlayer.autoDismiss
                 playLoop = this@AnimPlayer.playLoop
                 fps = this@AnimPlayer.fps
             }
@@ -148,10 +149,11 @@ class AnimPlayer(val animView: IAnimView) {
     }
 
     fun updateMaskConfig(maskConfig: MaskConfig?) {
-        configManager.config?.maskConfig = configManager.config?.maskConfig ?: MaskConfig()
-        configManager.config?.maskConfig?.safeSetMaskBitmapAndReleasePre(maskConfig?.alphaMaskBitmap)
-        configManager.config?.maskConfig?.maskPositionPair = maskConfig?.maskPositionPair
-        configManager.config?.maskConfig?.maskTexPair = maskConfig?.maskTexPair
+        val config = configManager.config?.maskConfig ?: MaskConfig()
+        configManager.config?.maskConfig = config
+        config.safeSetMaskBitmapAndReleasePre(maskConfig?.alphaMaskBitmap)
+        config.maskPositionPair = maskConfig?.maskPositionPair
+        config.maskTexPair = maskConfig?.maskTexPair
     }
 
 }

@@ -26,15 +26,11 @@ class GlFloatArray {
 
     val array = FloatArray(8)
 
-    private var floatBuffer: FloatBuffer
-
-    init {
-        floatBuffer = ByteBuffer
-            .allocateDirect(array.size * 4)
-            .order(ByteOrder.nativeOrder())
-            .asFloatBuffer()
-            .put(array)
-    }
+    private var floatBuffer: FloatBuffer = ByteBuffer
+        .allocateDirect(array.size * 4)
+        .order(ByteOrder.nativeOrder())
+        .asFloatBuffer()
+        .put(array)
 
     fun setArray(array: FloatArray) {
         floatBuffer.position(0)

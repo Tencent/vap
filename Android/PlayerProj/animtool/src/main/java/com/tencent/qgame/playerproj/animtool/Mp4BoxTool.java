@@ -16,6 +16,7 @@
 package com.tencent.qgame.playerproj.animtool;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * mp4 box 处理类
@@ -69,7 +70,7 @@ public class Mp4BoxTool {
         // 只取4字节，大于2G的文件一概不处理
         boxHead[0] = (byte) (fileLen >>> 24 & 0xff);
         boxHead[1] = (byte) (fileLen >>> 16 & 0xff);
-        boxHead[2] = (byte) (fileLen >>>  8 & 0xff);
+        boxHead[2] = (byte) (fileLen >>> 8 & 0xff);
         boxHead[3] = (byte) (fileLen & 0xff);
 
         // 插入vapc
@@ -98,7 +99,7 @@ public class Mp4BoxTool {
         byte[] boxHead = new byte[8];
         BoxHead head = null;
         long vapcStartIndex = 0;
-        while (mp4File.read(boxHead, 0 , boxHead.length) == 8) {
+        while (mp4File.read(boxHead, 0, boxHead.length) == 8) {
             head = parseBoxHead(boxHead);
             if (head == null) break;
             if ("vapc".equals(head.type)) {
@@ -128,29 +129,28 @@ public class Mp4BoxTool {
         os.write(vapcBuf, 0, vapcBuf.length);
         os.close();
 
-        String json = new String(vapcBuf,0, vapcBuf.length, "UTF-8");
+        String json = new String(vapcBuf, 0, vapcBuf.length, StandardCharsets.UTF_8);
         TLog.i(TAG, "success");
         TLog.i(TAG, json);
     }
 
-    private BoxHead parseBoxHead(byte[] boxHead) throws Exception {
+    private BoxHead parseBoxHead(byte[] boxHead) {
         if (boxHead.length != 8) return null;
         BoxHead head = new BoxHead();
         long length = 0;
-        length = length | ((boxHead[0] & 0xff) << 24);
+        length = length | ((long) (boxHead[0] & 0xff) << 24);
         length = length | ((boxHead[1] & 0xff) << 16);
-        length = length | ((boxHead[2] & 0xff) <<  8);
-        length = length |  (boxHead[3] & 0xff);
+        length = length | ((boxHead[2] & 0xff) << 8);
+        length = length | (boxHead[3] & 0xff);
         head.length = length;
-        head.type = new String(boxHead,4, 4, "US-ASCII");
+        head.type = new String(boxHead, 4, 4, StandardCharsets.US_ASCII);
         return head;
     }
 
-    class BoxHead {
+    static class BoxHead {
         long startIndex;
         long length;
         String type;
     }
-
 
 }

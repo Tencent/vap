@@ -167,7 +167,7 @@ class AnimConfigManager(val player: AnimPlayer) {
     private fun parseBoxHead(boxHead: ByteArray): BoxHead? {
         if (boxHead.size != 8) return null
         val head = BoxHead()
-        var length: Int = 0
+        var length = 0
         length = length or (boxHead[0].toInt() and 0xff shl 24)
         length = length or (boxHead[1].toInt() and 0xff shl 16)
         length = length or (boxHead[2].toInt() and 0xff shl 8)

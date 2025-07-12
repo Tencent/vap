@@ -66,7 +66,6 @@ abstract class Decoder(val player: AnimPlayer) : IAnimListener {
             speedControlUtil.setFixedPlaybackRate(value)
             field = value
         }
-    var playLoop = 0 // 循环播放次数
     var isRunning = false // 是否正在运行
     var isStopReq = false // 是否需要停止
     val speedControlUtil by lazy { SpeedControlUtil() }

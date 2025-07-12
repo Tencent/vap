@@ -21,9 +21,15 @@ import java.security.MessageDigest
 
 object FileUtil {
 
-    private val hexDigits = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
+    private val hexDigits =
+        charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
 
-    fun copyAssetsToStorage(context: Context, dir: String, files: Array<String>, loadSuccess:()->Unit) {
+    fun copyAssetsToStorage(
+        context: Context,
+        dir: String,
+        files: Array<String>,
+        loadSuccess: () -> Unit
+    ) {
         Thread {
             var outputStream: OutputStream
             var inputStream: InputStream
@@ -69,9 +75,7 @@ object FileUtil {
             }
             inputStream.close()
             val digest = md.digest()
-            if (digest != null) {
-                return bufferToHex(digest)
-            }
+            return bufferToHex(digest)
         } catch (t: Throwable) {
             t.printStackTrace()
         } finally {
