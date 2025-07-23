@@ -1,6 +1,6 @@
 Tencent is pleased to support the open source community by making VAP available. 
 
-Copyright (C) 2020 THL A29 Limited, a Tencent company.  All rights reserved.
+Copyright (C) 2020 Tencent.  All rights reserved.
 
 VAP is licensed under the the MIT except for the third-party components listed below. 
 
