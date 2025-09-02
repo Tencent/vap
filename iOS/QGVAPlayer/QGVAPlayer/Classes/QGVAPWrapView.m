@@ -163,7 +163,22 @@
             self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
             self.vapView.center = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
         }
-            break;;
+            break;
+        case QGVAPWrapViewContentModeTop: {
+            realWidth = layoutWidth;
+            realHeight = realWidth / videoRatio;
+            
+            self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
+            
+        }
+            break;
+        case QGVAPWrapViewContentModeBottom: {
+            realWidth = layoutWidth;
+            realHeight = realWidth / videoRatio;
+            CGFloat realTop = layoutHeight - realHeight;
+            self.vapView.frame = CGRectMake(0, realTop, realWidth, realHeight);
+        }
+            break;
         default:
             break;
     }

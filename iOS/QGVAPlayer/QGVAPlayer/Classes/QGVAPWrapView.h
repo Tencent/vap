@@ -23,6 +23,8 @@ typedef NS_ENUM(NSUInteger, QGVAPWrapViewContentMode) {
     QGVAPWrapViewContentModeScaleToFill,
     QGVAPWrapViewContentModeAspectFit,
     QGVAPWrapViewContentModeAspectFill,
+    QGVAPWrapViewContentModeTop,
+    QGVAPWrapViewContentModeBottom,
 };
 
 @protocol VAPWrapViewDelegate <NSObject>
