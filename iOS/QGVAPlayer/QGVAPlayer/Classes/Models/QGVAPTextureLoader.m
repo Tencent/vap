@@ -19,6 +19,9 @@
 #import "QGVAPLogger.h"
 #import "UIDevice+VAPUtil.h"
 
+
+static LoadCustomFontBlock staticFontBlock;
+
 @implementation QGVAPTextureLoader
 
 #if TARGET_OS_SIMULATOR//模拟器
@@ -58,7 +61,9 @@
     }
     return [self cg_loadTextureWithImage:image device:device];
 }
-
++(void)loadCustomFont: (nullable LoadCustomFontBlock) fontBlock {
+    staticFontBlock = fontBlock;
+}
 + (UIImage *)drawingImageForText:(NSString *)textStr color:(UIColor *)color size:(CGSize)size bold:(BOOL)bold {
     
     if (textStr.length == 0) {
@@ -157,7 +162,7 @@
 //根据指定的字符内容和容器大小计算合适的字体
 + (UIFont *)getAppropriateFontWith:(NSString *)text rect:(CGRect)fitFrame designedSize:(CGFloat)designedFontSize bold:(BOOL)isBold textSize:(CGSize *)textSize {
     
-    UIFont *designedFont = isBold? [UIFont boldSystemFontOfSize:designedFontSize] : [UIFont systemFontOfSize:designedFontSize];
+    UIFont *designedFont = [self judgeFontWithFontSize:designedFontSize isBold:isBold];
     if (text.length == 0 || CGRectEqualToRect(CGRectZero, fitFrame) || !designedFont) {
         *textSize = fitFrame.size;
         return designedFont ;
@@ -168,13 +173,24 @@
     while (stringSize.width > fitFrame.size.width && fontSize > 2.0 && remainExcuteCount > 0) {
         fontSize *= 0.9;
         remainExcuteCount -= 1;
-        designedFont = isBold? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
+        designedFont = [self judgeFontWithFontSize:fontSize isBold:isBold];
         stringSize = [text sizeWithAttributes:@{NSFontAttributeName:designedFont}];
     }
     if (remainExcuteCount < 1 || fontSize < 5.0) {
         VAP_Event(kQGVAPModuleCommon, @"data exception content:%@ rect:%@ designedSize:%@ isBold:%@", text, [NSValue valueWithCGRect:fitFrame], @(designedFontSize), @(isBold));
     }
     *textSize = stringSize;
+    return designedFont;
+}
+
++(UIFont *)judgeFontWithFontSize: (CGFloat)fontSize isBold: (BOOL)isBold {
+    if (staticFontBlock) {
+        UIFont * designedFont = staticFontBlock(fontSize,isBold);
+        if (designedFont) {
+            return designedFont;
+        }
+    }
+    UIFont *designedFont = isBold? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
     return designedFont;
 }
 

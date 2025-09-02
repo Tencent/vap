@@ -29,6 +29,10 @@ class ViewController: UIViewController, VAPWrapViewDelegate {
         vapButton.addTarget(self, action: #selector(playVapx), for: UIControl.Event.touchUpInside)
         self.view.addSubview(vapButton)
         self.view.addSubview(vapView)
+        QGVAPTextureLoader.loadCustomFont(nil)
+        QGVAPTextureLoader.loadCustomFont { fontSize, isBold in
+            return UIFont.systemFont(ofSize: 12)
+        }
     }
     
     @objc func playVapx() {
@@ -68,6 +72,6 @@ class ViewController: UIViewController, VAPWrapViewDelegate {
             completionBlock(image, nil, urlStr)
         }
     }
-
+    
 }
 
