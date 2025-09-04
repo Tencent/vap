@@ -15,7 +15,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Metal/Metal.h>
-typedef UIFont * (^LoadCustomFontBlock)(CGFloat,BOOL);
+typedef  UIFont * (^LoadCustomFontBlock)(CGFloat,BOOL);
 @interface QGVAPTextureLoader : NSObject
 
 
