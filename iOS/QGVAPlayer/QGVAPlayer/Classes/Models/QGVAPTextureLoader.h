@@ -31,4 +31,5 @@ typedef  UIFont * (^LoadCustomFontBlock)(CGFloat,BOOL);
 
 +(void)loadCustomFont: (nullable LoadCustomFontBlock ) fontBlock;
 
++ (nullable UIImage *)drawingCustomImageForText:(NSString *)textStr color:(UIColor *)color size:(CGSize)size bold:(BOOL)bold fontBlock: (LoadCustomFontBlock)fontBlock;
 @end

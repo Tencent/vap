@@ -42,7 +42,8 @@ typedef NS_ENUM(NSUInteger, QGVAPWrapViewContentMode) {
 //vap APIs
 - (NSString *)vapWrapview_contentForVapTag:(NSString *)tag resource:(QGVAPSourceInfo *)info;        //替换配置中的资源占位符（不处理直接返回tag）
 - (void)vapWrapView_loadVapImageWithURL:(NSString *)urlStr context:(NSDictionary *)context completion:(VAPImageCompletionBlock)completionBlock; //由于组件内不包含网络图片加载的模块，因此需要外部支持图片加载。
-
+/// 自定义字体文字加载
+- (nullable UIImage * )vapWrapView_loadVapContent:(NSString *)content context:(NSDictionary *)context;
 @end
 
 /*

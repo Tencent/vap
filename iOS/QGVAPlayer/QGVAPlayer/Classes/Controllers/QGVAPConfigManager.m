@@ -85,7 +85,17 @@
         
         NSString *tagContent = resource.contentTagValue;
         if ([resource.type isEqualToString:kQGAGAttachmentSourceTypeText] && [resource.loadType isEqualToString:QGAGAttachmentSourceLoadTypeLocal]) {
-            resource.sourceImage = [QGVAPTextureLoader drawingImageForText:tagContent color:resource.color size:resource.size bold:[resource.style isEqualToString:kQGAGAttachmentSourceStyleBoldText]];
+            NSDictionary *context = @{@"resource":resource};
+            if ([self.delegate respondsToSelector:@selector(loadVapContent:context:)]) {
+                UIImage * img = [self.delegate loadVapContent:tagContent context:context];
+                if (img) {
+                    resource.sourceImage = img;
+                } else {
+                    resource.sourceImage = [QGVAPTextureLoader drawingImageForText:tagContent color:resource.color size:resource.size bold:[resource.style isEqualToString:kQGAGAttachmentSourceStyleBoldText]];
+                }
+            } else {
+                resource.sourceImage = [QGVAPTextureLoader drawingImageForText:tagContent color:resource.color size:resource.size bold:[resource.style isEqualToString:kQGAGAttachmentSourceStyleBoldText]];
+            }
         }
         
         if ([resource.type isEqualToString:kQGAGAttachmentSourceTypeImg] && [resource.loadType isEqualToString:QGAGAttachmentSourceLoadTypeNet]) {

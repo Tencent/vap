@@ -561,7 +561,12 @@ NSInteger const VapMaxCompatibleVersion = 2;
     }
     return nil;
 }
-
+- (UIImage *)loadVapContent:(NSString *)content context:(NSDictionary *)context {
+    if ([self.hwd_Delegate respondsToSelector:@selector(loadVapContent:context:)]) {
+        return [self.hwd_Delegate loadVapContent:content context:context];
+    }
+    return  nil;
+}
 - (void)vap_loadImageWithURL:(NSString *)urlStr context:(NSDictionary *)context completion:(VAPImageCompletionBlock)completionBlock {
     if ([self.hwd_Delegate respondsToSelector:@selector(loadVapImageWithURL:context:completion:)]) {
         [self.hwd_Delegate loadVapImageWithURL:urlStr context:context completion:completionBlock];

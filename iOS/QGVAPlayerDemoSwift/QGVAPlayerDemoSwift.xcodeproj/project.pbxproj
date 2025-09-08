@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		98EEBC352E6E83DF00D1A911 /* test.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98EEBC342E6E83DF00D1A911 /* test.ttf */; };
 		BA964B7526832138003265F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA964B7426832138003265F2 /* AppDelegate.swift */; };
 		BA964B7726832138003265F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA964B7626832138003265F2 /* SceneDelegate.swift */; };
 		BA964B7926832138003265F2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA964B7826832138003265F2 /* ViewController.swift */; };
@@ -57,6 +58,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		98EEBC342E6E83DF00D1A911 /* test.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.ttf; sourceTree = "<group>"; };
 		BA964B7126832138003265F2 /* QGVAPlayerDemoSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QGVAPlayerDemoSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA964B7426832138003265F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA964B7626832138003265F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				BA964B7426832138003265F2 /* AppDelegate.swift */,
 				BA964B7626832138003265F2 /* SceneDelegate.swift */,
 				BA964B7826832138003265F2 /* ViewController.swift */,
+				98EEBC342E6E83DF00D1A911 /* test.ttf */,
 				BA964B7A26832138003265F2 /* Main.storyboard */,
 				BA964B7D2683213A003265F2 /* Assets.xcassets */,
 				BA964B7F2683213A003265F2 /* LaunchScreen.storyboard */,
@@ -218,6 +221,7 @@
 				BA964B812683213A003265F2 /* LaunchScreen.storyboard in Resources */,
 				BA964B7E2683213A003265F2 /* Assets.xcassets in Resources */,
 				BA964B7C26832138003265F2 /* Main.storyboard in Resources */,
+				98EEBC352E6E83DF00D1A911 /* test.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

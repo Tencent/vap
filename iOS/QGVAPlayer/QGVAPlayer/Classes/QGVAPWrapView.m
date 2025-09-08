@@ -253,5 +253,10 @@
         [self.delegate vapWrapView_loadVapImageWithURL:urlStr context:context completion:completionBlock];
     }
 }
-
+-(UIImage *)loadVapContent:(NSString *)content context:(NSDictionary *)context {
+    if ([self.delegate respondsToSelector:@selector(vapWrapView_loadVapContent:context:)]) {
+        return [self.delegate vapWrapView_loadVapContent:content context:context];
+    }
+    return nil;
+}
 @end
