@@ -194,7 +194,8 @@ export default class VapVideo {
       return (cb) => {
         index++;
         return requestAnimationFrame(() => {
-          if (!(index % (60 / fps))) {
+          // 取整，否则当结果是小数时，一直都是false
+          if (!(index % (60 / fps) >> 0)) {
             return cb();
           }
           this.animId = this.requestAnim(cb);
