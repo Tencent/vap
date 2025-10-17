@@ -1,0 +1,7 @@
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "nlohmann_json",
+    urls = ["https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz"],
+    strip_prefix = "json-3.11.3",
+)
