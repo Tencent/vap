@@ -24,28 +24,31 @@ class MaskConfig() {
     var maskTexPair: Pair<PointRect, RefVec2>? = null //遮罩坐标矩形
     var maskPositionPair: Pair<PointRect, RefVec2>? = null //内容坐标矩形
 
-    constructor(bitmap: Bitmap?, positionPair :Pair<PointRect, RefVec2>?, texPair: Pair<PointRect, RefVec2>?) : this() {
+    constructor(
+        bitmap: Bitmap?,
+        positionPair: Pair<PointRect, RefVec2>?,
+        texPair: Pair<PointRect, RefVec2>?
+    ) : this() {
         maskPositionPair = positionPair
         maskTexPair = texPair
         alphaMaskBitmap = bitmap
     }
 
     private var maskTexId = 0
-    fun getMaskTexId() : Int {
+    fun getMaskTexId(): Int {
         return maskTexId
     }
-    fun updateMaskTex() : Int {
+
+    fun updateMaskTex(): Int {
         maskTexId = TextureLoadUtil.loadTexture(alphaMaskBitmap)
-        return  maskTexId
+        return maskTexId
     }
 
     var alphaMaskBitmap: Bitmap? = null //遮罩
-        private set(value) {
-            field = value
-        }
-    
+        private set
+
     fun safeSetMaskBitmapAndReleasePre(bitmap: Bitmap?) {
-        if (maskTexId > 0)  { //释放
+        if (maskTexId > 0) { //释放
             TextureLoadUtil.releaseTexure(maskTexId)
             maskTexId = 0
         }

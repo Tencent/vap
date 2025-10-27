@@ -1,5 +1,7 @@
 # VAP
 
+增加最后一帧停止的功能
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
 
 简体中文 | [English](./README_en.md)

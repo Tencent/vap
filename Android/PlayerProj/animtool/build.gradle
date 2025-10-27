@@ -20,7 +20,7 @@ repositories {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'com.tencent.qgame.playerproj.animtool.Main'
+                'Main-Class': 'com.tencent.qgame.playerproj.animtool.Main'
         )
     }
 }

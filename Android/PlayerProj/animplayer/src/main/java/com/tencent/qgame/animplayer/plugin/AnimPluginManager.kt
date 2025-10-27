@@ -44,11 +44,11 @@ class AnimPluginManager(val player: AnimPlayer) {
     // 帧不相同的次数, 连续多次不同则直接使用decodeIndex
     private var frameDiffTimes = 0
 
-    fun getMixAnimPlugin(): MixAnimPlugin? {
+    fun getMixAnimPlugin(): MixAnimPlugin {
         return mixAnimPlugin
     }
-    
-    fun getMaskAnimPlugin() : MaskAnimPlugin? {
+
+    fun getMaskAnimPlugin(): MaskAnimPlugin {
         return maskAnimPlugin
     }
 

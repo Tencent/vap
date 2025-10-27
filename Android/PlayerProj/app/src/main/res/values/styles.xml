@@ -1,7 +1,6 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@android:style/Theme.Black.NoTitleBar">
-    </style>
+    <style name="AppTheme" parent="@android:style/Theme.Black.NoTitleBar" />
 
 </resources>

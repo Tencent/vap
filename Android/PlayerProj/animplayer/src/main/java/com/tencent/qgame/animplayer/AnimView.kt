@@ -18,7 +18,6 @@ package com.tencent.qgame.animplayer
 import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.SurfaceTexture
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
@@ -39,7 +38,11 @@ import com.tencent.qgame.animplayer.util.ScaleType
 import com.tencent.qgame.animplayer.util.ScaleTypeUtil
 import java.io.File
 
-open class AnimView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
+class AnimView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
     IAnimView,
     FrameLayout(context, attrs, defStyleAttr),
     TextureView.SurfaceTextureListener {
@@ -47,7 +50,8 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     companion object {
         private const val TAG = "${Constant.TAG}.AnimView"
     }
-    private lateinit var player: AnimPlayer
+
+    private val player: AnimPlayer
 
     private val uiHandler by lazy { Handler(Looper.getMainLooper()) }
     private var surface: SurfaceTexture? = null
@@ -55,6 +59,7 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     private var innerTextureView: InnerTextureView? = null
     private var lastFile: IFileContainer? = null
     private val scaleTypeUtil = ScaleTypeUtil()
+    private var autoDismiss = true
 
     // 代理监听
     private val animProxyListener by lazy {
@@ -74,7 +79,10 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
             }
 
             override fun onVideoComplete() {
-                hide()
+                if (autoDismiss)
+                    hide()
+                else
+                    lastFile?.close()
                 animListener?.onVideoComplete()
             }
 
@@ -93,28 +101,30 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     // 保证AnimView已经布局完成才加入TextureView
     private var onSizeChangedCalled = false
     private var needPrepareTextureView = false
-    private val prepareTextureViewRunnable = Runnable {
-        removeAllViews()
-        innerTextureView = InnerTextureView(context).apply {
-            player = this@AnimView.player
-            isOpaque = false
-            surfaceTextureListener = this@AnimView
-            layoutParams = scaleTypeUtil.getLayoutParam(this)
-        }
-        addView(innerTextureView)
-    }
-
 
     init {
+        val obtainStyledAttributes = context.obtainStyledAttributes(attrs, R.styleable.AnimView)
+        autoDismiss = obtainStyledAttributes.getBoolean(R.styleable.AnimView_anim_view_auto_dismiss, true)
+        obtainStyledAttributes.recycle()
         hide()
         player = AnimPlayer(this)
+        player.autoDismiss = autoDismiss
         player.animListener = animProxyListener
     }
 
 
     override fun prepareTextureView() {
         if (onSizeChangedCalled) {
-            uiHandler.post(prepareTextureViewRunnable)
+            uiHandler.post {
+                removeAllViews()
+                innerTextureView = InnerTextureView(context).apply {
+                    player = this@AnimView.player
+                    isOpaque = false
+                    surfaceTextureListener = this@AnimView
+                    layoutParams = scaleTypeUtil.getLayoutParam(this)
+                }
+                addView(innerTextureView)
+            }
         } else {
             ALog.e(TAG, "onSizeChanged not called")
             needPrepareTextureView = true
@@ -188,18 +198,18 @@ open class AnimView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun setFetchResource(fetchResource: IFetchResource?) {
-        player.pluginManager.getMixAnimPlugin()?.resourceRequest = fetchResource
+        player.pluginManager.getMixAnimPlugin().resourceRequest = fetchResource
     }
 
     override fun setOnResourceClickListener(resourceClickListener: OnResourceClickListener?) {
-        player.pluginManager.getMixAnimPlugin()?.resourceClickListener = resourceClickListener
+        player.pluginManager.getMixAnimPlugin().resourceClickListener = resourceClickListener
     }
 
     /**
      * 兼容方案，优先保证表情显示
      */
-    open fun enableAutoTxtColorFill(enable: Boolean) {
-        player.pluginManager.getMixAnimPlugin()?.autoTxtColorFill = enable
+    fun enableAutoTxtColorFill(enable: Boolean) {
+        player.pluginManager.getMixAnimPlugin().autoTxtColorFill = enable
     }
 
     override fun setLoop(playLoop: Int) {

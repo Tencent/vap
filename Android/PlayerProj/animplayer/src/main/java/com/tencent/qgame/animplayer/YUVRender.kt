@@ -146,7 +146,7 @@ class YUVRender (surfaceTexture: SurfaceTexture): IRenderListener {
         eglUtil.swapBuffers()
     }
 
-    override fun setYUVData(width: Int, height: Int, y: ByteArray?, u: ByteArray?, v: ByteArray?) {
+    override fun setYUVData(width: Int, height: Int, y: ByteArray, u: ByteArray, v: ByteArray) {
         widthYUV = width
         heightYUV = height
         this.y = ByteBuffer.wrap(y)

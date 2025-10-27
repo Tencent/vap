@@ -16,10 +16,10 @@
 package com.tencent.qgame.animplayer
 
 import android.media.*
+import android.os.Build
 import com.tencent.qgame.animplayer.file.IFileContainer
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.MediaUtil
-import java.lang.RuntimeException
 
 class AudioPlayer(val player: AnimPlayer) {
 
@@ -30,12 +30,11 @@ class AudioPlayer(val player: AnimPlayer) {
     var extractor: MediaExtractor? = null
     var decoder: MediaCodec? = null
     var audioTrack: AudioTrack? = null
-    val decodeThread = HandlerHolder(null, null)
+    private val decodeThread = HandlerHolder(null, null)
     var isRunning = false
     var playLoop = 0
     var isStopReq = false
     var needDestroy = false
-
 
 
     private fun prepareThread(): Boolean {
@@ -97,7 +96,7 @@ class AudioPlayer(val player: AnimPlayer) {
         val channelConfig = getChannelConfig(format.getInteger(MediaFormat.KEY_CHANNEL_COUNT))
 
         val bufferSize = AudioTrack.getMinBufferSize(sampleRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT)
-        val audioTrack = AudioTrack(AudioManager.STREAM_MUSIC, sampleRate, channelConfig, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM)
+        val audioTrack = buildAudioTrack(sampleRate, channelConfig, bufferSize)
         this.audioTrack = audioTrack
         val state = audioTrack.state
         if (state != AudioTrack.STATE_INITIALIZED) {
@@ -151,6 +150,31 @@ class AudioPlayer(val player: AnimPlayer) {
             }
         }
         release()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun buildAudioTrack(sampleRate: Int, channelConfig: Int, bufferSize: Int): AudioTrack {
+        val streamType = AudioManager.STREAM_MUSIC
+        val encoding = AudioFormat.ENCODING_PCM_16BIT
+        val modeStream = AudioTrack.MODE_STREAM
+        val audioTrack = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val audioAttributes = AudioAttributes.Builder()
+                .setLegacyStreamType(streamType)
+                .build()
+            val audioFormat = AudioFormat.Builder()
+                .setSampleRate(sampleRate)
+                .setEncoding(encoding)
+                .setChannelMask(channelConfig)
+                .build()
+            AudioTrack.Builder().setAudioFormat(audioFormat)
+                .setAudioAttributes(audioAttributes)
+                .setBufferSizeInBytes(bufferSize)
+                .setTransferMode(modeStream)
+                .build()
+        } else {
+            AudioTrack(streamType, sampleRate, channelConfig, encoding, bufferSize, modeStream)
+        }
+        return audioTrack
     }
 
 

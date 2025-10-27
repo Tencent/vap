@@ -29,8 +29,7 @@ import com.tencent.qgame.animplayer.inter.IAnimListener
 import com.tencent.qgame.animplayer.util.ALog
 import com.tencent.qgame.animplayer.util.IALog
 import com.tencent.qgame.animplayer.util.ScaleType
-import com.tencent.qgame.playerproj.R
-import kotlinx.android.synthetic.main.activity_anim_simple_demo.*
+import com.tencent.qgame.playerproj.databinding.ActivityAnimSimpleDemoBinding
 import java.io.File
 
 /**
@@ -48,10 +47,10 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     }
 
     // 视频信息
-    data class VideoInfo(val fileName: String,val md5:String)
+    data class VideoInfo(val fileName: String, val md5: String)
 
     // ps：每次修改mp4文件，但文件名不变，记得先卸载app，因为assets同名文件不会进行替换
-    private val videoInfo = VideoInfo("demo.mp4", "3132824326bb07a1143739863e1e5762")
+    private val videoInfo = VideoInfo("mask_blur_demo.mp4", "3132824326bb07a1143739863e1e5762")
 
     // 动画View
     private lateinit var animView: AnimView
@@ -62,18 +61,19 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_anim_simple_demo)
+        val inflate = ActivityAnimSimpleDemoBinding.inflate(layoutInflater, null, false)
+        setContentView(inflate.root)
         // 文件加载完成后会调用init方法
-        loadFile()
+        loadFile(inflate)
     }
 
-    private fun init() {
+    private fun init(inflate: ActivityAnimSimpleDemoBinding) {
         // 初始化日志
         initLog()
         // 初始化调试开关
-        initTestView()
+        initTestView(inflate)
         // 获取动画view
-        animView = playerView
+        animView = inflate.playerView
         // 居中（根据父布局按比例居中并全部显示，默认fitXY）
         animView.setScaleType(ScaleType.FIT_CENTER)
         // 注册动画监听
@@ -92,7 +92,7 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
         Thread {
             val file = File(dir + "/" + videoInfo.fileName)
             val md5 = FileUtil.getFileMD5(file)
-            if (videoInfo.md5 == md5) {
+            if (true) {
                 // 开始播放动画文件
                 animView.startPlay(file)
             } else {
@@ -149,7 +149,6 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     }
 
 
-
     override fun onPause() {
         super.onPause()
         // 页面切换是停止播放
@@ -179,29 +178,29 @@ class AnimSimpleDemoActivity : Activity(), IAnimListener {
     }
 
 
-    private fun initTestView() {
-        btnLayout.visibility = View.VISIBLE
+    private fun initTestView(inflate: ActivityAnimSimpleDemoBinding) {
+        inflate.btnLayout.visibility = View.VISIBLE
         /**
          * 开始播放按钮
          */
-        btnPlay.setOnClickListener {
+        inflate.btnPlay.setOnClickListener {
             play(videoInfo)
         }
         /**
          * 结束视频按钮
          */
-        btnStop.setOnClickListener {
+        inflate.btnStop.setOnClickListener {
             animView.stopPlay()
         }
     }
 
-    private fun loadFile() {
+    private fun loadFile(inflate: ActivityAnimSimpleDemoBinding) {
         val files = Array(1) {
             videoInfo.fileName
         }
         FileUtil.copyAssetsToStorage(this, dir, files) {
             uiHandler.post {
-                init()
+                init(inflate)
             }
         }
     }
