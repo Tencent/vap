@@ -1,1 +1,1 @@
-include ':app', ':animtool', ':animplayer'
+include ':app', ':animtool', ':animplayer', ":cli"
