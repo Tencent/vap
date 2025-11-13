@@ -21,7 +21,7 @@
 @property (nonatomic, weak) id<VAPWrapViewDelegate> delegate;
 
 @property (nonatomic, strong) VAPView *vapView;
-
+@property (nonatomic,strong) QGVAPConfigModel * cacheConfig;
 @end
 
 @implementation QGVAPWrapView
@@ -32,7 +32,14 @@
     }
     return self;
 }
-
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self commonInit];
@@ -48,6 +55,7 @@
 - (void)initVAPViewIfNeed {
     if (!_vapView) {
         _vapView = [[VAPView alloc] initWithFrame:self.bounds];
+        _vapView.hwd_enterBackgroundOP = self.hwd_enterBackgroundOP;
         [self addSubview:_vapView];
     }
 }
@@ -109,7 +117,12 @@
 }
 
 #pragma mark - Private
-
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    if (self.cacheConfig) {
+        [self p_setupContentModeWithConfig:self.cacheConfig];
+    }
+}
 - (void)p_setupContentModeWithConfig:(QGVAPConfigModel *)config {
     CGFloat realWidth = 0.;
     CGFloat realHeight = 0.;
@@ -122,7 +135,7 @@
     
     switch (self.contentMode) {
         case QGVAPWrapViewContentModeScaleToFill: {
-
+            self.vapView.frame = self.bounds;
         }
             break;
         case QGVAPWrapViewContentModeAspectFit: {
@@ -135,7 +148,7 @@
             }
             
             self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
-            self.vapView.center = self.center;
+            self.vapView.center = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
         }
             break;;
         case QGVAPWrapViewContentModeAspectFill: {
@@ -148,9 +161,24 @@
             }
             
             self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
-            self.vapView.center = self.center;
+            self.vapView.center = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
         }
-            break;;
+            break;
+        case QGVAPWrapViewContentModeTop: {
+            realWidth = layoutWidth;
+            realHeight = realWidth / videoRatio;
+            
+            self.vapView.frame = CGRectMake(0, 0, realWidth, realHeight);
+            
+        }
+            break;
+        case QGVAPWrapViewContentModeBottom: {
+            realWidth = layoutWidth;
+            realHeight = realWidth / videoRatio;
+            CGFloat realTop = layoutHeight - realHeight;
+            self.vapView.frame = CGRectMake(0, realTop, realWidth, realHeight);
+        }
+            break;
         default:
             break;
     }
@@ -195,7 +223,7 @@
 
 - (BOOL)shouldStartPlayMP4:(VAPView *)container config:(QGVAPConfigModel *)config {
     [self p_setupContentModeWithConfig:config];
-    
+    self.cacheConfig = config;
     if ([self.delegate respondsToSelector:@selector(vapWrap_viewshouldStartPlayMP4:config:)]) {
         return [self.delegate vapWrap_viewshouldStartPlayMP4:container config:config];
     }
@@ -225,5 +253,10 @@
         [self.delegate vapWrapView_loadVapImageWithURL:urlStr context:context completion:completionBlock];
     }
 }
-
+-(UIImage *)loadVapContent:(NSString *)content context:(NSDictionary *)context {
+    if ([self.delegate respondsToSelector:@selector(vapWrapView_loadVapContent:context:)]) {
+        return [self.delegate vapWrapView_loadVapContent:content context:context];
+    }
+    return nil;
+}
 @end

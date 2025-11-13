@@ -26,7 +26,8 @@
 @optional
 - (NSString *)vap_contentForTag:(NSString *)tag resource:(QGVAPSourceInfo *)info;        //替换配置中的资源占位符（不处理直接返回tag）
 - (void)vap_loadImageWithURL:(NSString *)urlStr context:(NSDictionary *)context completion:(VAPImageCompletionBlock)completionBlock;
-
+/// 自定义字体文字加载
+- (UIImage *)loadVapContent:(NSString *)content context:(NSDictionary *)context;
 @end
 
 @interface QGVAPConfigManager : NSObject

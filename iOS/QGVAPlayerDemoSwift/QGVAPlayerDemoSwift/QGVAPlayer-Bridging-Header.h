@@ -19,5 +19,6 @@
 #import "UIView+VAP.h"
 #import "QGVAPConfigModel.h"
 #import "QGVAPWrapView.h"
+#import "QGVAPTextureLoader.h"
 
 #endif /* QGVAPlayer_Bridging_Header_h */

@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		60442A3CF302890DF678922D /* Pods_QGVAPlayerDemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB8E86ABF2CA596FDE03A5E6 /* Pods_QGVAPlayerDemoTests.framework */; };
 		63BAD38822F09B1200EAD4C4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BAD38722F09B1200EAD4C4 /* AppDelegate.m */; };
 		63BAD38B22F09B1200EAD4C4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BAD38A22F09B1200EAD4C4 /* ViewController.m */; };
 		63BAD38E22F09B1200EAD4C4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63BAD38C22F09B1200EAD4C4 /* Main.storyboard */; };
@@ -19,6 +20,10 @@
 		63BAD43422F09D2800EAD4C4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BAD43322F09D2700EAD4C4 /* libz.tbd */; };
 		63BAD44322F0A02C00EAD4C4 /* QGVAPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63BAD43B22F09D6800EAD4C4 /* QGVAPlayer.framework */; };
 		63BAD44422F0A02C00EAD4C4 /* QGVAPlayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 63BAD43B22F09D6800EAD4C4 /* QGVAPlayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		95F56615B9B112BFC59E36DF /* Pods_QGVAPlayerDemo_QGVAPlayerDemoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A85ED96DB686F78B5A53D613 /* Pods_QGVAPlayerDemo_QGVAPlayerDemoUITests.framework */; };
+		98BC1C4C2DA683B400BA89CD /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98BC1C4B2DA683B400BA89CD /* HomeViewController.m */; };
+		98BC1C4F2DA6847F00BA89CD /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 98BC1C4E2DA6847F00BA89CD /* SecondViewController.m */; };
+		AB4C95119758AD5063411273 /* Pods_QGVAPlayerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABBC7F349C63EA9A501092A /* Pods_QGVAPlayerDemo.framework */; };
 		BA964B5F268315E6003265F2 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = BA964B5D268315E6003265F2 /* CHANGELOG.md */; };
 		BA964B6326831AF1003265F2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BA964B6126831AF1003265F2 /* README.md */; };
 		BA964B6526831BB6003265F2 /* QGVAPlayer.podspec in Resources */ = {isa = PBXBuildFile; fileRef = BA964B6426831BB6003265F2 /* QGVAPlayer.podspec */; };
@@ -84,6 +89,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0123BE30D4C246F5F96D4C10 /* Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.release.xcconfig"; path = "Target Support Files/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.release.xcconfig"; sourceTree = "<group>"; };
+		12BE062B7AEB0E95C2B0071B /* Pods-QGVAPlayerDemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QGVAPlayerDemoTests.release.xcconfig"; path = "Target Support Files/Pods-QGVAPlayerDemoTests/Pods-QGVAPlayerDemoTests.release.xcconfig"; sourceTree = "<group>"; };
+		2F0D3FF41A3B3C3B8D04A221 /* Pods-QGVAPlayerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QGVAPlayerDemo.debug.xcconfig"; path = "Target Support Files/Pods-QGVAPlayerDemo/Pods-QGVAPlayerDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		3A340CD4436AB4F87F12EDC6 /* Pods-QGVAPlayerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QGVAPlayerDemo.release.xcconfig"; path = "Target Support Files/Pods-QGVAPlayerDemo/Pods-QGVAPlayerDemo.release.xcconfig"; sourceTree = "<group>"; };
 		63BAD38322F09B1200EAD4C4 /* QGVAPlayerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QGVAPlayerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63BAD38622F09B1200EAD4C4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		63BAD38722F09B1200EAD4C4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -103,9 +112,18 @@
 		63BAD3B822F09BAF00EAD4C4 /* Resource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resource; sourceTree = "<group>"; };
 		63BAD43322F09D2700EAD4C4 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		63BAD43522F09D6800EAD4C4 /* QGVAPlayer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = QGVAPlayer.xcodeproj; path = ../../QGVAPlayer/QGVAPlayer.xcodeproj; sourceTree = "<group>"; };
+		6ABBC7F349C63EA9A501092A /* Pods_QGVAPlayerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QGVAPlayerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9618385C800F58A4C0569C8D /* Pods-QGVAPlayerDemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QGVAPlayerDemoTests.debug.xcconfig"; path = "Target Support Files/Pods-QGVAPlayerDemoTests/Pods-QGVAPlayerDemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		973FD2B05C71C494C362CCAE /* Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.debug.xcconfig"; path = "Target Support Files/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		98BC1C4A2DA683B400BA89CD /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		98BC1C4B2DA683B400BA89CD /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		98BC1C4D2DA6847F00BA89CD /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
+		98BC1C4E2DA6847F00BA89CD /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
+		A85ED96DB686F78B5A53D613 /* Pods_QGVAPlayerDemo_QGVAPlayerDemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QGVAPlayerDemo_QGVAPlayerDemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA964B5D268315E6003265F2 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
 		BA964B6126831AF1003265F2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		BA964B6426831BB6003265F2 /* QGVAPlayer.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QGVAPlayer.podspec; path = ../../QGVAPlayer.podspec; sourceTree = "<group>"; };
+		EB8E86ABF2CA596FDE03A5E6 /* Pods_QGVAPlayerDemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QGVAPlayerDemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +133,7 @@
 			files = (
 				63BAD43422F09D2800EAD4C4 /* libz.tbd in Frameworks */,
 				63BAD44322F0A02C00EAD4C4 /* QGVAPlayer.framework in Frameworks */,
+				AB4C95119758AD5063411273 /* Pods_QGVAPlayerDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60442A3CF302890DF678922D /* Pods_QGVAPlayerDemoTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,12 +149,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95F56615B9B112BFC59E36DF /* Pods_QGVAPlayerDemo_QGVAPlayerDemoUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		57C8D61F6ED762A13893795C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2F0D3FF41A3B3C3B8D04A221 /* Pods-QGVAPlayerDemo.debug.xcconfig */,
+				3A340CD4436AB4F87F12EDC6 /* Pods-QGVAPlayerDemo.release.xcconfig */,
+				973FD2B05C71C494C362CCAE /* Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.debug.xcconfig */,
+				0123BE30D4C246F5F96D4C10 /* Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.release.xcconfig */,
+				9618385C800F58A4C0569C8D /* Pods-QGVAPlayerDemoTests.debug.xcconfig */,
+				12BE062B7AEB0E95C2B0071B /* Pods-QGVAPlayerDemoTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		63BAD37A22F09B1200EAD4C4 = {
 			isa = PBXGroup;
 			children = (
@@ -147,6 +181,7 @@
 				63BAD3A922F09B1500EAD4C4 /* QGVAPlayerDemoUITests */,
 				63BAD38422F09B1200EAD4C4 /* Products */,
 				63BAD42222F09C8700EAD4C4 /* Frameworks */,
+				57C8D61F6ED762A13893795C /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -173,6 +208,10 @@
 				63BAD39122F09B1500EAD4C4 /* LaunchScreen.storyboard */,
 				63BAD39422F09B1500EAD4C4 /* Info.plist */,
 				63BAD39522F09B1500EAD4C4 /* main.m */,
+				98BC1C4A2DA683B400BA89CD /* HomeViewController.h */,
+				98BC1C4B2DA683B400BA89CD /* HomeViewController.m */,
+				98BC1C4D2DA6847F00BA89CD /* SecondViewController.h */,
+				98BC1C4E2DA6847F00BA89CD /* SecondViewController.m */,
 			);
 			path = QGVAPlayerDemo;
 			sourceTree = "<group>";
@@ -199,6 +238,9 @@
 			isa = PBXGroup;
 			children = (
 				63BAD43322F09D2700EAD4C4 /* libz.tbd */,
+				6ABBC7F349C63EA9A501092A /* Pods_QGVAPlayerDemo.framework */,
+				A85ED96DB686F78B5A53D613 /* Pods_QGVAPlayerDemo_QGVAPlayerDemoUITests.framework */,
+				EB8E86ABF2CA596FDE03A5E6 /* Pods_QGVAPlayerDemoTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -219,10 +261,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 63BAD3AF22F09B1500EAD4C4 /* Build configuration list for PBXNativeTarget "QGVAPlayerDemo" */;
 			buildPhases = (
+				CC696ACA0CED858905A44618 /* [CP] Check Pods Manifest.lock */,
 				63BAD37F22F09B1200EAD4C4 /* Sources */,
 				63BAD38022F09B1200EAD4C4 /* Frameworks */,
 				63BAD38122F09B1200EAD4C4 /* Resources */,
 				63BAD44722F0A02C00EAD4C4 /* Embed Frameworks */,
+				03312178AC11DC262840AEC8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -239,6 +283,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 63BAD3B222F09B1500EAD4C4 /* Build configuration list for PBXNativeTarget "QGVAPlayerDemoTests" */;
 			buildPhases = (
+				53BD77FE51BFD74DD97B5975 /* [CP] Check Pods Manifest.lock */,
 				63BAD39722F09B1500EAD4C4 /* Sources */,
 				63BAD39822F09B1500EAD4C4 /* Frameworks */,
 				63BAD39922F09B1500EAD4C4 /* Resources */,
@@ -257,9 +302,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 63BAD3B522F09B1500EAD4C4 /* Build configuration list for PBXNativeTarget "QGVAPlayerDemoUITests" */;
 			buildPhases = (
+				F6FB24EF628F4264EEE5690B /* [CP] Check Pods Manifest.lock */,
 				63BAD3A222F09B1500EAD4C4 /* Sources */,
 				63BAD3A322F09B1500EAD4C4 /* Frameworks */,
 				63BAD3A422F09B1500EAD4C4 /* Resources */,
+				F5D9239F7BC826D2357241E7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -367,14 +414,119 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		03312178AC11DC262840AEC8 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QGVAPlayerDemo/Pods-QGVAPlayerDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QGVAPlayerDemo/Pods-QGVAPlayerDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-QGVAPlayerDemo/Pods-QGVAPlayerDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		53BD77FE51BFD74DD97B5975 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-QGVAPlayerDemoTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CC696ACA0CED858905A44618 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-QGVAPlayerDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F5D9239F7BC826D2357241E7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F6FB24EF628F4264EEE5690B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		63BAD37F22F09B1200EAD4C4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98BC1C4F2DA6847F00BA89CD /* SecondViewController.m in Sources */,
 				63BAD38B22F09B1200EAD4C4 /* ViewController.m in Sources */,
 				63BAD39622F09B1500EAD4C4 /* main.m in Sources */,
 				63BAD38822F09B1200EAD4C4 /* AppDelegate.m in Sources */,
+				98BC1C4C2DA683B400BA89CD /* HomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,16 +705,17 @@
 		};
 		63BAD3B022F09B1500EAD4C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2F0D3FF41A3B3C3B8D04A221 /* Pods-QGVAPlayerDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6W55574XBS;
+				DEVELOPMENT_TEAM = YQ2BBNYL5U;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../QGVAPlayer/QGVAPlayer/**";
 				INFOPLIST_FILE = QGVAPlayerDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -576,15 +729,16 @@
 		};
 		63BAD3B122F09B1500EAD4C4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A340CD4436AB4F87F12EDC6 /* Pods-QGVAPlayerDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6W55574XBS;
+				DEVELOPMENT_TEAM = YQ2BBNYL5U;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../QGVAPlayer/QGVAPlayer/**";
 				INFOPLIST_FILE = QGVAPlayerDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -598,11 +752,13 @@
 		};
 		63BAD3B322F09B1500EAD4C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9618385C800F58A4C0569C8D /* Pods-QGVAPlayerDemoTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6W55574XBS;
+				DEVELOPMENT_TEAM = YQ2BBNYL5U;
 				INFOPLIST_FILE = QGVAPlayerDemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -617,11 +773,13 @@
 		};
 		63BAD3B422F09B1500EAD4C4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 12BE062B7AEB0E95C2B0071B /* Pods-QGVAPlayerDemoTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6W55574XBS;
+				DEVELOPMENT_TEAM = YQ2BBNYL5U;
 				INFOPLIST_FILE = QGVAPlayerDemoTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -636,10 +794,12 @@
 		};
 		63BAD3B622F09B1500EAD4C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 973FD2B05C71C494C362CCAE /* Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6W55574XBS;
+				DEVELOPMENT_TEAM = YQ2BBNYL5U;
 				INFOPLIST_FILE = QGVAPlayerDemoUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -654,10 +814,12 @@
 		};
 		63BAD3B722F09B1500EAD4C4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0123BE30D4C246F5F96D4C10 /* Pods-QGVAPlayerDemo-QGVAPlayerDemoUITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6W55574XBS;
+				DEVELOPMENT_TEAM = YQ2BBNYL5U;
 				INFOPLIST_FILE = QGVAPlayerDemoUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

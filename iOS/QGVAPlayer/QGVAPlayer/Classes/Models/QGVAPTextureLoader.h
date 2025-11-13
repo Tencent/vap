@@ -15,8 +15,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Metal/Metal.h>
-
+typedef  UIFont * (^LoadCustomFontBlock)(CGFloat,BOOL);
 @interface QGVAPTextureLoader : NSObject
+
 
 + (id<MTLBuffer>)loadVapColorFillBufferWith:(UIColor *)color device:(id<MTLDevice>)device;
 
@@ -28,4 +29,7 @@
 
 + (UIFont *)getAppropriateFontWith:(NSString *)text rect:(CGRect)fitFrame designedSize:(CGFloat)designedFontSize bold:(BOOL)isBold textSize:(CGSize *)textSize;
 
++(void)loadCustomFont: (nullable LoadCustomFontBlock ) fontBlock;
+
++ (nullable UIImage *)drawingCustomImageForText:(NSString *)textStr color:(UIColor *)color size:(CGSize)size bold:(BOOL)bold fontBlock: (LoadCustomFontBlock)fontBlock;
 @end

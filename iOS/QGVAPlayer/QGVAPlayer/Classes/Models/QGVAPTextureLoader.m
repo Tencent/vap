@@ -19,6 +19,9 @@
 #import "QGVAPLogger.h"
 #import "UIDevice+VAPUtil.h"
 
+
+static LoadCustomFontBlock staticFontBlock;
+
 @implementation QGVAPTextureLoader
 
 #if TARGET_OS_SIMULATOR//模拟器
@@ -58,6 +61,11 @@
     }
     return [self cg_loadTextureWithImage:image device:device];
 }
++(void)loadCustomFont: (nullable LoadCustomFontBlock) fontBlock {
+    staticFontBlock = fontBlock;
+}
+
+
 
 + (UIImage *)drawingImageForText:(NSString *)textStr color:(UIColor *)color size:(CGSize)size bold:(BOOL)bold {
     
@@ -157,7 +165,7 @@
 //根据指定的字符内容和容器大小计算合适的字体
 + (UIFont *)getAppropriateFontWith:(NSString *)text rect:(CGRect)fitFrame designedSize:(CGFloat)designedFontSize bold:(BOOL)isBold textSize:(CGSize *)textSize {
     
-    UIFont *designedFont = isBold? [UIFont boldSystemFontOfSize:designedFontSize] : [UIFont systemFontOfSize:designedFontSize];
+    UIFont *designedFont = [self judgeFontWithFontSize:designedFontSize isBold:isBold];
     if (text.length == 0 || CGRectEqualToRect(CGRectZero, fitFrame) || !designedFont) {
         *textSize = fitFrame.size;
         return designedFont ;
@@ -168,7 +176,7 @@
     while (stringSize.width > fitFrame.size.width && fontSize > 2.0 && remainExcuteCount > 0) {
         fontSize *= 0.9;
         remainExcuteCount -= 1;
-        designedFont = isBold? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
+        designedFont = [self judgeFontWithFontSize:fontSize isBold:isBold];
         stringSize = [text sizeWithAttributes:@{NSFontAttributeName:designedFont}];
     }
     if (remainExcuteCount < 1 || fontSize < 5.0) {
@@ -178,6 +186,82 @@
     return designedFont;
 }
 
++(UIFont *)judgeFontWithFontSize: (CGFloat)fontSize isBold: (BOOL)isBold {
+    if (staticFontBlock) {
+        UIFont * designedFont = staticFontBlock(fontSize,isBold);
+        if (designedFont) {
+            return designedFont;
+        }
+    }
+    UIFont *designedFont = isBold? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
+    return designedFont;
+}
+
+
++ (UIImage *)drawingCustomImageForText:(NSString *)textStr color:(UIColor *)color size:(CGSize)size bold:(BOOL)bold fontBlock: (LoadCustomFontBlock)fontBlock {
+    
+    if (textStr.length == 0) {
+        VAP_Error(kQGVAPModuleCommon, @"draw text resource fail cuz text is nil !!");
+        return nil;
+    }
+    if (!color) {
+        color = [UIColor blackColor];
+    }
+    CGRect rect = CGRectMake(0, 0, size.width/2.0, size.height/2.0);
+    CGSize textSize = CGSizeZero;
+    UIFont *font = [QGVAPTextureLoader getAppropriateCustomFontWith:textStr rect:rect designedSize:rect.size.height*0.8 bold:bold textSize:&textSize fontBlock: fontBlock];
+    if (!font) {
+        VAP_Error(kQGVAPModuleCommon, @"draw text resource:%@ fail cuz font is nil !!", textStr);
+        return nil;
+    }
+    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    NSDictionary *attr = @{NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle, NSForegroundColorAttributeName:color};
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
+    rect.origin.y = (rect.size.height - font.lineHeight)/2.0;
+    [textStr drawWithRect:rect options:NSStringDrawingUsesLineFragmentOrigin attributes:attr context:nil];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    if (!image) {
+        VAP_Error(kQGVAPModuleCommon, @"draw text resource:%@ fail cuz UIGraphics fail.", textStr);
+        return nil;
+    }
+    return image;
+}
+//根据指定的字符内容和容器大小计算合适的字体
++ (UIFont *)getAppropriateCustomFontWith:(NSString *)text rect:(CGRect)fitFrame designedSize:(CGFloat)designedFontSize bold:(BOOL)isBold textSize:(CGSize *)textSize fontBlock: (LoadCustomFontBlock)fontBlock {
+    
+    UIFont *designedFont = [self judgeCustomFontWithFontSize:designedFontSize isBold:isBold fontBlock:fontBlock];
+    if (text.length == 0 || CGRectEqualToRect(CGRectZero, fitFrame) || !designedFont) {
+        *textSize = fitFrame.size;
+        return designedFont ;
+    }
+    CGSize stringSize = [text sizeWithAttributes:@{NSFontAttributeName:designedFont}];
+    CGFloat fontSize = designedFontSize;
+    NSInteger remainExcuteCount = 100;
+    while (stringSize.width > fitFrame.size.width && fontSize > 2.0 && remainExcuteCount > 0) {
+        fontSize *= 0.9;
+        remainExcuteCount -= 1;
+        designedFont = [self judgeCustomFontWithFontSize:fontSize isBold:isBold fontBlock:fontBlock];
+        stringSize = [text sizeWithAttributes:@{NSFontAttributeName:designedFont}];
+    }
+    if (remainExcuteCount < 1 || fontSize < 5.0) {
+        VAP_Event(kQGVAPModuleCommon, @"data exception content:%@ rect:%@ designedSize:%@ isBold:%@", text, [NSValue valueWithCGRect:fitFrame], @(designedFontSize), @(isBold));
+    }
+    *textSize = stringSize;
+    return designedFont;
+}
++(UIFont *)judgeCustomFontWithFontSize: (CGFloat)fontSize isBold: (BOOL)isBold fontBlock: (LoadCustomFontBlock)fontBlock {
+    if (fontBlock) {
+        UIFont * designedFont = fontBlock(fontSize,isBold);
+        if (designedFont) {
+            return designedFont;
+        }
+    }
+    UIFont *designedFont = isBold? [UIFont boldSystemFontOfSize:fontSize] : [UIFont systemFontOfSize:fontSize];
+    return designedFont;
+}
 #endif
 
 @end
