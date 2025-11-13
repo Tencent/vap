@@ -26,6 +26,22 @@ And VAP can also merge custom attributes (such as user name, avatar) into the an
 
 
 
+## Friendly Reminder
+
+Dear Developers:
+
+Thank you for your continued interest in and use of this repository. We hereby solemnly state that this repository has entered a maintenance-free state and will no longer be updated.
+
+If you need to continue using the VAP animation playback feature and expect **long-term stable, iterative technical support**, we recommend switching to Tencent Cloud's official gift effects solution: **Gift AR**. This service is designed for high-performance animation playback scenarios and provides:
+
+- **Continuous Iteration**: Long-term maintenance and feature updates.
+- **Multi-Device Compatibility**: Full support for Android, iOS, and Flutter platforms.
+- **Enterprise-Grade Guarantee**: High stability, security, and technical support.
+
+The Tencent Cloud Gift AR version is designed to address the limitations of the under-maintained open source version, providing you (especially enterprise users) with more reliable production environment support and avoiding the potential risks of relying on outdated versions.
+
+Thank you for your understanding. Please [click here](https://trtc.io/document/70595?product=beautyar&menulabel=core%20sdk&platform=android) to learn more about the detailed capabilities and integration guide for gift animation effects.
+
 ## Performance
 
 
