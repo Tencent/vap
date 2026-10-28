@@ -1,0 +1,40 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.tencent.vappro.demo'
+    compileSdk 33
+
+    defaultConfig {
+        // 注意：applicationId 需要与 License 绑定的包名一致。
+        applicationId "com.tencent.tcmediax.demo"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // 本地集成 SDK（libs/ 下的 3 个 AAR）：
+    //   - TCMediaX_*.aar                 基础库
+    //   - TCEffectPlayer_vap_pro_*.aar   VAP Pro 播放器
+    //   - xmagic-auth_*.aar              鉴权依赖
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+}

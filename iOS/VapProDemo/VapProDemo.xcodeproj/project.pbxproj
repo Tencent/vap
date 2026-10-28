@@ -1,0 +1,504 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC000002000000000000000B /* demo_avatar_car.png in Resources */ = {isa = PBXBuildFile; fileRef = BC000002000000000000000A /* demo_avatar_car.png */; };
+		BC000002000000000000000D /* demo_avatar_earphone.png in Resources */ = {isa = PBXBuildFile; fileRef = BC000002000000000000000C /* demo_avatar_earphone.png */; };
+		202FC3AC2CDEE1E100D7022F /* demo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 202FC3AB2CDEE1E100D7022F /* demo.mp4 */; };
+		209395D02C21675C007A6478 /* vap_king_ronghe.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 209395C92C21675C007A6478 /* vap_king_ronghe.mp4 */; };
+		209395D32C21675C007A6478 /* vap_car_ronghe.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 209395CC2C21675C007A6478 /* vap_car_ronghe.mp4 */; };
+		20A7A9502C08D116009B6246 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7A94F2C08D116009B6246 /* AppDelegate.m */; };
+		20A7A9532C08D116009B6246 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7A9522C08D116009B6246 /* SceneDelegate.m */; };
+		20A7A9562C08D116009B6246 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7A9552C08D116009B6246 /* ViewController.m */; };
+		20A7A9592C08D116009B6246 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 20A7A9582C08D116009B6246 /* Base */; };
+		20A7A95B2C08D117009B6246 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20A7A95A2C08D117009B6246 /* Assets.xcassets */; };
+		20A7A95E2C08D117009B6246 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 20A7A95D2C08D117009B6246 /* Base */; };
+		20A7A9612C08D117009B6246 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7A9602C08D117009B6246 /* main.m */; };
+		52BBDBEDAEE51AE92578B360 /* Pods_VapProDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8ADD81EB7FF179BCC38427B7 /* Pods_VapProDemo.framework */; };
+		BC000001000000000000000C /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = BC000001000000000000000B /* BackgroundView.m */; };
+		F07CEB56308B33ED00637B68 /* demo_avatar_car.png in Resources */ = {isa = PBXBuildFile; fileRef = F07CEB54308B33ED00637B68 /* demo_avatar_car.png */; };
+		F07CEB57308B33ED00637B68 /* demo_avatar_earphone.png in Resources */ = {isa = PBXBuildFile; fileRef = F07CEB55308B33ED00637B68 /* demo_avatar_earphone.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BC000002000000000000000A /* demo_avatar_car.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demo_avatar_car.png; sourceTree = "<group>"; };
+		BC000002000000000000000C /* demo_avatar_earphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demo_avatar_earphone.png; sourceTree = "<group>"; };
+		202FC3AB2CDEE1E100D7022F /* demo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo.mp4; sourceTree = "<group>"; };
+		209395C92C21675C007A6478 /* vap_king_ronghe.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = vap_king_ronghe.mp4; sourceTree = "<group>"; };
+		209395CC2C21675C007A6478 /* vap_car_ronghe.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = vap_car_ronghe.mp4; sourceTree = "<group>"; };
+		20A7A94B2C08D116009B6246 /* VapProDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VapProDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20A7A94E2C08D116009B6246 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		20A7A94F2C08D116009B6246 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		20A7A9512C08D116009B6246 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		20A7A9522C08D116009B6246 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		20A7A9542C08D116009B6246 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		20A7A9552C08D116009B6246 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		20A7A9582C08D116009B6246 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		20A7A95A2C08D117009B6246 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		20A7A95D2C08D117009B6246 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		20A7A95F2C08D117009B6246 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		20A7A9602C08D117009B6246 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8324A68A381560994F62F843 /* Pods-VapProDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VapProDemo.release.xcconfig"; path = "Target Support Files/Pods-VapProDemo/Pods-VapProDemo.release.xcconfig"; sourceTree = "<group>"; };
+		83CD97F3D16F78F454690733 /* Pods-VapProDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VapProDemo.debug.xcconfig"; path = "Target Support Files/Pods-VapProDemo/Pods-VapProDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		8ADD81EB7FF179BCC38427B7 /* Pods_VapProDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VapProDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B72EC31D1610C3C212886B23 /* Pods-VapProDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VapProDemo.release.xcconfig"; path = "Target Support Files/Pods-VapProDemo/Pods-VapProDemo.release.xcconfig"; sourceTree = "<group>"; };
+		B7B4166B29C72BCB145FA74B /* Pods-VapProDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VapProDemo.debug.xcconfig"; path = "Target Support Files/Pods-VapProDemo/Pods-VapProDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		BC000001000000000000000A /* BackgroundView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BackgroundView.h; sourceTree = "<group>"; };
+		BC000001000000000000000B /* BackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BackgroundView.m; sourceTree = "<group>"; };
+		F07CEB54308B33ED00637B68 /* demo_avatar_car.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demo_avatar_car.png; sourceTree = "<group>"; };
+		F07CEB55308B33ED00637B68 /* demo_avatar_earphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demo_avatar_earphone.png; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		20A7A9482C08D116009B6246 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52BBDBEDAEE51AE92578B360 /* Pods_VapProDemo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20A7A9422C08D116009B6246 = {
+			isa = PBXGroup;
+			children = (
+				20A7A94D2C08D116009B6246 /* VapProDemo */,
+				20A7A94C2C08D116009B6246 /* Products */,
+				FBC9CC02226C9255F705B5DC /* Pods */,
+				31FD96C5C111B61ACCDEBB36 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		20A7A94C2C08D116009B6246 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				20A7A94B2C08D116009B6246 /* VapProDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20A7A94D2C08D116009B6246 /* VapProDemo */ = {
+			isa = PBXGroup;
+			children = (
+				20A7A98E2C09F709009B6246 /* Resource */,
+				BC000001000000000000000A /* BackgroundView.h */,
+				BC000001000000000000000B /* BackgroundView.m */,
+				20A7A94E2C08D116009B6246 /* AppDelegate.h */,
+				20A7A94F2C08D116009B6246 /* AppDelegate.m */,
+				20A7A9512C08D116009B6246 /* SceneDelegate.h */,
+				20A7A9522C08D116009B6246 /* SceneDelegate.m */,
+				20A7A9542C08D116009B6246 /* ViewController.h */,
+				20A7A9552C08D116009B6246 /* ViewController.m */,
+				20A7A9572C08D116009B6246 /* Main.storyboard */,
+				20A7A95A2C08D117009B6246 /* Assets.xcassets */,
+				20A7A95C2C08D117009B6246 /* LaunchScreen.storyboard */,
+				20A7A95F2C08D117009B6246 /* Info.plist */,
+				20A7A9602C08D117009B6246 /* main.m */,
+			);
+			path = VapProDemo;
+			sourceTree = "<group>";
+		};
+		20A7A98E2C09F709009B6246 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				F07CEB54308B33ED00637B68 /* demo_avatar_car.png */,
+				F07CEB55308B33ED00637B68 /* demo_avatar_earphone.png */,
+				BC000002000000000000000A /* demo_avatar_car.png */,
+				BC000002000000000000000C /* demo_avatar_earphone.png */,
+				202FC3AB2CDEE1E100D7022F /* demo.mp4 */,
+				209395CC2C21675C007A6478 /* vap_car_ronghe.mp4 */,
+				209395C92C21675C007A6478 /* vap_king_ronghe.mp4 */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		31FD96C5C111B61ACCDEBB36 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8ADD81EB7FF179BCC38427B7 /* Pods_VapProDemo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FBC9CC02226C9255F705B5DC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				83CD97F3D16F78F454690733 /* Pods-VapProDemo.debug.xcconfig */,
+				8324A68A381560994F62F843 /* Pods-VapProDemo.release.xcconfig */,
+				B7B4166B29C72BCB145FA74B /* Pods-VapProDemo.debug.xcconfig */,
+				B72EC31D1610C3C212886B23 /* Pods-VapProDemo.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		20A7A94A2C08D116009B6246 /* VapProDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20A7A9642C08D117009B6246 /* Build configuration list for PBXNativeTarget "VapProDemo" */;
+			buildPhases = (
+				07B2C5CFCC5D9EF6061ED288 /* [CP] Check Pods Manifest.lock */,
+				20A7A9472C08D116009B6246 /* Sources */,
+				20A7A9482C08D116009B6246 /* Frameworks */,
+				20A7A9492C08D116009B6246 /* Resources */,
+				988C08B5CA733DFCE9617588 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VapProDemo;
+			productName = VapProDemo;
+			productReference = 20A7A94B2C08D116009B6246 /* VapProDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		20A7A9432C08D116009B6246 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					20A7A94A2C08D116009B6246 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = 20A7A9462C08D116009B6246 /* Build configuration list for PBXProject "VapProDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 20A7A9422C08D116009B6246;
+			productRefGroup = 20A7A94C2C08D116009B6246 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				20A7A94A2C08D116009B6246 /* VapProDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		20A7A9492C08D116009B6246 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				20A7A95B2C08D117009B6246 /* Assets.xcassets in Resources */,
+				BC000002000000000000000B /* demo_avatar_car.png in Resources */,
+				BC000002000000000000000D /* demo_avatar_earphone.png in Resources */,
+				202FC3AC2CDEE1E100D7022F /* demo.mp4 in Resources */,
+				F07CEB56308B33ED00637B68 /* demo_avatar_car.png in Resources */,
+				F07CEB57308B33ED00637B68 /* demo_avatar_earphone.png in Resources */,
+				20A7A95E2C08D117009B6246 /* Base in Resources */,
+				209395D32C21675C007A6478 /* vap_car_ronghe.mp4 in Resources */,
+				209395D02C21675C007A6478 /* vap_king_ronghe.mp4 in Resources */,
+				20A7A9592C08D116009B6246 /* Base in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		07B2C5CFCC5D9EF6061ED288 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-VapProDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		988C08B5CA733DFCE9617588 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VapProDemo/Pods-VapProDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VapProDemo/Pods-VapProDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VapProDemo/Pods-VapProDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		20A7A9472C08D116009B6246 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				20A7A9562C08D116009B6246 /* ViewController.m in Sources */,
+				BC000001000000000000000C /* BackgroundView.m in Sources */,
+				20A7A9502C08D116009B6246 /* AppDelegate.m in Sources */,
+				20A7A9612C08D117009B6246 /* main.m in Sources */,
+				20A7A9532C08D116009B6246 /* SceneDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		20A7A9572C08D116009B6246 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				20A7A9582C08D116009B6246 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		20A7A95C2C08D117009B6246 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				20A7A95D2C08D117009B6246 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		20A7A9622C08D117009B6246 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		20A7A9632C08D117009B6246 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		20A7A9652C08D117009B6246 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B7B4166B29C72BCB145FA74B /* Pods-VapProDemo.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2ZNSKQLPTK;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VapProDemo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yunxiao.dev.tcmediax.demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Yunxiao Develop Profile";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		20A7A9662C08D117009B6246 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B72EC31D1610C3C212886B23 /* Pods-VapProDemo.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2ZNSKQLPTK;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VapProDemo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yunxiao.dev.tcmediax.demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Yunxiao Develop Profile";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		20A7A9462C08D116009B6246 /* Build configuration list for PBXProject "VapProDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20A7A9622C08D117009B6246 /* Debug */,
+				20A7A9632C08D117009B6246 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20A7A9642C08D117009B6246 /* Build configuration list for PBXNativeTarget "VapProDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20A7A9652C08D117009B6246 /* Debug */,
+				20A7A9662C08D117009B6246 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 20A7A9432C08D116009B6246 /* Project object */;
+}

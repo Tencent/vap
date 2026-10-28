@@ -1,0 +1,4 @@
+*.aar filter=lfs diff=lfs merge=lfs -text
+**/TCMediaX.framework/TCMediaX filter=lfs diff=lfs merge=lfs -text
+**/TCEffectPlayer.framework/TCEffectPlayer filter=lfs diff=lfs merge=lfs -text
+**/YTCommonXMagic.framework/YTCommonXMagic filter=lfs diff=lfs merge=lfs -text

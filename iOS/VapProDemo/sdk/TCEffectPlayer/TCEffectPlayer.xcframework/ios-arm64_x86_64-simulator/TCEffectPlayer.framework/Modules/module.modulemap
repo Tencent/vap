@@ -1,0 +1,6 @@
+framework module TCEffectPlayer {
+  umbrella header "TCEffectPlayer.h"
+
+  export *
+  module * { export * }
+}

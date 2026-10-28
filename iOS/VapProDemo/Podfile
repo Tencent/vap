@@ -1,0 +1,29 @@
+# Copyright (c) 2026 Tencent. All rights reserved.
+#
+# VapProDemo iOS Podfile
+# - 使用本地 xcframework（sdk/）集成 TCMediaX / TCEffectPlayer / YTCommonXMagic
+# - Masonry 走 CocoaPods 远程依赖
+
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '12.0'
+
+target 'VapProDemo' do
+  use_frameworks!
+
+  # UI 自动布局
+  pod 'Masonry'
+
+  # 本地集成 SDK：每个 pod 的 :path 指向 sdk/ 下的子目录，
+  # 该目录内包含 <Name>.podspec 和 <Name>.xcframework
+  pod 'TCMediaX',       :path => 'sdk/TCMediaX'
+  pod 'TCEffectPlayer', :path => 'sdk/TCEffectPlayer'
+  pod 'YTCommonXMagic', :path => 'sdk/YTCommonXMagic'
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+    end
+  end
+end
