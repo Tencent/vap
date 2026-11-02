@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-# issue 模版
+# issue 模板
 
 1. 问题描述（重现路径）
 2. 运行环境（手机型号，Android/iOS版本等）
@@ -16,7 +16,7 @@ assignees: ''
 
 # issue template
 
-1. Problem description 
+1. Problem description
 2. Running environment (mobile phone model, Android/iOS version, etc.)
 3. Logs
 4. Error file (optional)
