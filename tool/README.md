@@ -4,8 +4,8 @@
 
 版本: [tool2.0.6](https://github.com/Tencent/vap/releases/tag/tool2.0.6)
 
-Windows: [vaptool_win_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_win_v2.0.6.zip)(包含jre 可直接运行)
-Mac: [vaptool_mac_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_mac_v2.0.6.zip)(未含jre 但Mac基本自带java)
+Windows: [vaptool_win_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_win_v2.0.6.zip)（包含 jre，可直接运行）
+Mac: [vaptool_mac_v2.0.6.zip](https://github.com/Tencent/vap/releases/download/tool2.0.6/vaptool_mac_v2.0.6.zip)（未含 jre，但 Mac 基本自带 java）
 
 
 播放预览工具：[Mac](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_mac_1.2.0.zip), [Windows](https://github.com/Tencent/vap/releases/download/VapPreview1.2.0/vap-player_1.2.0.exe)
@@ -31,7 +31,7 @@ win_start.bat
 // 如未有版本信息输出，请先安装java
 java -version
 
-// 检查mac文件夹下 ffmpeg 与 mp4edit 工具是否有执行权限，没有权限请赋予运行权限
+// 检查 mac 文件夹下 ffmpeg 与 mp4edit 工具是否有执行权限，没有权限请赋予运行权限
 ./ffmpeg -version
 ./mp4edit -v
 

@@ -1,0 +1,6 @@
+framework module TCMediaX {
+  umbrella header "TCMediaX.h"
+
+  export *
+  module * { export * }
+}
