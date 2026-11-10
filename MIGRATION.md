@@ -1,5 +1,7 @@
 # 升级指南：开源 VAP → 礼物动画特效 Vap Pro SDK
 
+简体中文 | [English](./MIGRATION_en.md)
+
 本指南面向已接入开源 VAP 的团队，目标是**低成本**升级到腾讯云官方版本 **礼物动画特效 Vap Pro SDK**。
 
 接口级对照请见 [API_MIGRATION.md](./docs/API_MIGRATION.md)。

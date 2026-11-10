@@ -1,5 +1,7 @@
 # API 升级对照：开源 VAP → 礼物动画特效 Vap Pro SDK
 
+简体中文 | [English](./API_MIGRATION_en.md)
+
 本文只做**接口级对照**，升级流程请见 [MIGRATION.md](../MIGRATION.md)。
 Vap Pro 侧以仓库内的官方 API 文档为准：
 

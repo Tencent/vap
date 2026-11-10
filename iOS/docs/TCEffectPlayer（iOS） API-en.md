@@ -1,3 +1,5 @@
+English | [简体中文](<./TCEffectPlayer（iOS） API-zh-CN.md>)
+
 ### TCMediaXBase class
 
 ### getInstance
@@ -431,7 +433,7 @@ Note: This method must be called within the IAnimPlayListener#onPlayStart() meth
 
 ## TCEffectConfig class
 
-**Note: The following features require the Tencent Cloud RT-Cube Gift AR Enterprise Edition SDK and an Enterprise License authorization. [Click here](https://cloud.tencent.com/document/product/616/116459) for details.**
+**Note: The following features require the Tencent Cloud RT-Cube Gift AR Enterprise Edition SDK and an Enterprise License authorization. [Click here](https://trtc.io/document/70595?product=beautyar&menulabel=core%20sdk&platform=android) for details.**
 
 **Description**
 

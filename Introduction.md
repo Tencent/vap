@@ -1,3 +1,5 @@
+简体中文 | [English](./Introduction_en.md)
+
 本仓库的开源 VAP 已升级为腾讯云官方版本 **礼物动画特效 Vap Pro SDK**（Android / iOS，需免费 [申请 License](https://tceffect-license.tmf.qq.com/)）。
 开源代码与 MIT 协议保持有效，已接入方可继续使用；商业化场景建议升级 **[腾讯云视立方·礼物动画特效企业版 SDK](https://cloud.tencent.com/document/product/616/116459)**。
 升级指引见 [MIGRATION.md](./MIGRATION.md)。

@@ -1,5 +1,7 @@
 # Introduction to Tencent Cloud RT-Cube Gift AR Vap Pro SDK
 
+English | [简体中文](<./TCEffectPlayer 使用说明(iOS)-zh-CN.md>)
+
 The Tencent Cloud RT-Cube Gift AR Vap Pro SDK (hereinafter referred to as the Gift AR SDK) is used to play cool video animations, and is commonly used to display cool gift-sending animations in live streaming rooms.
 
 The following shows the playback effects of the original template video and the fused animation:

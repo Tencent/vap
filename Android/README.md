@@ -1,5 +1,7 @@
 # 礼物动画特效 Vap Pro SDK（Android）
 
+简体中文 | [English](./README_en.md)
+
 本目录包含腾讯云视立方·礼物动画特效 Vap Pro SDK（Android）的示例工程与接入文档。
 
 ## 目录结构
