@@ -1,5 +1,7 @@
 # VapProDemo
 
+简体中文 | [English](./README_en.md)
+
 VAP Pro Android 端 Demo（本地集成 SDK + License 离线鉴权），用于演示和测试 `TCEffectAnimView` 的 **mp4** 播放能力。
 
 ## 功能

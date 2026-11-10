@@ -1,5 +1,7 @@
 # VapProDemo (iOS)
 
+简体中文 | [English](./README_en.md)
+
 iOS 端 VAP Pro Demo，使用**本地集成 SDK** 和 **License 离线鉴权**，用于演示和测试 `TCEffectAnimView` 的 **mp4** 播放能力。
 
 ## 功能

@@ -22,21 +22,21 @@ The same asset played by the open-source VAP vs. Vap Pro SDK on a real device:
 The open-source VAP loses precision in alpha channel restoration, which easily produces gray edges (Gray Edges) and color fringing (Color Fringing) around the animation subject, making the overall look grayish and dark.
 Gift AR Vap Pro SDK includes targeted optimizations for alpha restoration: it can accurately restore semi-transparent edges, delivering lifelike colors and clean edges that significantly improve the visual quality of gift animations.
 
-> For the legacy VAP (Video Animation Player) project, see [Introduction.md](./Introduction.md).
+> For the legacy VAP (Video Animation Player) project, see [Introduction_en.md](./Introduction_en.md).
 >
 
 ## Upgrade to Vap Pro SDK
 
 1. **Apply for a License**: open the [License application page](https://tceffect-license.tmf.qq.com/) and obtain a perpetual License string (free).
 2. **Download the SDK**: Android / iOS integration guides are in the [Android](./Android) and [iOS](./iOS) directories.
-3. **Replace playback and fusion APIs**: follow [MIGRATION.md](./MIGRATION.md). **Existing assets and assets produced by VapTool can be reused directly.**
+3. **Replace playback and fusion APIs**: follow [MIGRATION_en.md](./MIGRATION_en.md). **Existing assets and assets produced by VapTool can be reused directly.**
 
 ## Platform Support
 
 | Platform | Vap Pro SDK | Enterprise SDK |
 | -------- | ----------- | -------------- |
-| Android | [Integration guide for new users](./Android)<br />[Upgrade guide for existing users](./MIGRATION.md) | [Android integration guide](https://trtc.io/document/70531?product=beautyar&menulabel=core%20sdk&platform=android) |
-| iOS | [Integration guide for new users](./iOS)<br />[Upgrade guide for existing users](./MIGRATION.md) | [iOS integration guide](https://trtc.io/document/70537?product=beautyar&menulabel=core%20sdk&platform=ios) |
+| Android | [Integration guide for new users](./Android/README_en.md)<br />[Upgrade guide for existing users](./MIGRATION_en.md) | [Android integration guide](https://trtc.io/document/70531?product=beautyar&menulabel=core%20sdk&platform=android) |
+| iOS | [Integration guide for new users](./iOS/README_en.md)<br />[Upgrade guide for existing users](./MIGRATION_en.md) | [iOS integration guide](https://trtc.io/document/70537?product=beautyar&menulabel=core%20sdk&platform=ios) |
 | Web / H5 | Community edition, see [web](./web) | Not provided |
 | Flutter | Not provided | [Flutter integration guide](https://trtc.io/document/73975?product=beautyar&menulabel=core%20sdk&platform=flutter) |
 

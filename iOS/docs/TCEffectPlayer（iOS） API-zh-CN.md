@@ -1,3 +1,5 @@
+简体中文 | [English](<./TCEffectPlayer（iOS） API-en.md>)
+
 ### TCMediaXBase类
 
 ### getInstance

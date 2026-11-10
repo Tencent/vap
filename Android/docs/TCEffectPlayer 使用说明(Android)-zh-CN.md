@@ -1,5 +1,7 @@
 # 腾讯云视立方·礼物动画特效  Vap Pro SDK 简介
 
+简体中文 | [English](<./TCEffectPlayer SDK Instructions(Android)-en.md>)
+
 腾讯云视立方·礼物动画特效  Vap Pro SDK （以下简称：礼物动画特效 SDK）用于播放酷炫的视频动画，常见用于直播间里显示酷炫的送礼动画。
 
 下面是原始模板视频播放和融合后播放的动画效果展示：
