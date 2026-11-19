@@ -9,7 +9,6 @@
 | 路径 | 作用 |
 | ---- | ---- |
 | [`README.md`](./README.md) | 本文件：目录总览 |
-| [`CHANGELOG.md`](./CHANGELOG.md) | iOS 端 SDK 版本变更记录 |
 | [`VapProDemo/`](./VapProDemo) | iOS 端示例工程（CocoaPods 项目），演示 SDK 的集成与常用 API 调用 |
 | [`sdk/`](./sdk) | SDK 下载入口与版本发布历史，详见 [`sdk/SDK_DOWNLOAD.md`](./sdk/SDK_DOWNLOAD.md) |
 | [`docs/`](./docs) | 接入与 API 参考文档（中英双语） |
