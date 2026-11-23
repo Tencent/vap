@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /docs/mkdocs
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /tools/serve_header
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /cmake/requirements
+    schedule:
+      interval: daily

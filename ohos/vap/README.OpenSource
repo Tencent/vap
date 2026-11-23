@@ -1,0 +1,12 @@
+[
+    {
+        "Name": "VAP",
+        "License": "MIT License",
+        "License File": " LICENSE.txt ",
+        "Version Number": "2.0.28",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/Tencent/vap",
+        "Description": "VAP is a implementing special effect animations. It features a high compression rate and hardware decoding."
+        "Dependencies": ["json"]
+    }
+]
