@@ -50,6 +50,9 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
     private var needYUV = false
     private var outputFormat: MediaFormat? = null
 
+    // SurfaceTexture 变换矩阵缓冲，见 Render 中 texMatrix 的注释
+    private val texMatrix = FloatArray(16)
+
     override fun start(fileContainer: IFileContainer) {
         isStopReq = false
         needDestroy = false
@@ -70,6 +73,9 @@ class HardDecoder(player: AnimPlayer) : Decoder(player), SurfaceTexture.OnFrameA
             try {
                 glTexture?.apply {
                     updateTexImage()
+                    // 每帧取变换矩阵交渲染层补偿解码 buffer 水平 stride，见 Render 中注释
+                    getTransformMatrix(texMatrix)
+                    render?.setTexMatrix(texMatrix)
                     render?.renderFrame()
                     player.pluginManager.onRendering()
                     render?.swapBuffers()

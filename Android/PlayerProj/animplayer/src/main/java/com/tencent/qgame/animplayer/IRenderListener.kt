@@ -51,4 +51,9 @@ interface IRenderListener {
     fun swapBuffers()
 
     fun setYUVData(width: Int, height: Int, y: ByteArray?, u: ByteArray?, v: ByteArray?) {}
+
+    /**
+     * 设置 SurfaceTexture 变换矩阵（硬解 OES 路径，软解自建纹理无需实现）
+     */
+    fun setTexMatrix(matrix: FloatArray) {}
 }

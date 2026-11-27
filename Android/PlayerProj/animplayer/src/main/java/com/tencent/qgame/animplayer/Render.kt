@@ -35,6 +35,24 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
     private val vertexArray = GlFloatArray()
     private val alphaArray = GlFloatArray()
     private val rgbArray = GlFloatArray()
+
+    // SurfaceTexture 变换矩阵（仅应用 x 分量，y 保持原采样约定）：
+    // 部分平台解码 buffer 的水平 stride 大于视频宽（如 RK3568 MPP 解码 720 宽视频
+    // 输出 768 stride，右缘 48px dma-buf 填充，YUV(0,0,0) 渲染为绿色），OES 纹理
+    // 有效区需靠该矩阵补偿。原版不应用矩阵，UV 越界采样填充区，表现为动画右缘
+    // 半透明绿条 + 内容水平压缩。矩阵列主序，x 分量 x' = m[0]*x + m[4]*y + m[12]
+    // 正是 stride/crop 补偿的载体；y 分量不动——vap 顶点序（switchY 已翻转）在
+    // 原采样约定下垂直方向正确，应用矩阵 y 分量的 flipY 反而会颠倒画面；且垂直
+    // stride 通常无 padding（v_str == height）无需补偿。
+    private val texMatrix = floatArrayOf(
+            1f, 0f, 0f, 0f,
+            0f, 1f, 0f, 0f,
+            0f, 0f, 1f, 0f,
+            0f, 0f, 0f, 1f
+    )
+    private val mappedAlphaArray = GlFloatArray()
+    private val mappedRgbArray = GlFloatArray()
+
     private var surfaceSizeChanged = false
     private var surfaceWidth = 0
     private var surfaceHeight = 0
@@ -131,6 +149,25 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
         return genTexture[0]
     }
 
+    /**
+     * SurfaceTexture 变换矩阵，见 texMatrix 注释
+     */
+    override fun setTexMatrix(matrix: FloatArray) {
+        System.arraycopy(matrix, 0, texMatrix, 0, 16)
+    }
+
+    private fun applyTexMatrixX(src: FloatArray, dest: GlFloatArray) {
+        val m = texMatrix
+        val out = dest.array
+        for (i in 0 until 4) {
+            val x = src[i * 2]
+            val y = src[i * 2 + 1]
+            out[i * 2] = m[0] * x + m[4] * y + m[12]
+            out[i * 2 + 1] = y
+        }
+        dest.setArray(out)
+    }
+
     private fun draw() {
         GLES20.glUseProgram(shaderProgram)
         // 设置顶点坐标
@@ -140,11 +177,13 @@ class Render(surfaceTexture: SurfaceTexture): IRenderListener {
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, genTexture[0])
         GLES20.glUniform1i(uTextureLocation, 0)
 
-        // 设置纹理坐标
+        // 设置纹理坐标（经变换矩阵的 x 分量映射，补偿解码 buffer 水平 stride）
         // alpha 通道坐标
-        alphaArray.setVertexAttribPointer(aTextureAlphaLocation)
+        applyTexMatrixX(alphaArray.array, mappedAlphaArray)
+        mappedAlphaArray.setVertexAttribPointer(aTextureAlphaLocation)
         // rgb 通道坐标
-        rgbArray.setVertexAttribPointer(aTextureRgbLocation)
+        applyTexMatrixX(rgbArray.array, mappedRgbArray)
+        mappedRgbArray.setVertexAttribPointer(aTextureRgbLocation)
 
         // draw
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
