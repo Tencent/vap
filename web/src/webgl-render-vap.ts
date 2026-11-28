@@ -295,6 +295,8 @@ export default class WebglRenderVap extends VapVideo {
 
   drawFrame(_, info) {
     const { gl, vapFrameParser, video, options } = this;
+    if (!video) return;
+
     if (!gl) {
       super.drawFrame(_, info);
       return;
@@ -331,6 +333,9 @@ export default class WebglRenderVap extends VapVideo {
     }
 
     this.trigger('frame', frame + 1, frameData, vapFrameParser.config);
+    // A frame listener can destroy or replace the player synchronously.
+    if (this.video !== video || this.gl !== gl) return;
+
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video); // 指定二维纹理方式
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
